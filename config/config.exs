@@ -17,6 +17,10 @@ config :LolHero, LolHero.Endpoint,
   render_errors: [view: LolHero.ErrorView, accepts: ~w(json)],
   pubsub: [name: LolHero.PubSub, adapter: Phoenix.PubSub.PG2]
 
+config :stripity_stripe,
+  json_library: Jason,
+  api_key: "sk_test_S7bVEgUNrAE0DJcTTa2q23Ro00GXX9iBnb"
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",

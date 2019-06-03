@@ -2,12 +2,20 @@ defmodule LolHero.CheckoutController do
   use LolHero.Web, :controller
 
   def index(conn, params) do
-    body = URI.decode_www_form(params)
-    IO.inspect(body)
+    payload = Stripe.Util.atomize_keys(params)
 
-    # response = HTTPoison.post("https://api.stripe.com/v1/checkout/sessions", json, %{"Authorization" => "bearer sk_test_4eC39HqLyjWDarjtT1zdp7dc", "Content-Type" => "application/x-www-form-urlencoded"})
-    # IO.inspect(response)
+    case Stripe.Session.create(payload) do
+      {:ok, session} ->
+        conn
+        |> put_status(:ok)
+        |> render("index.json", session: session)
 
-    conn
+      {:error, error} ->
+        IO.inspect(error)
+
+        conn
+        |> put_status(:not_found)
+        |> render("error.json", error: error)
+    end
   end
 end
