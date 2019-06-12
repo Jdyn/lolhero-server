@@ -1,13 +1,15 @@
 defmodule LolHero.Category do
   use LolHero.Web, :model
 
-  alias LolHero.{Category, Variant}
+  alias LolHero.{Repo, Category, Collection}
 
   schema "categories" do
     field(:title, :string) # IE: solo-boost / duo-boost
     field(:description, :string)
+ 
+    has_many(:collections, Collection)
 
-    has_many(:products, Variant)
+    timestamps()
   end
 
   def create(attrs) do

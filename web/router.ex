@@ -13,7 +13,9 @@ defmodule LolHero.Router do
     post("/product/variant", ProductController, :create_variant)
     
     post("/collection", CollectionController, :create)
+    get("/collections", CollectionController, :list)
     post("/category", CategoryController, :create)
+    get("/categories", CategoryController, :list)
 
   end
 end

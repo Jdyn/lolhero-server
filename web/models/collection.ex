@@ -9,6 +9,8 @@ defmodule LolHero.Collection do
 
     has_many(:variants, Variant)
     belongs_to(:category, Category)
+
+    timestamps()
   end
 
   def create(attrs) do

@@ -1,21 +1,17 @@
-defmodule LolHero.CollectionController do
+defmodule LolHero.CategoryController do
   use LolHero.Web, :controller
 
-  alias LolHero.{Product, Collection}
-
-  def index(conn, params) do
-  end
+  alias LolHero.{Product, Category}
 
   def list(conn, params) do
-    collections = Repo.all(Collection)
-    render(conn, "list.json", collections: collections)
+    render(conn, "list.json", categories: Repo.all(Category) |> Repo.preload(collections: [:variants]))
   end
 
   def create(conn, params) do
     params
-    |> Collection.create()
+    |> Category.create()
     |> case do
-      {:ok, collection} ->
+      {:ok, category} ->
         conn
         |> put_status(:created)
         |> render("created.json")

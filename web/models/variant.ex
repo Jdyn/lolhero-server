@@ -10,11 +10,14 @@ defmodule LolHero.Variant do
 
     belongs_to(:product, Product)
     belongs_to(:collection, Collection)
+
+    timestamps()
   end
 
   def create(attrs) do
     %Variant{}
     |> changeset(attrs)
+    |> Repo.insert()
   end
 
   def changeset(post, attrs) do
