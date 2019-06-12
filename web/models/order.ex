@@ -3,10 +3,11 @@ defmodule LolHero.Order do
 
   schema "orders" do
     field(:tracking_id, :integer)
-    field(:queue, :string)
-    field(:service, :string)
-    field(:type, :string)
     field(:server, :string)
+
+    field(:queue, :string) # EX: soloq, duoq
+    field(:service, :string) # EX: Division Boost, Net Wins // - "product_collection"
+    field(:type, :string) # EX: Solo boost or Duo Boost // - "product_category"
 
     field(:champions, {:array, :string})
 
