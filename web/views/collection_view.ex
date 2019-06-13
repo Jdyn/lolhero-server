@@ -12,9 +12,9 @@ defmodule LolHero.CollectionView do
 
   def render("collection.json", %{collection: collection}) do
     %{
-      id: collection.id,
-      title: collection.title,
-      products: render_many(collection.variants, LolHero.ProductView, "variant.json", as: :variant)
+      # id: collection.id,
+      type: collection.title,
+      items: render_many(collection.variants, LolHero.ProductView, "variant.json", as: :variant)
     }
   end
 

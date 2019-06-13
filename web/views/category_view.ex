@@ -12,7 +12,7 @@ defmodule LolHero.CategoryView do
 
   def render("category.json", %{category: category}) do
     %{
-      id: category.id,
+      # id: category.id,
       title: category.title,
       collections: render_many(category.collections, LolHero.CollectionView, "collection.json")
     }

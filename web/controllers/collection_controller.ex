@@ -7,7 +7,7 @@ defmodule LolHero.CollectionController do
   end
 
   def list(conn, params) do
-    collections = Repo.all(Collection)
+    collections = Repo.all(Collection) |> Repo.preload(:variants)
     render(conn, "list.json", collections: collections)
   end
 

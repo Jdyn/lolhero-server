@@ -17,5 +17,7 @@ defmodule LolHero.Router do
     post("/category", CategoryController, :create)
     get("/categories", CategoryController, :list)
 
+    get("/prices/latest", PriceController, :latest)
+
   end
 end
