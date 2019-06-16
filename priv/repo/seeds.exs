@@ -1,11 +1,58 @@
-# Script for populating the database. You can run it as:
+# mix run priv/repo/seeds.exs
+
+alias LolHero.{
+  Repo,
+  Category,
+	Collection,
+	Product,
+  SeedFactory
+}
+
 #
-#     mix run priv/repo/seeds.exs
+#   Create Categories
 #
-# Inside the script, you can read and write to any of your
-# repositories directly:
+categories = SeedFactory.categories()
+for item <- categories do
+  Repo.insert!(%Category{
+    title: item.title,
+    description: item.description
+  })
+end
+
 #
-#     LolHero.Repo.insert!(%LolHero.SomeSchema{})
+#   Create Collections
 #
-# We recommend using the bang functions (`insert!`, `update!`
-# and so on) as they will fail if something goes wrong.
+collections = SeedFactory.collections()
+for item <- collections do
+  Repo.insert!(%Collection{
+    category_id: item.category_id,
+    title: item.title,
+    description: item.description
+  })
+end
+
+#
+# Create Products
+#
+products = SeedFactory.products()
+for item <- products do
+  Repo.insert!(%Product{
+    title: item.title,
+    description: item.description
+  })
+end
+
+Repo.insert!(%Product{
+	title: "Master",
+	description: "Master Tier - Division I"
+})
+
+Repo.insert!(%Product{
+	title: "Grandmaster",
+	description: "Grandmaster Tier - Division I"
+})
+
+Repo.insert!(%Product{
+	title: "Challenger",
+	description: "Challenger Tier - Division I"
+})

@@ -20,6 +20,10 @@ defmodule LolHero.ProductController do
     end
   end
 
+  def list_products(conn, _params) do
+    render(conn, "list_products.json", products: Repo.all(Product))
+  end
+
   def create_variant(conn, params) do
     params
     |> Variant.create()
