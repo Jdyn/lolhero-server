@@ -4,7 +4,13 @@ defmodule LolHero.CategoryController do
   alias LolHero.{Product, Category}
 
   def list(conn, params) do
-    render(conn, "list.json", categories: Repo.all(Category) |> Repo.preload(collections: [:variants]))
+    categories = Repo.all(Category) |> Repo.preload(collections: [variants: [:product]])
+
+    Enum.reduce(categories, %{}, fn data, acc ->
+      Map.put(acc, String.to_atom(data.title), %{boosts: data.collections})
+    end)
+
+    render(conn, "list.json", categories: categories)
   end
 
   def create(conn, params) do

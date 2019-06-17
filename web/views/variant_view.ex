@@ -8,8 +8,8 @@ defmodule LolHero.VariantView do
     def render("update.json", %{variant: variant}) do
       %{
         ok: true,
-        result: %{
-          variant: render_one(products, __MODULE__, "variant.json")
+        result: %{  
+          variant: render_one(variant, __MODULE__, "variant.json")
         }
       }
     end
