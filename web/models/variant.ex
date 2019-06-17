@@ -14,6 +14,12 @@ defmodule LolHero.Variant do
     timestamps()
   end
 
+  def update(attrs, %Variant{} = variant) do
+    variant
+    |> Variant.changeset(attrs)
+    |> Repo.update()
+  end
+
   def create(attrs) do
     %Variant{}
     |> changeset(attrs)

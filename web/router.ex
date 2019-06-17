@@ -9,8 +9,9 @@ defmodule LolHero.Router do
     pipe_through(:api)
 
     post("/checkout", CheckoutController, :index)
-    post("/product", ProductController, :create_product)
-    post("/product/variant", ProductController, :create_variant)
+    post("/product", ProductController, :create)
+    post("/variant", VariantController, :create)
+    patch("/variant/:id", VariantController, :update)
     
     post("/collection", CollectionController, :create)
     get("/collections", CollectionController, :list)
