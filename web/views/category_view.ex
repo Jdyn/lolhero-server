@@ -1,12 +1,20 @@
 defmodule LolHero.CategoryView do
   use LolHero.Web, :view
 
-  def render("list.json", %{categories: categories}) do
+  def render("prices.json", %{categories: categories}) do
     %{
       ok: true,
       result: %{
-        categories: render_many(categories, __MODULE__, "category.json")
+        solo: categories.solo,
+        duo: categories.duo
       }
+    }
+  end
+
+  def render("list.json", %{categories: categories}) do
+    %{
+      ok: true,
+      result: render_many(categories, __MODULE__, "category.json")
     }
   end
 
