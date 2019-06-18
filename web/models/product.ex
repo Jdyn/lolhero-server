@@ -18,6 +18,27 @@ defmodule LolHero.Product do
     |> Repo.insert()
   end
 
+  def update(%Product{} = product, attrs) do
+    product
+    |> changeset(attrs)
+    |> Repo.update()
+  end
+
+  def find(id) do
+    Product
+    |> Repo.get(id)
+  end
+
+  def find_all() do
+    Product
+    |> Repo.all()
+  end
+
+  def delete(%Product{} = product) do
+    product
+    |> Repo.delete()
+  end
+
   def changeset(product, attrs) do
     product
     |> cast(attrs, [:title, :description])

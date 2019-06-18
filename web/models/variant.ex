@@ -14,16 +14,16 @@ defmodule LolHero.Variant do
     timestamps()
   end
 
-  def update(%Variant{} = variant, attrs) do
-    variant
-    |> changeset(attrs)
-    |> Repo.update()
-  end
-
   def create(attrs) do
     %Variant{}
     |> changeset(attrs)
     |> Repo.insert()
+  end
+
+  def update(%Variant{} = variant, attrs) do
+    variant
+    |> changeset(attrs)
+    |> Repo.update()
   end
 
   def find(id) do

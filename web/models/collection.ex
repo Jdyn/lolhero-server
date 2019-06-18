@@ -25,6 +25,18 @@ defmodule LolHero.Collection do
     |> Repo.update()
   end
 
+  def find(id) do
+    Collection
+    |> Repo.get(id)
+    |> Repo.preload(variants: [:product])
+  end
+
+  def find_all() do
+    Collection
+    |> Repo.all()
+    |> Repo.preload(variants: [:product])
+  end
+
   def changeset(post, attrs) do
     post
     |> cast(attrs, [:title, :description, :category_id])

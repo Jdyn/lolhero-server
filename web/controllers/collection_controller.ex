@@ -1,14 +1,14 @@
 defmodule LolHero.CollectionController do
   use LolHero.Web, :controller
 
-  alias LolHero.{Product, Collection}
+  alias LolHero.Collection
 
-  def index(conn, params) do
+  def index(conn, _params) do
+    render(conn, "index.json", collections: Collection.find_all())
   end
 
-  def list(conn, params) do
-    collections = Repo.all(Collection) |> Repo.preload(variants: [:product])
-    render(conn, "list.json", collections: collections)
+  def show(conn, %{"id" => id}) do
+    render(conn, "show.json", collection: Collection.find(id))
   end
 
   def create(conn, params) do
@@ -28,9 +28,10 @@ defmodule LolHero.CollectionController do
     end
   end
 
-  def update(conn, params) do
-    params
-    |> Collection.update(Repo.get(Collection, params["id"]))
+  def update(conn, %{"id" => id}) do
+    id
+    |> Collection.find()
+    |> Collection.update()
     |> case do
       {:ok, collection} ->
         conn

@@ -8,20 +8,20 @@ defmodule LolHero.Router do
   scope "/api/v1", LolHero do
     pipe_through(:api)
 
-    # post("/checkout", CheckoutController, :index)
-    # post("/product", ProductController, :create)
-    
     resources("/variants", VariantController, except: [:edit, :new])
+    resources("/products", ProductController, except: [:edit, :new])
+    resources("/collections", CollectionController, except: [:edit, :new])
+    # post("/checkout", CheckoutController, :index)
+
 
 
     # patch("/collection/:id", CollectionController, :update)
-    
     # post("/collection", CollectionController, :create)
     # get("/collections", CollectionController, :list)
+    
     # post("/category", CategoryController, :create)
     # get("/categories", CategoryController, :list)
     # get("/prices", CategoryController, :prices)
-    # get("/products", ProductController, :list_products)
 
     # get("/prices/latest", PriceController, :latest)
 

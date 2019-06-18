@@ -1,11 +1,20 @@
 defmodule LolHero.CollectionView do
   use LolHero.Web, :view
 
-  def render("list.json", %{collections: collections}) do
+  def render("index.json", %{collections: collections}) do
     %{
       ok: true,
       result: %{
         collections: render_many(collections, __MODULE__, "collection.json")
+      }
+    }
+  end
+
+  def render("show.json", %{collection: collection}) do
+    %{
+      ok: true,
+      result: %{
+        collection: render_one(collection, __MODULE__, "collection.json")
       }
     }
   end
