@@ -10,9 +10,17 @@ defmodule LolHero.CollectionView do
     }
   end
 
+  def render("update.json", %{collection: collection}) do
+    %{
+      ok: true,
+      result: %{
+        collection: render_one(collection, __MODULE__, "collection.json")
+      }
+    }
+  end
+
   def render("collection.json", %{collection: collection}) do
     %{
-      id: collection.id,
       title: collection.title,
       description: collection.description,
       items: render_many(collection.variants, LolHero.VariantView, "variant.json")

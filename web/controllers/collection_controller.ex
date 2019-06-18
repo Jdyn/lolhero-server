@@ -27,4 +27,21 @@ defmodule LolHero.CollectionController do
         |> render("changeset_error.json", changeset: changeset)
     end
   end
+
+  def update(conn, params) do
+    params
+    |> Collection.update(Repo.get(Collection, params["id"]))
+    |> case do
+      {:ok, collection} ->
+        conn
+        |> put_status(:ok)
+        |> render("collection.json", collection: collection)
+
+      {:error, changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> put_view(LolHero.ErrorView)
+        |> render("changeset_error.json", changeset: changeset)
+    end
+  end
 end

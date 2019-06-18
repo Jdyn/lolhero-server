@@ -14,9 +14,9 @@ defmodule LolHero.Variant do
     timestamps()
   end
 
-  def update(attrs, %Variant{} = variant) do
+  def update(%Variant{} = variant, attrs) do
     variant
-    |> Variant.changeset(attrs)
+    |> changeset(attrs)
     |> Repo.update()
   end
 
@@ -26,9 +26,28 @@ defmodule LolHero.Variant do
     |> Repo.insert()
   end
 
+  def find(id) do
+    Variant
+    |> Repo.get(id)
+    |> Repo.preload(:product)
+  end
+
+  def find_all() do
+    Variant
+    |> Repo.all()
+    |> Repo.preload(:product)
+  end
+
+  def delete(%Variant{} = variant) do
+    variant
+    |> Repo.delete()
+  end
+
   def changeset(post, attrs) do
     post
     |> cast(attrs, [:title, :description, :base_price, :product_id, :collection_id])
     |> validate_required([:title, :description, :base_price, :product_id, :collection_id])
+    |> foreign_key_constraint(:product_id)
+    |> foreign_key_constraint(:collection_id)
   end
 end

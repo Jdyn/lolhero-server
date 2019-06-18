@@ -19,6 +19,12 @@ defmodule LolHero.Collection do
     |> Repo.insert()
   end
 
+  def update(attrs, %Collection{} = collection) do
+    collection
+    |> changeset(attrs)
+    |> Repo.update()
+  end
+
   def changeset(post, attrs) do
     post
     |> cast(attrs, [:title, :description, :category_id])

@@ -14,7 +14,9 @@ defmodule LolHero.CategoryView do
   def render("list.json", %{categories: categories}) do
     %{
       ok: true,
-      result: render_many(categories, __MODULE__, "category.json")
+      result: %{
+        categories: render_many(categories, __MODULE__, "category.json")
+      }
     }
   end
 

@@ -1,8 +1,22 @@
 defmodule LolHero.VariantView do
   use LolHero.Web, :view
 
-  def render("index.json", %{session: session}) do
-    %{}
+  def render("index.json", %{variants: variants}) do
+    %{
+      ok: true,
+      result: %{
+        variants: render_many(variants, __MODULE__, "variant.json")
+      }
+    }
+  end
+
+  def render("show.json", %{variant: variant}) do
+    %{
+      ok: true,
+      result: %{
+        variant: render_one(variant, __MODULE__, "variant.json")
+      }
+    }
   end
 
   def render("update.json", %{variant: variant}) do
@@ -23,7 +37,7 @@ defmodule LolHero.VariantView do
     }
   end
 
-  def render("created.json", %{}) do
+  def render("ok.json", _) do
     %{
       ok: true,
       result: %{}
