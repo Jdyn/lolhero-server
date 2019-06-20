@@ -15,7 +15,7 @@ defmodule LolHero.ProductController do
     params
     |> Product.create()
     |> case do
-      {:ok, product} ->
+      {:ok, _product} ->
         conn
         |> put_status(:created)
         |> render("created.json")

@@ -19,7 +19,7 @@ defmodule LolHero.Collection do
     |> Repo.insert()
   end
 
-  def update(attrs, %Collection{} = collection) do
+  def update(%Collection{} = collection, attrs) do
     collection
     |> changeset(attrs)
     |> Repo.update()

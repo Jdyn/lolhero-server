@@ -11,11 +11,4 @@ defmodule LolHero.CheckoutView do
       }
     }
   end
-
-  def render("error.json", %{error: error}) do
-    %{
-      ok: false,
-      result: %{}
-    }
-  end
 end

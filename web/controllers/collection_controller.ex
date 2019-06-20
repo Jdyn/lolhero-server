@@ -1,7 +1,7 @@
 defmodule LolHero.CollectionController do
   use LolHero.Web, :controller
 
-  alias LolHero.Collection
+  alias LolHero.{Collection, Variant, Product}
 
   def index(conn, _params) do
     render(conn, "index.json", collections: Collection.find_all())
@@ -15,7 +15,7 @@ defmodule LolHero.CollectionController do
     params
     |> Collection.create()
     |> case do
-      {:ok, collection} ->
+      {:ok, _collection} ->
         conn
         |> put_status(:created)
         |> render("created.json")
@@ -28,10 +28,10 @@ defmodule LolHero.CollectionController do
     end
   end
 
-  def update(conn, %{"id" => id}) do
+  def update(conn, %{"id" => id} = params) do
     id
     |> Collection.find()
-    |> Collection.update()
+    |> Collection.update(params)
     |> case do
       {:ok, collection} ->
         conn
