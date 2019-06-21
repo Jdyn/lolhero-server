@@ -16,7 +16,8 @@ defmodule LolHero.Router do
 
     get("/prices", CategoryController, :prices)
 
-
+    post("/order", OrderController, :create)
+    get("/orders", OrderController, :index)
     # patch("/collection/:id", CollectionController, :update)
     # post("/collection", CollectionController, :create)
     # get("/collections", CollectionController, :list)
