@@ -6,7 +6,7 @@ defmodule LolHero.CategoryView do
       ok: true,
       result: %{
         solo: categories.solo,
-        duo: categories.duo
+        duo: categories.duo,
       }
     }
   end

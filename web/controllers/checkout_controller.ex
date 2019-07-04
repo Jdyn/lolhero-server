@@ -5,7 +5,6 @@ defmodule LolHero.CheckoutController do
 
   def index(conn, params) do
 
-
     total_price = Variant.calculate_price(params)
     IO.inspect(total_price)
 

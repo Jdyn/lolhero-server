@@ -6,7 +6,7 @@ defmodule LolHero.Variant do
   schema "variants" do
     field(:title, :string)
     field(:description, :string)
-    field(:base_price, :integer)
+    field(:base_price, :decimal)
 
     belongs_to(:product, Product)
     belongs_to(:collection, Collection)

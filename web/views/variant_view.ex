@@ -33,6 +33,15 @@ defmodule LolHero.VariantView do
       id: variant.id,
       title: variant.title,
       base_price: variant.base_price,
+      product_id: variant.product.id
+    }
+  end
+
+  def render("ranks.json", %{variant: variant}) do
+    %{
+      id: variant.id,
+      title: variant.title,
+      base_price: variant.base_price,
       rank: variant.product.id
     }
   end

@@ -42,13 +42,25 @@ defmodule LolHero.CategoryController do
 
   defp format_collections(collections) do
     Enum.reduce(collections, %{}, fn data, acc ->
-      Map.put(
-        acc,
-        String.to_atom(data.title),
-        Enum.reduce(data.variants, %{}, fn item, acc ->
-          Map.put(acc, item.product_id, item.base_price)
-        end)
-      )
+      cond do
+        data.id == 10 or data.id == 9 or data.id == 11  or data.id == 12 ->
+          Map.put(
+            acc,
+            data.title,
+            Enum.reduce(data.variants, %{}, fn item, acc ->
+              Map.put(acc, item.title, Decimal.to_float(item.base_price))
+            end)
+          )
+
+        true ->
+          acc
+          |> Map.put(
+            data.id,
+            Enum.reduce(data.variants, %{}, fn item, acc ->
+              Map.put(acc, item.product_id, Decimal.to_float(item.base_price))
+            end)
+          )
+      end
     end)
   end
 end
