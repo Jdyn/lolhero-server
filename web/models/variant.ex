@@ -43,17 +43,26 @@ defmodule LolHero.Variant do
     |> Repo.delete()
   end
 
-  def calculate_price(params) do
-    query =
-      from(v in Variant,
-        where:
-          v.collection_id == ^params["collection_id"] and v.product_id >= ^params["starting_rank"] and
-            v.product_id <= ^params["desired_rank"],
-        select: %{base_price: v.base_price}
-      )
+  # def get_base_price(%{"collection_id" => id} = params) do
+  #   query =
+  #     from(v in Variant,
+  #       where:
+  #         v.collection_id == ^id and v.product_id >= ^params["start_rank"] and
+  #           v.product_id < ^params["desired_rank"],
+  #       select: v.base_price
+  #     )
 
-    items = Repo.all(query)
-    Enum.reduce(items, 0, fn item, acc -> item.base_price + acc end)
+  #   items = Repo.all(Variant.boost_price_query)
+  #   Enum.reduce(items, 0, fn item, acc -> Decimal.add(acc, item) end)
+  # end
+
+  def boost_price_query(id, start_rank, desired_rank) do
+    from(v in Variant,
+      where:
+        v.collection_id == ^id and v.product_id >= ^start_rank and
+          v.product_id < ^desired_rank,
+      select: v.base_price
+    )
   end
 
   def changeset(post, attrs) do

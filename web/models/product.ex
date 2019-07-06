@@ -1,7 +1,7 @@
 defmodule LolHero.Product do
-	use LolHero.Web, :model
-	
-	alias LolHero.{Repo, Product, Variant}
+  use LolHero.Web, :model
+
+  alias LolHero.{Repo, Product, Variant}
 
   schema "products" do
     field(:title, :string)
@@ -43,5 +43,14 @@ defmodule LolHero.Product do
     product
     |> cast(attrs, [:title, :description])
     |> validate_required([:title, :description])
+    |> unique_constraint(:title)
+  end
+
+  def ranks_query(start_id, end_id) do
+    from(
+      p in Product,
+      where: p.id == ^start_id or p.id == ^end_id,
+      select: p.title
+    )
   end
 end

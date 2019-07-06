@@ -15,11 +15,38 @@ defmodule LolHero.OrderController do
     |> Map.put("tracking_id", to_string(tracking_id))
     |> Order.create()
     |> case do
-      {:ok, _order} ->
-        conn
-        |> put_status(:created)
-        |> put_view(LolHero.ProductView)
-        |> render("created.json")
+      {:ok, order} ->
+        IO.inspect(order)
+        %{tracking_id: tracking_id, title: title, price: price} = order
+
+        payload = %{
+          payment_method_types: ["card"],
+          client_reference_id: tracking_id,
+          line_items: [
+            %{
+              name: title,
+              amount: price,
+              currency: "usd",
+              quantity: 1
+            }
+          ],
+          success_url: "http://localhost:3000/success",
+          cancel_url: "http://localhost:3000/boost"
+        }
+
+        case Stripe.Session.create(payload) do
+          {:ok, session} ->
+            conn
+            |> put_status(:ok)
+            |> render("session.json", session: session)
+
+          {:error, error} ->
+            IO.inspect(error)
+
+            conn
+            |> put_status(:not_found)
+            |> render("error.json", error: error)
+        end
 
       {:error, changeset} ->
         conn

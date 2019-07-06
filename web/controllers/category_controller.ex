@@ -1,26 +1,14 @@
 defmodule LolHero.CategoryController do
   use LolHero.Web, :controller
 
-  alias LolHero.Category
+  alias LolHero.{Category, Collection}
 
-  def list(conn, _params) do
-    categories = Repo.all(Category) |> Repo.preload(collections: [variants: [:product]])
-
-    render(conn, "list.json", categories: categories)
+  def index(conn, _params) do
+    render(conn, "list.json", categories: Category.find_all())
   end
 
   def prices(conn, _params) do
-    categories = Repo.all(Category) |> Repo.preload(collections: [variants: [:product]])
-
-    solo = Enum.at(categories, 0)
-    duo = Enum.at(categories, 1)
-
-    render(conn, "prices.json",
-      categories: %{
-        solo: format_collections(solo.collections),
-        duo: format_collections(duo.collections)
-      }
-    )
+    render(conn, "prices.json", categories: Category.format_prices(Category.find_all()))
   end
 
   def create(conn, params) do
@@ -40,27 +28,21 @@ defmodule LolHero.CategoryController do
     end
   end
 
-  defp format_collections(collections) do
-    Enum.reduce(collections, %{}, fn data, acc ->
-      cond do
-        data.id == 10 or data.id == 9 or data.id == 11  or data.id == 12 ->
-          Map.put(
-            acc,
-            data.title,
-            Enum.reduce(data.variants, %{}, fn item, acc ->
-              Map.put(acc, item.title, Decimal.to_float(item.base_price))
-            end)
-          )
+  def update(conn, %{"id" => id} = params) do
+    id
+    |> Category.find()
+    |> Category.update(params)
+    |> case do
+      {:ok, category} ->
+        conn
+        |> put_status(:ok)
+        |> render("update.json", category: category)
 
-        true ->
-          acc
-          |> Map.put(
-            data.id,
-            Enum.reduce(data.variants, %{}, fn item, acc ->
-              Map.put(acc, item.product_id, Decimal.to_float(item.base_price))
-            end)
-          )
-      end
-    end)
+      {:error, changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> put_view(LolHero.ErrorView)
+        |> render("changeset_error.json", changeset: changeset)
+    end
   end
 end

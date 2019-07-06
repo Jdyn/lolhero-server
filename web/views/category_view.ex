@@ -4,10 +4,7 @@ defmodule LolHero.CategoryView do
   def render("prices.json", %{categories: categories}) do
     %{
       ok: true,
-      result: %{
-        solo: categories.solo,
-        duo: categories.duo,
-      }
+      result: categories
     }
   end
 
@@ -20,9 +17,25 @@ defmodule LolHero.CategoryView do
     }
   end
 
+  def render("update.json", %{category: category}) do
+    %{
+      ok: true,
+      result: %{
+        category: render_one(category, __MODULE__, "base.json")
+      }
+    }
+  end
+
+  def render("base.json", %{category: category}) do
+    %{
+      id: category.id,
+      title: category.title,
+    }
+  end
+
   def render("category.json", %{category: category}) do
     %{
-      # id: category.id,
+      id: category.id,
       title: category.title,
       collections: render_many(category.collections, LolHero.CollectionView, "collection.json")
     }

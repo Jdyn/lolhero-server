@@ -11,21 +11,12 @@ defmodule LolHero.Router do
     resources("/variants", VariantController, except: [:edit, :new])
     resources("/products", ProductController, except: [:edit, :new])
     resources("/collections", CollectionController, except: [:edit, :new])
-    
-    post("/checkout", CheckoutController, :index)
+    resources("/categories", CategoryController, except: [:edit, :new])
+
+    post("/checkout", OrderController, :create)
 
     get("/prices", CategoryController, :prices)
-
     post("/order", OrderController, :create)
     get("/orders", OrderController, :index)
-    # patch("/collection/:id", CollectionController, :update)
-    # post("/collection", CollectionController, :create)
-    # get("/collections", CollectionController, :list)
-
-    # post("/category", CategoryController, :create)
-    get("/categories", CategoryController, :list)
-
-    # get("/prices/latest", PriceController, :latest)
-
   end
 end
