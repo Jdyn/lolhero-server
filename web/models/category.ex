@@ -45,7 +45,10 @@ defmodule LolHero.Category do
             prices,
             collection.id,
             Enum.reduce(collection.variants, %{}, fn item, prices ->
-              Map.put(prices, item.product_id, Decimal.to_float(item.base_price))
+              prices
+              |> Map.put("description", collection.description)
+              |> Map.put("title", collection.title)
+              |> Map.put(item.product_id, Decimal.to_float(item.base_price))
             end)
           )
         end)

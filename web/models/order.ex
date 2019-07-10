@@ -67,6 +67,9 @@ defmodule LolHero.Order do
     %{"collection_id" => id} = details
 
     case details do
+      %{"desired_rank" => desired_rank, "desired_amount" => desired_amount} = details ->
+        add_error(changeset, :details, "cannot contain desired_rank and desired_amount")
+
       %{"desired_rank" => desired_rank, "start_rank" => start_rank} = details ->
         items = Repo.all(Variant.boost_price_query(id, start_rank, desired_rank))
 
@@ -78,7 +81,7 @@ defmodule LolHero.Order do
 
         put_change(changeset, :price, base_price)
 
-      %{"start_rank" => start_rank, "desired_games" => desired_games} = details ->
+      %{"start_rank" => start_rank, "desired_amount" => desired_amount} = details ->
         item =
           Repo.one(
             from(v in Variant,
@@ -89,11 +92,14 @@ defmodule LolHero.Order do
 
         base_price =
           item
-          |> Decimal.mult(desired_games)
+          |> Decimal.mult(desired_amount)
           |> Decimal.mult(100)
           |> Decimal.to_integer()
 
         put_change(changeset, :price, base_price)
+
+      true ->
+        add_error(changeset, :details, "rank params cannot be null")
     end
   end
 
@@ -122,7 +128,7 @@ defmodule LolHero.Order do
                 category,
                 collection,
                 start,
-                details["desired_games"]
+                details["desired_amount"]
               )
 
             put_change(changeset, :title, title)

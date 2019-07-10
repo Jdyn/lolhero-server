@@ -50,7 +50,8 @@ defmodule LolHero.Product do
     from(
       p in Product,
       where: p.id == ^start_id or p.id == ^end_id,
-      select: p.title
+      select: p.title,
+      order_by: [asc: p.id]
     )
   end
 end
