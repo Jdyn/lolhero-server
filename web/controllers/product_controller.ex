@@ -52,7 +52,7 @@ defmodule LolHero.ProductController do
         conn
         |> put_status(:not_found)
         |> put_view(LolHero.ErrorView)
-        |> render("error.json", %{error: "Snippet does not exist."})
+        |> render("error.json", %{error: "Product does not exist."})
 
       product ->
         Product.delete(product)

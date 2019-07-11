@@ -45,4 +45,30 @@ defmodule LolHero.CollectionController do
         |> render("changeset_error.json", changeset: changeset)
     end
   end
+
+  
+  def delete(conn, params) do
+    case Collection.find(params["id"]) do
+      nil ->
+        conn
+        |> put_status(:not_found)
+        |> put_view(LolHero.ErrorView)
+        |> render("error.json", %{error: "Collection does not exist."})
+
+      collection ->
+        Collection.delete(collection)
+        |> case do
+          {:ok, _collection} ->
+            conn
+            |> put_status(:ok)
+            |> render("ok.json")
+
+          {:error, changeset} ->
+            conn
+            |> put_status(:unprocessable_entity)
+            |> put_view(LolHero.ErrorView)
+            |> render("changeset_error.json", changeset: changeset)
+        end
+    end
+  end
 end

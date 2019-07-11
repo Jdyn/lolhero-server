@@ -58,8 +58,8 @@ defmodule LolHero.Order do
       "is_unrestricted",
       "is_incognito"
     ])
-    |> put_title()
     |> put_price()
+    |> put_title()
   end
 
   def put_price(changeset) do
@@ -73,10 +73,30 @@ defmodule LolHero.Order do
       %{"desired_rank" => desired_rank, "start_rank" => start_rank} = details ->
         items = Repo.all(Variant.boost_price_query(id, start_rank, desired_rank))
 
+        query =
+          Repo.one(
+            from(
+              cc in Collection,
+              left_join: c in assoc(cc, :category),
+              where: c.title == ^details["boost_type"] and cc.title == "modifiers",
+              preload: [:variants],
+              select: cc
+            )
+          )
+
+        modifiers =
+          Enum.reduce(query.variants, %{}, fn item, prices ->
+            Map.put(prices, item.title, item.base_price)
+          end)
+
         base_price =
           items
           |> Enum.reduce(0, fn item, acc -> Decimal.add(acc, item) end)
+          |> is_express(modifiers, details["is_express"])
+          |> is_incognito(modifiers, details["is_incognito"])
+          |> is_unrestricted(modifiers, details["is_unrestricted"])
           |> Decimal.mult(100)
+          |> Decimal.round()
           |> Decimal.to_integer()
 
         put_change(changeset, :price, base_price)
@@ -90,10 +110,30 @@ defmodule LolHero.Order do
             )
           )
 
+          query =
+          Repo.one(
+            from(
+              cc in Collection,
+              left_join: c in assoc(cc, :category),
+              where: c.title == ^details["boost_type"] and cc.title == "modifiers",
+              preload: [:variants],
+              select: cc
+            )
+          )
+
+        modifiers =
+          Enum.reduce(query.variants, %{}, fn item, prices ->
+            Map.put(prices, item.title, item.base_price)
+          end)
+
         base_price =
           item
           |> Decimal.mult(desired_amount)
+          |> is_express(modifiers, details["is_express"])
+          |> is_incognito(modifiers, details["is_incognito"])
+          |> is_unrestricted(modifiers, details["is_unrestricted"])
           |> Decimal.mult(100)
+          |> Decimal.round()
           |> Decimal.to_integer()
 
         put_change(changeset, :price, base_price)
@@ -148,6 +188,21 @@ defmodule LolHero.Order do
         category <> " | " <> Integer.to_string(item) <> " " <> collection <> " - " <> start_rank
     end
   end
+
+  defp is_express(price, %{"express" => express_price}, false), do: price
+
+  defp is_express(price, %{"express" => express_price}, true),
+    do: Decimal.mult(price, express_price)
+
+  defp is_incognito(price, %{"incognito" => incognito_price}, false), do: price
+
+  defp is_incognito(price, %{"incognito" => incognito_price}, true),
+    do: Decimal.mult(price, incognito_price)
+
+  defp is_unrestricted(price, %{"unrestricted" => unrestricted_price}, false), do: price
+
+  defp is_unrestricted(price, %{"unrestricted" => unrestricted_price}, true),
+    do: Decimal.mult(price, unrestricted_price)
 
   def validate_keys(changeset, field, required_keys \\ []) do
     details = get_field(changeset, field)

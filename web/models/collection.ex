@@ -25,6 +25,11 @@ defmodule LolHero.Collection do
     |> Repo.update()
   end
 
+  def delete(%Collection{} = collection) do
+    collection
+    |> Repo.delete()
+  end
+
   def find(id) do
     Collection
     |> Repo.get(id)
@@ -42,5 +47,12 @@ defmodule LolHero.Collection do
     |> cast(attrs, [:title, :description, :category_id])
     |> validate_required([:title, :description, :category_id])
     |> foreign_key_constraint(:category_id)
+  end
+
+  def modifier_query do
+    # from(
+    #   c in Collection,
+
+    # )
   end
 end

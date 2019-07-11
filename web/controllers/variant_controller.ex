@@ -53,7 +53,7 @@ defmodule LolHero.VariantController do
         conn
         |> put_status(:not_found)
         |> put_view(LolHero.ErrorView)
-        |> render("error.json", %{error: "Snippet does not exist."})
+        |> render("error.json", %{error: "Variant does not exist."})
 
       variant ->
         Variant.delete(variant)

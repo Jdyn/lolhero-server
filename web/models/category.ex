@@ -41,16 +41,28 @@ defmodule LolHero.Category do
         prices,
         category.title,
         Enum.reduce(category.collections, %{}, fn collection, prices ->
-          Map.put(
-            prices,
-            collection.id,
-            Enum.reduce(collection.variants, %{}, fn item, prices ->
-              prices
-              |> Map.put("description", collection.description)
-              |> Map.put("title", collection.title)
-              |> Map.put(item.product_id, Decimal.to_float(item.base_price))
-            end)
-          )
+          cond do
+            collection.id == 10 or collection.id == 9 or collection.id == 11 or
+                collection.id == 12 ->
+              Map.put(
+                prices,
+                collection.title,
+                Enum.reduce(collection.variants, %{}, fn item, prices ->
+                  prices
+                  |> Map.put(item.title, Decimal.to_float(item.base_price))
+                end)
+              )
+
+            true ->
+              Map.put(
+                prices,
+                collection.id,
+                Enum.reduce(collection.variants, %{}, fn item, prices ->
+                  prices
+                  |> Map.put(item.product_id, Decimal.to_float(item.base_price))
+                end)
+              )
+          end
         end)
       )
     end)
