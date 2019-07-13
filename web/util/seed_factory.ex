@@ -2,11 +2,11 @@ defmodule LolHero.SeedFactory do
   def categories() do
     categories = [
       %{
-        title: "Solo Boost",
+        title: "solo",
         description: "Our Booster will log into your account to complete the boost."
       },
       %{
-        title: "Duo Boost",
+        title: "duo",
         description: "You will play along side our booster while you are on your account."
       }
     ]
@@ -101,55 +101,3 @@ defmodule LolHero.SeedFactory do
     List.flatten(result)
   end
 end
-
-# products = [
-# 	%{
-# 		title: "Iron IV",
-# 		description: "Iron Tier - Divison 4"
-# 	},
-# 	%{
-# 		title: "Iron III",
-# 		description: "Iron Tier - Divison 3"
-# 	},
-# 	%{
-# 		title: "Iron II",
-# 		description: "Iron Tier - Divison 2"
-# 	},
-# 	%{
-# 		title: "Iron I",
-# 		description: "Iron Tier - Divison 1"
-# 	},
-# 	%{
-# 		title: "Bronze IV",
-# 		description: "Bronze Tier - Divison 4"
-# 	},
-# 	%{
-# 		title: "Bronze III",
-# 		description: "Bronze Tier - Divison 3"
-# 	},
-# 	%{
-# 		title: "Bronze II",
-# 		description: "Bronze Tier - Divison 2"
-# 	},
-# 	%{
-# 		title: "Bronze I",
-# 		description: "Silver Tier - Divison 1"
-# 	},
-# 	%{
-# 		title: "Silver IV",
-# 		description: "Silver Tier - Divison 4"
-# 	},
-# 	%{
-# 		title: "Silver III",
-# 		description: "Silver Tier - Divison 3"
-# 	},
-# 	%{
-# 		title: "Silver II",
-# 		description: "Silver Tier - Divison 2"
-# 	},
-# 	%{
-# 		title: "Silver I",
-# 		description: "Silver Tier - Divison 1"
-# 	},
-
-# ]

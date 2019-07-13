@@ -156,7 +156,7 @@ defmodule LolHero.Order do
   defp format_title(type, category, collection, start_rank, item) do
     case type do
       "ranks" ->
-        category <> " | " <> collection <> " - " <> start_rank <> " to " <> item
+        String.upcase(category) <> " | " <> collection <> " - " <> start_rank <> " to " <> item
 
       "games" ->
         category <> " | " <> Integer.to_string(item) <> " " <> collection <> " - " <> start_rank

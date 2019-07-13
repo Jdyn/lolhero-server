@@ -5,7 +5,7 @@ defmodule LolHero.MixProject do
     [
       app: :LolHero,
       version: "0.1.0",
-      elixir: "~> 1.5",
+      elixir: "~> 1.7",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
@@ -27,15 +27,15 @@ defmodule LolHero.MixProject do
 
   defp deps do
     [
-      {:phoenix, "~> 1.4.5"},
+      {:phoenix, "~> 1.4.9"},
       {:phoenix_pubsub, "~> 1.1"},
       {:phoenix_ecto, "~> 4.0"},
-      {:ecto_sql, "~> 3.0"},
-      {:postgrex, ">= 0.0.0"},
-      {:jason, "~> 1.0"},
+      {:ecto_sql, "~> 3.1.6"},
+      {:postgrex, ">= 0.14.3"},
+      {:jason, "~> 1.1.2"},
       {:plug_cowboy, "~> 2.0"},
       {:cors_plug, "~> 2.0"},
-      {:stripity_stripe, "~> 2.3.0"}
+      {:stripity_stripe, "~> 2.4.0"}
     ]
   end
 
