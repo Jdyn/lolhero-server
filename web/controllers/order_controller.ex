@@ -16,7 +16,6 @@ defmodule LolHero.OrderController do
     |> Order.create()
     |> case do
       {:ok, order} ->
-        IO.inspect(order)
         %{tracking_id: tracking_id, title: title, price: price} = order
 
         payload = %{
@@ -30,7 +29,7 @@ defmodule LolHero.OrderController do
               quantity: 1
             }
           ],
-          success_url: "http://localhost:3000/success",
+          success_url: "http://localhost:3000/success/#{tracking_id}",
           cancel_url: "http://localhost:3000/boost"
         }
 

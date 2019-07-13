@@ -72,22 +72,8 @@ defmodule LolHero.Order do
 
       %{"desired_rank" => desired_rank, "start_rank" => start_rank} = details ->
         items = Repo.all(Variant.boost_price_query(id, start_rank, desired_rank))
-
-        query =
-          Repo.one(
-            from(
-              cc in Collection,
-              left_join: c in assoc(cc, :category),
-              where: c.title == ^details["boost_type"] and cc.title == "modifiers",
-              preload: [:variants],
-              select: cc
-            )
-          )
-
-        modifiers =
-          Enum.reduce(query.variants, %{}, fn item, prices ->
-            Map.put(prices, item.title, item.base_price)
-          end)
+        modifiers = Variant.find_by_assoc_titles(details["boost_type"], "modifiers")
+        start_rank_price = Enum.at(items, 0)
 
         base_price =
           items
@@ -95,6 +81,7 @@ defmodule LolHero.Order do
           |> is_express(modifiers, details["is_express"])
           |> is_incognito(modifiers, details["is_incognito"])
           |> is_unrestricted(modifiers, details["is_unrestricted"])
+          |> calculateLP(details, start_rank_price)
           |> Decimal.mult(100)
           |> Decimal.round()
           |> Decimal.to_integer()
@@ -102,6 +89,9 @@ defmodule LolHero.Order do
         put_change(changeset, :price, base_price)
 
       %{"start_rank" => start_rank, "desired_amount" => desired_amount} = details ->
+        modifiers = Variant.find_by_assoc_titles(details["boost_type"], "modifiers")
+        lp = Variant.find_by_assoc_titles(details["boost_type"], "lp")
+
         item =
           Repo.one(
             from(v in Variant,
@@ -109,22 +99,6 @@ defmodule LolHero.Order do
               select: v.base_price
             )
           )
-
-          query =
-          Repo.one(
-            from(
-              cc in Collection,
-              left_join: c in assoc(cc, :category),
-              where: c.title == ^details["boost_type"] and cc.title == "modifiers",
-              preload: [:variants],
-              select: cc
-            )
-          )
-
-        modifiers =
-          Enum.reduce(query.variants, %{}, fn item, prices ->
-            Map.put(prices, item.title, item.base_price)
-          end)
 
         base_price =
           item
@@ -203,6 +177,25 @@ defmodule LolHero.Order do
 
   defp is_unrestricted(price, %{"unrestricted" => unrestricted_price}, true),
     do: Decimal.mult(price, unrestricted_price)
+
+  defp calculateLP(price, %{"lp" => lp} = details, start_rank_price) do
+    lp_prices = Variant.find_by_assoc_titles(details["boost_type"], "lp")
+    lp_string = Integer.to_string(lp)
+    %{^lp_string => lp_price} = lp_prices
+
+    Decimal.sub(
+      price,
+      Decimal.div(
+        Decimal.round(
+          Decimal.mult(
+            Decimal.sub(start_rank_price, Decimal.mult(start_rank_price, lp_price)),
+            100
+          )
+        ),
+        100
+      )
+    )
+  end
 
   def validate_keys(changeset, field, required_keys \\ []) do
     details = get_field(changeset, field)

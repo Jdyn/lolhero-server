@@ -43,7 +43,7 @@ defmodule LolHero.Category do
         Enum.reduce(category.collections, %{}, fn collection, prices ->
           cond do
             collection.id == 10 or collection.id == 9 or collection.id == 11 or
-                collection.id == 12 ->
+                collection.id == 12 or collection.id == 13 ->
               Map.put(
                 prices,
                 collection.title,

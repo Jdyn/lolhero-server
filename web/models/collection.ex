@@ -30,6 +30,19 @@ defmodule LolHero.Collection do
     |> Repo.delete()
   end
 
+  def find_by_title(category_title, collection_title) do
+    query =
+      from(
+        cc in Collection,
+        left_join: c in assoc(cc, :category),
+        where: c.title == ^category_title and cc.title == ^collection_title,
+        preload: [:variants],
+        select: cc.variants
+      )
+
+    Repo.one(query)
+  end
+
   def find(id) do
     Collection
     |> Repo.get(id)
