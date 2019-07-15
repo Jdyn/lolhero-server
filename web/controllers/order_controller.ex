@@ -29,8 +29,8 @@ defmodule LolHero.OrderController do
               quantity: 1
             }
           ],
-          success_url: "http://localhost:3000/success/#{tracking_id}",
-          cancel_url: "http://localhost:3000/boost"
+          success_url: "http://localhost:3000/order/success/#{tracking_id}",
+          cancel_url: "http://localhost:3000/order/boost"
         }
 
         case Stripe.Session.create(payload) do
