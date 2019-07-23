@@ -47,17 +47,10 @@ defmodule LolHero.Order do
   end
 
   def boost_changeset(changeset) do
+    keys = ~w(lp start_rank collection_id queue server is_express is_unrestricted is_incognito)
+
     changeset
-    |> validate_keys(:details, [
-      "lp",
-      "start_rank",
-      "collection_id",
-      "queue",
-      "server",
-      "is_express",
-      "is_unrestricted",
-      "is_incognito"
-    ])
+    |> validate_keys(:details, keys)
     |> put_price()
     |> put_title()
   end
@@ -81,7 +74,8 @@ defmodule LolHero.Order do
           |> is_express(modifiers, details["is_express"])
           |> is_incognito(modifiers, details["is_incognito"])
           |> is_unrestricted(modifiers, details["is_unrestricted"])
-          |> calculateLP(details, start_rank_price)
+          |> calculateQueueType(details)
+          |> calculateLP(start_rank_price, details)
           |> Decimal.mult(100)
           |> Decimal.round()
           |> Decimal.to_integer()
@@ -178,9 +172,10 @@ defmodule LolHero.Order do
   defp is_unrestricted(price, %{"unrestricted" => unrestricted_price}, true),
     do: Decimal.mult(price, unrestricted_price)
 
-  defp calculateLP(price, %{"lp" => lp} = details, start_rank_price) do
-    lp_prices = Variant.find_by_assoc_titles(details["boost_type"], "lp")
+  defp calculateLP(price, start_rank_price, %{"lp" => lp, "boost_type" => boost_type}) do
+    lp_prices = Variant.find_by_assoc_titles(boost_type, "lp")
     lp_string = Integer.to_string(lp)
+
     %{^lp_string => lp_price} = lp_prices
 
     Decimal.sub(
@@ -196,6 +191,21 @@ defmodule LolHero.Order do
       )
     )
   end
+
+  defp calculateLP(price, start_rank_price, details), do: price
+
+  defp calculateQueueType(price, %{"queue" => queue, "boost_type" => boost_type}) do
+    queue_prices = Variant.find_by_assoc_titles(boost_type, "queues")
+
+    case Map.has_key?(queue_prices, queue) do
+      true ->
+        Decimal.mult(price, queue_prices[queue])
+      false ->
+        price
+    end
+  end
+
+  defp calculateQueueType(price, details), do: price
 
   def validate_keys(changeset, field, required_keys \\ []) do
     details = get_field(changeset, field)
