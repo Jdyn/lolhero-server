@@ -15,10 +15,10 @@ defmodule LolHero.VariantController do
     params
     |> Variant.create()
     |> case do
-      {:ok, _variant} ->
+      {:ok, variant} ->
         conn
         |> put_status(:created)
-        |> render("ok.json")
+        |> render("show.json", variant: variant)
 
       {:error, changeset} ->
         conn

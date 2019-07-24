@@ -1,0 +1,43 @@
+defmodule LolHero.SessionController do
+  use LolHero.Web, :controller
+
+  alias LolHero.Services.Sessions
+  alias LolHero.Guardian
+
+  def index(conn, _params) do
+    case Sessions.refresh(Guardian.Plug.current_token(conn)) do
+      {:ok, token} ->
+        conn
+        |> put_status(:ok)
+        |> render("show.json", token: token)
+
+      {:error, reason} ->
+        conn
+        |> put_status(:unauthorized)
+        |> put_view(ErrorView)
+        |> render("error.json", error: reason)
+    end
+  end
+
+  def create(conn, params) do
+    case Sessions.authenticate(params) do
+      {:ok, user} ->
+        conn
+        |> put_status(:ok)
+        |> render("create.json", user: user)
+
+      {:error, reason} ->
+        conn
+        |> put_status(:unauthorized)
+        |> render("error.json", %{error: reason})
+    end
+  end
+
+  def delete(conn, params) do
+    Guardian.revoke(Guardian.Plug.current_token(conn))
+
+    conn
+    |> put_status(:ok)
+    |> render("delete.json")
+  end
+end

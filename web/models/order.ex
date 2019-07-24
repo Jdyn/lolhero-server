@@ -13,6 +13,8 @@ defmodule LolHero.Order do
     field(:paid, :boolean, default: false)
     field(:details, :map)
 
+    belongs_to(:user, User)
+
     timestamps()
   end
 
@@ -46,7 +48,7 @@ defmodule LolHero.Order do
     |> validate_required([:type, :details, :tracking_id, :status])
     |> validate_inclusion(:type, ["boost"])
     |> validate_inclusion(:status, ["not_started", "incomplete", "in_progress", "completed"])
-
+    |> foreign_key_constraint(:user_id)
     # |> foreign_key_constraint(:collection_id)
   end
 

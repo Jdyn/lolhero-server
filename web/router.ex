@@ -3,6 +3,12 @@ defmodule LolHero.Router do
 
   pipeline :api do
     plug(:accepts, ["json"])
+    plug(LolHero.Auth.Pipeline)
+  end
+
+  pipeline :ensure_auth do
+    plug(Guardian.Plug.LoadResource, allow_blank: false)
+    plug(Guardian.Plug.EnsureAuthenticated)
   end
 
   scope "/api/v1", LolHero do
@@ -12,15 +18,14 @@ defmodule LolHero.Router do
     resources("/products", ProductController, except: [:edit, :new])
     resources("/collections", CollectionController, except: [:edit, :new])
     resources("/categories", CategoryController, except: [:edit, :new])
-
-    # post("/checkout", OrderController, :create)
-
     resources("/orders", OrderController, except: [:edit, :new])
 
-    get("/prices", CategoryController, :prices)
+    resources("/users", UserController, except: [:edit, :new])
 
-    # post("/order", OrderController, :create)
-    # get("/orders", OrderController, :index)
-    # get("/orders/:tracking_id", OrderController, :show)
+    resources("/session", SessionController, only: [:create, :delete], singleton: true) do
+      resources("/refresh", SessionController, only: [:index])
+    end
+
+    get("/prices", CategoryController, :prices)
   end
 end

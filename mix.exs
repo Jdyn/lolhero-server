@@ -35,6 +35,9 @@ defmodule LolHero.MixProject do
       {:jason, "~> 1.1.2"},
       {:plug_cowboy, "~> 2.0"},
       {:cors_plug, "~> 2.0"},
+      {:comeonin, "~> 4.1"},
+      {:bcrypt_elixir, "~> 1.1.1"},
+      {:guardian, "~> 1.2.1"},
       {:stripity_stripe, "~> 2.4.0"}
     ]
   end
