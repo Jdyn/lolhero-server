@@ -36,6 +36,10 @@ defmodule LolHero.Order do
     |> Repo.all()
   end
 
+  def find_by(param) do
+    Repo.get_by(Order, param)
+  end
+
   def changeset(order, attrs) do
     order
     |> cast(attrs, [:type, :details, :tracking_id, :status, :paid, :price, :note])
@@ -200,6 +204,7 @@ defmodule LolHero.Order do
     case Map.has_key?(queue_prices, queue) do
       true ->
         Decimal.mult(price, queue_prices[queue])
+
       false ->
         price
     end

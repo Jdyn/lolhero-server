@@ -4,8 +4,19 @@ defmodule LolHero.OrderController do
 
   alias LolHero.Order
 
-  def index(conn, params) do
-    render(conn, "index.json", orders: Order.find_all())
+  def index(conn, params), do: render(conn, "index.json", orders: Order.find_all())
+
+  def show(conn, params) do
+    case Order.find_by(tracking_id: params["id"]) do
+      nil ->
+        conn
+        |> put_status(:not_found)
+        |> put_view(LolHero.ErrorView)
+        |> render("error.json", error: "Order does not exist.")
+
+      order ->
+        render(conn, "show.json", order: order)
+    end
   end
 
   def create(conn, params) do

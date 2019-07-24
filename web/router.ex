@@ -13,10 +13,14 @@ defmodule LolHero.Router do
     resources("/collections", CollectionController, except: [:edit, :new])
     resources("/categories", CategoryController, except: [:edit, :new])
 
-    post("/checkout", OrderController, :create)
+    # post("/checkout", OrderController, :create)
+
+    resources("/orders", OrderController, except: [:edit, :new])
 
     get("/prices", CategoryController, :prices)
-    post("/order", OrderController, :create)
-    get("/orders", OrderController, :index)
+
+    # post("/order", OrderController, :create)
+    # get("/orders", OrderController, :index)
+    # get("/orders/:tracking_id", OrderController, :show)
   end
 end

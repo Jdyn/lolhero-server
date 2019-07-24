@@ -10,6 +10,15 @@ defmodule LolHero.OrderView do
     }
   end
 
+  def render("show.json", %{order: order}) do
+    %{
+      ok: true,
+      result: %{
+        order: render_one(order, __MODULE__, "order.json")
+      }
+    }
+  end
+
   def render("session.json", %{session: session}) do
     %{
       ok: true,
