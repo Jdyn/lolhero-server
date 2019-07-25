@@ -38,7 +38,8 @@ defmodule LolHero.User do
 
   def update_user(%User{} = user, attrs) do
     user
-    |> User.admin_changeset(attrs)
+    |> changeset(attrs)
+    |> admin_changeset(attrs)
     |> Repo.update()
   end
 
@@ -47,6 +48,7 @@ defmodule LolHero.User do
     |> cast(attrs, [:is_admin])
   end
 
+  
   def changeset(user, attrs) do
     user
     |> cast(attrs, [:email, :username, :first_name, :last_name, :age, :password])

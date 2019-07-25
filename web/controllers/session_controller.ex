@@ -1,10 +1,12 @@
 defmodule LolHero.SessionController do
   use LolHero.Web, :controller
 
+  alias LolHero.ErrorView
   alias LolHero.Services.Sessions
-  alias LolHero.Guardian
+  alias LolHero.Auth.Guardian
 
-  def index(conn, _params) do
+  def index(conn, params) do
+    IO.inspect(conn)
     case Sessions.refresh(Guardian.Plug.current_token(conn)) do
       {:ok, token} ->
         conn
@@ -15,7 +17,7 @@ defmodule LolHero.SessionController do
         conn
         |> put_status(:unauthorized)
         |> put_view(ErrorView)
-        |> render("error.json", error: reason)
+        |> render("changeset.json", error: reason)
     end
   end
 
@@ -29,6 +31,7 @@ defmodule LolHero.SessionController do
       {:error, reason} ->
         conn
         |> put_status(:unauthorized)
+        |> put_view(ErrorView)
         |> render("error.json", %{error: reason})
     end
   end

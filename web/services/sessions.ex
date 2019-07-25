@@ -13,27 +13,28 @@ defmodule LolHero.Services.Sessions do
     end
   end
 
-  def authenticate(params) do
+  def authenticate(%{"username" => username, "password" => password}) do
     error = {:error, "Username or password is incorrect."}
 
-    case User.find_by(username: params["username"]) do
+    case User.find_by(username: username) do
       nil ->
         error
-
+        
       user ->
-        case Bcrypt.check_pass(user, params["password"]) do
+        case Bcrypt.check_pass(user, password) do
           {:error, _} ->
             error
 
-					{:ok, user} ->
+          {:ok, user} ->
             {:ok, user_with_token(user)}
         end
     end
   end
 
+  def authenticate(params), do: {:error, "Username and password required."}
+
   def user_with_token(user) do
     {:ok, token, _claims} = Guardian.encode_and_sign(user)
     Map.put(user, :token, token)
-	end
-	
+  end
 end

@@ -42,8 +42,7 @@ defmodule LolHero.UserView do
       firstName: user.first_name,
       lastName: user.last_name,
       username: user.username,
-      email: user.email,
-      token: user.token
+      email: user.email
     }
   end
 end
