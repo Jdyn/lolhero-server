@@ -1,6 +1,6 @@
 defmodule LolHero.Services.Sessions do
   alias LolHero.User
-  alias Comeonin.Bcrypt
+  import Bcrypt, only: [check_pass: 2]
   alias LolHero.Auth.Guardian
 
   def refresh(token) do

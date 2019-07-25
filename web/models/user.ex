@@ -1,7 +1,7 @@
 defmodule LolHero.User do
   use LolHero.Web, :model
 
-  import Comeonin.Bcrypt, only: [add_hash: 1]
+  import Bcrypt, only: [add_hash: 1]
 
   alias LolHero.{User, Regexp, Repo, Order}
 
@@ -10,7 +10,6 @@ defmodule LolHero.User do
     field(:username, :string)
     field(:first_name, :string)
     field(:last_name, :string)
-    field(:age, :integer)
     field(:avatar, :string)
 
     field(:password_hash, :string)
@@ -51,7 +50,7 @@ defmodule LolHero.User do
   
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:email, :username, :first_name, :last_name, :age, :password])
+    |> cast(attrs, [:email, :username, :first_name, :last_name, :password])
     |> validate_required([:username, :password])
     |> validate_format(:username, Regexp.username())
     |> validate_format(:email, Regexp.email())

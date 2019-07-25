@@ -31,12 +31,11 @@ defmodule LolHero.MixProject do
       {:phoenix_pubsub, "~> 1.1"},
       {:phoenix_ecto, "~> 4.0"},
       {:ecto_sql, "~> 3.1.6"},
-      {:postgrex, ">= 0.14.3"},
+      {:postgrex, "~> 0.15.0"},
       {:jason, "~> 1.1.2"},
       {:plug_cowboy, "~> 2.0"},
       {:cors_plug, "~> 2.0"},
-      {:comeonin, "~> 4.1"},
-      {:bcrypt_elixir, "~> 1.1.1"},
+      {:bcrypt_elixir, "~> 2.0.3"},
       {:guardian, "~> 1.2.1"},
       {:stripity_stripe, "~> 2.4.0"}
     ]
