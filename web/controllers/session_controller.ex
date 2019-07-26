@@ -6,7 +6,6 @@ defmodule LolHero.SessionController do
   alias LolHero.Auth.Guardian
 
   def index(conn, params) do
-    IO.inspect(conn)
     case Sessions.refresh(Guardian.Plug.current_token(conn)) do
       {:ok, token} ->
         conn

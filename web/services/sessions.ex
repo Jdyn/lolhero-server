@@ -1,6 +1,7 @@
 defmodule LolHero.Services.Sessions do
-  alias LolHero.User
   import Bcrypt, only: [check_pass: 2]
+
+  alias LolHero.User
   alias LolHero.Auth.Guardian
 
   def refresh(token) do
@@ -19,9 +20,9 @@ defmodule LolHero.Services.Sessions do
     case User.find_by(username: username) do
       nil ->
         error
-        
+
       user ->
-        case Bcrypt.check_pass(user, password) do
+        case check_pass(user, password) do
           {:error, _} ->
             error
 
@@ -31,7 +32,7 @@ defmodule LolHero.Services.Sessions do
     end
   end
 
-  def authenticate(params), do: {:error, "Username and password required."}
+  def authenticate(params), do: {:error, "Username and password fields required."}
 
   def user_with_token(user) do
     {:ok, token, _claims} = Guardian.encode_and_sign(user)

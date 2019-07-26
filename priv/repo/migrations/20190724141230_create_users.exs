@@ -4,14 +4,12 @@ defmodule LolHero.Repo.Migrations.CreateUsers do
   def change do
     create table(:users) do
       add(:email, :string)
-      add(:username, :string)
-      add(:first_name, :string)
-      add(:last_name, :string)
-      add(:age, :integer)
       add(:avatar, :string)
-
+      add(:username, :string)
+      add(:last_name, :string)
+      add(:first_name, :string)
       add(:password_hash, :string)
-
+      add(:order_id, references(:orders))
       add(:is_admin, :boolean, default: false, null: false)
       
       timestamps()
