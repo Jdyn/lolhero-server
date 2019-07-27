@@ -19,6 +19,7 @@ defmodule LolHero.Router do
     resources("/collections", CollectionController, except: [:edit, :new])
     resources("/categories", CategoryController, except: [:edit, :new])
     resources("/orders", OrderController, except: [:edit, :new])
+    get("/token", OrderController, :create_token)
 
     resources("/users", UserController, except: [:edit, :new])
 

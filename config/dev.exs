@@ -13,10 +13,6 @@ config :stripity_stripe,
   json_library: Jason,
   api_key: "sk_test_S7bVEgUNrAE0DJcTTa2q23Ro00GXX9iBnb"
 
-config :braintree,
-environment: :sandbox,
-  
-
 # For development, we disable any cache and enable
 # debugging and code reloading.
 #
@@ -63,3 +59,5 @@ config :phoenix, :stacktrace_depth, 20
 
 # Initialize plugs at runtime for faster development compilation
 config :phoenix, :plug_init_mode, :runtime
+
+import_config "dev.secret.exs"

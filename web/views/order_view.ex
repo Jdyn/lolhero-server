@@ -10,6 +10,15 @@ defmodule LolHero.OrderView do
     }
   end
 
+  def render("token.json", %{token: token}) do
+    %{
+      ok: true,
+      result: %{
+        token: token
+      }
+    }
+  end
+
   def render("show.json", %{order: order}) do
     %{
       ok: true,

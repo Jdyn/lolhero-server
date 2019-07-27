@@ -82,9 +82,8 @@ defmodule LolHero.Order do
           |> is_unrestricted(modifiers, details["is_unrestricted"])
           |> calculateQueueType(details)
           |> calculateLP(start_rank_price, details)
-          |> Decimal.mult(100)
-          |> Decimal.round()
-          |> Decimal.to_integer()
+          |> Decimal.round(2)
+          |> Decimal.to_float()
 
         put_change(changeset, :price, base_price)
 
