@@ -28,35 +28,8 @@ defmodule LolHero.OrderController do
     |> case do
       {:ok, order} ->
         %{tracking_id: tracking_id, title: title, price: price} = order
-
-        payload = %{
-          payment_method_types: ["card"],
-          client_reference_id: tracking_id,
-          line_items: [
-            %{
-              name: title,
-              amount: price,
-              currency: "usd",
-              quantity: 1
-            }
-          ],
-          success_url: "http://localhost:3000/order/success/#{tracking_id}",
-          cancel_url: "http://localhost:3000/order/boost"
-        }
-
-        case Stripe.Session.create(payload) do
-          {:ok, session} ->
-            conn
-            |> put_status(:ok)
-            |> render("session.json", session: session)
-
-          {:error, error} ->
-            IO.inspect(error)
-
-            conn
-            |> put_status(:not_found)
-            |> render("error.json", error: error)
-        end
+        
+        
 
       {:error, changeset} ->
         conn

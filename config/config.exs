@@ -22,10 +22,6 @@ config :LolHero, LolHero.Auth.Guardian,
   ttl: {7, :days},
   secret_key: "0GgeeYRkTioaFSWvXwdKoyfux2T0KdI4iVjl/wqJdPYEBZMOuDWdluvo6PexcAIL"
 
-config :stripity_stripe,
-  json_library: Jason,
-  api_key: "sk_test_S7bVEgUNrAE0DJcTTa2q23Ro00GXX9iBnb"
-
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",

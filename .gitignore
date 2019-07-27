@@ -29,6 +29,6 @@ LolHero-*.tar
 
 .DS_Store
 
-prod.secret.exs
+*.secret.exs
 
 mix.lock
