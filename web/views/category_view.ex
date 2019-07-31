@@ -8,6 +8,13 @@ defmodule LolHero.CategoryView do
     }
   end
 
+  def render("delete.json", _) do
+    %{
+      ok: true,
+      result: %{}
+    }
+  end
+
   def render("list.json", %{categories: categories}) do
     %{
       ok: true,
@@ -29,7 +36,7 @@ defmodule LolHero.CategoryView do
   def render("base.json", %{category: category}) do
     %{
       id: category.id,
-      title: category.title,
+      title: category.title
     }
   end
 

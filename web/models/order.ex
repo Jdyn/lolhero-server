@@ -7,6 +7,7 @@ defmodule LolHero.Order do
     field(:title, :string)
     field(:price, :decimal)
     field(:type, :string)
+    field(:transaction_id, :string)
     field(:tracking_id, :string)
     field(:note, :string)
     field(:status, :string, default: "unpaid")
@@ -23,7 +24,7 @@ defmodule LolHero.Order do
       "boost" ->
         %Order{}
         |> changeset(attrs)
-        |> boost_changeset()
+        |> boost_changeset(attrs)
         |> Repo.insert()
 
       _ ->
@@ -44,21 +45,65 @@ defmodule LolHero.Order do
 
   def changeset(order, attrs) do
     order
-    |> cast(attrs, [:type, :details, :tracking_id, :status, :paid, :price, :note])
+    |> cast(attrs, [:type, :details, :tracking_id, :status, :paid, :price, :note, :transaction_id])
     |> validate_required([:type, :details, :tracking_id, :status])
-    |> validate_inclusion(:type, ["boost"])
     |> validate_inclusion(:status, ["not_started", "incomplete", "in_progress", "completed"])
     |> foreign_key_constraint(:user_id)
+
     # |> foreign_key_constraint(:collection_id)
   end
 
-  def boost_changeset(changeset) do
+  def boost_changeset(changeset, attrs) do
     keys = ~w(lp start_rank collection_id queue server is_express is_unrestricted is_incognito)
 
     changeset
+    |> validate_inclusion(:type, ["boost"])
     |> validate_keys(:details, keys)
     |> put_price()
     |> put_title()
+    |> create_transaction(attrs)
+  end
+
+  def create_transaction(changeset, attrs) do
+    price = get_field(changeset, :price)
+    title = get_field(changeset, :title)
+    tracking_id = get_field(changeset, :tracking_id)
+
+    payload = %{
+      amount: price,
+      payment_method_nonce: attrs["nonce"],
+      purchase_order_number: tracking_id,
+      tax_exempt: true,
+      line_items: [
+        %{
+          description: title,
+          unit_amount: price,
+          total_amount: price,
+          quantity: 1,
+          name: "League Of Legends Boost",
+          kind: "debit",
+          description: title
+        }
+      ]
+    }
+
+    case Braintree.Transaction.sale(payload) do
+      {:ok, transaction} ->
+        %{status: status, id: id} = transaction
+
+        put_change(changeset, :transaction_id, id)
+
+        if status == "authorized" do
+          changeset
+          |> put_change(:paid, true)
+          |> put_change(:status, "paid")
+        end
+
+      {:error, braintreeError} ->
+        %Braintree.ErrorResponse{message: message} = braintreeError
+
+        add_error(changeset, :transaction_id, message)
+    end
   end
 
   def put_price(changeset) do
@@ -105,9 +150,8 @@ defmodule LolHero.Order do
           |> is_express(modifiers, details["is_express"])
           |> is_incognito(modifiers, details["is_incognito"])
           |> is_unrestricted(modifiers, details["is_unrestricted"])
-          |> Decimal.mult(100)
-          |> Decimal.round()
-          |> Decimal.to_integer()
+          |> Decimal.round(2)
+          |> Decimal.to_float()
 
         put_change(changeset, :price, base_price)
 

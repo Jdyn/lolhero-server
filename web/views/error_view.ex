@@ -12,7 +12,7 @@ defmodule LolHero.ErrorView do
     %{
       ok: false,
       errors: errors,
-      results: %{}
+      result: %{}
     }
   end
 

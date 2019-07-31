@@ -9,7 +9,6 @@ defmodule LolHero.Repo.Migrations.CreateUsers do
       add(:last_name, :string)
       add(:first_name, :string)
       add(:password_hash, :string)
-      add(:order_id, references(:orders))
       add(:is_admin, :boolean, default: false, null: false)
       
       timestamps()

@@ -11,6 +11,8 @@ defmodule LolHero.Repo.Migrations.CreateOrders do
       add(:tracking_id, :string)
       add(:details, :map)
       add(:note, :text)
+      add(:transaction_id, :string)
+      add(:user_id, references(:users))
       
       timestamps()
     end

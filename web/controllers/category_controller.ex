@@ -1,7 +1,8 @@
 defmodule LolHero.CategoryController do
   use LolHero.Web, :controller
 
-  alias LolHero.{Category, Collection}
+  alias LolHero.{Category, Collection, ErrorView}
+  alias LolHero.Services.Categories
 
   def index(conn, _params) do
     render(conn, "list.json", categories: Category.find_all())
@@ -29,8 +30,7 @@ defmodule LolHero.CategoryController do
   end
 
   def update(conn, %{"id" => id} = params) do
-    id
-    |> Category.find()
+    Category.find(id)
     |> Category.update(params)
     |> case do
       {:ok, category} ->
@@ -42,6 +42,27 @@ defmodule LolHero.CategoryController do
         conn
         |> put_status(:unprocessable_entity)
         |> put_view(LolHero.ErrorView)
+        |> render("changeset_error.json", changeset: changeset)
+    end
+  end
+
+  def delete(conn, %{"id" => id}) do
+    case Categories.delete(id) do
+      {:ok, category} ->
+        conn
+        |> put_status(:ok)
+        |> render("delete.json")
+
+      {:not_found, error} ->
+        conn
+        |> put_status(:not_found)
+        |> put_view(ErrorView)
+        |> render("error.json", error: error)
+
+      {:error, changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> put_view(ErrorView)
         |> render("changeset_error.json", changeset: changeset)
     end
   end
