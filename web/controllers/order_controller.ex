@@ -33,13 +33,16 @@ defmodule LolHero.OrderController do
     |> Order.create()
     |> case do
       {:ok, order} ->
+
+        %{tracking_id: tracking_id} = order
+
+        success_url = "http://localhost:3000/order/success/#{tracking_id}/"
+
         conn
         |> put_status(:ok)
-        |> render("created.json", order: order)
+        |> render("created.json", %{order: order, success_url: success_url})
 
       {:error, changeset} ->
-
-        IO.inspect(changeset.errors)
         conn
         |> put_status(:ok)
         |> put_view(ErrorView)

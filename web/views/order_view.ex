@@ -39,10 +39,11 @@ defmodule LolHero.OrderView do
     }
   end
 
-  def render("created.json", %{order: order}) do
+  def render("created.json", %{order: order, success_url: success_url}) do
     %{
       ok: true,
       result: %{
+        success_url: success_url,
         order: render_one(order, __MODULE__, "order.json")
       }
     }
