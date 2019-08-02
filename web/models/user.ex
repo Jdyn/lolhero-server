@@ -47,11 +47,10 @@ defmodule LolHero.User do
     |> cast(attrs, [:is_admin])
   end
 
-  
   def changeset(user, attrs) do
     user
     |> cast(attrs, [:email, :username, :first_name, :last_name, :password])
-    |> validate_required([:username, :password])
+    |> validate_required([:username, :password, :email])
     |> validate_format(:username, Regexp.username())
     |> validate_format(:email, Regexp.email())
     |> update_change(:email, &String.downcase(&1))
