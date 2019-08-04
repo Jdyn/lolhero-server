@@ -16,8 +16,8 @@ defmodule LolHero.MixProject do
 
   def application do
     [
-      mod: {LolHero, [:braintree]},
-      extra_applications: [:logger, :runtime_tools, :braintree]
+      mod: {LolHero, []},
+      extra_applications: [:logger, :runtime_tools, :braintree, :bamboo]
     ]
   end
 
@@ -38,7 +38,7 @@ defmodule LolHero.MixProject do
       {:bcrypt_elixir, "~> 2.0.3"},
       {:guardian, "~> 1.2.1"},
       {:braintree, "~> 0.10.0"},
-      {:stripity_stripe, "~> 2.4.0"}
+      {:bamboo, "~> 1.3"}
     ]
   end
 
