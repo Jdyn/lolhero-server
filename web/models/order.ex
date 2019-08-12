@@ -10,6 +10,8 @@ defmodule LolHero.Order do
     field(:transaction_id, :string)
     field(:tracking_id, :string)
     field(:note, :string)
+    field(:is_active, :boolean, default: false)
+    field(:is_complete, :boolean, default: false)
     field(:status, :string, default: "unpaid")
     field(:paid, :boolean, default: false)
     field(:details, :map)
@@ -45,7 +47,17 @@ defmodule LolHero.Order do
 
   def changeset(order, attrs) do
     order
-    |> cast(attrs, [:type, :details, :tracking_id, :status, :paid, :price, :note, :transaction_id])
+    |> cast(attrs, [
+      :type,
+      :details,
+      :tracking_id,
+      :status,
+      :paid,
+      :price,
+      :note,
+      :transaction_id,
+      :user_id
+    ])
     |> validate_required([:type, :details, :tracking_id, :status])
     |> validate_inclusion(:status, ["not_started", "incomplete", "in_progress", "completed"])
     |> foreign_key_constraint(:user_id)
@@ -97,6 +109,7 @@ defmodule LolHero.Order do
           changeset
           |> put_change(:paid, true)
           |> put_change(:status, "paid")
+          |> put_change(:is_active, true)
         end
 
       {:error, braintreeError} ->

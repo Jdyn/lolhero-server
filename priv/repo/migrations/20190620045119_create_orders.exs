@@ -11,9 +11,11 @@ defmodule LolHero.Repo.Migrations.CreateOrders do
       add(:tracking_id, :string)
       add(:details, :map)
       add(:note, :text)
+      add(:is_active, :boolean)
+      add(:is_complete, :boolean)
       add(:transaction_id, :string)
       add(:user_id, references(:users))
-      
+
       timestamps()
     end
   end

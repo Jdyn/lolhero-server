@@ -3,8 +3,9 @@
 alias LolHero.{
   Repo,
   Category,
-	Collection,
-	Product,
+  Collection,
+  Variant,
+  Product,
   SeedFactory
 }
 
@@ -12,6 +13,7 @@ alias LolHero.{
 #   Create Categories
 #
 categories = SeedFactory.categories()
+
 for item <- categories do
   Repo.insert!(%Category{
     title: item.title,
@@ -23,6 +25,7 @@ end
 #   Create Collections
 #
 collections = SeedFactory.collections()
+
 for item <- collections do
   Repo.insert!(%Collection{
     category_id: item.category_id,
@@ -35,6 +38,7 @@ end
 # Create Products
 #
 products = SeedFactory.products()
+
 for item <- products do
   Repo.insert!(%Product{
     title: item.title,
@@ -42,17 +46,17 @@ for item <- products do
   })
 end
 
-Repo.insert!(%Product{
-	title: "Master",
-	description: "Master Tier - Division I"
-})
+#
+# Create Variants
+#
+variants = SeedFactory.variants()
 
-Repo.insert!(%Product{
-	title: "Grandmaster",
-	description: "Grandmaster Tier - Division I"
-})
-
-Repo.insert!(%Product{
-	title: "Challenger",
-	description: "Challenger Tier - Division I"
-})
+for item <- variants do
+  Repo.insert!(%Variant{
+    product_id: item.product_id,
+    collection_id: item.collection_id,
+    title: item.title,
+    description: item.description,
+    base_price: 10
+  })
+end

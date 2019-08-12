@@ -28,12 +28,14 @@ defmodule LolHero.OrderController do
   def create(conn, params) do
     tracking_id = Ecto.UUID.generate() |> binary_part(10, 10)
 
+    user = Guardian.Plug.current_resource(conn)
+
     params
     |> Map.put("tracking_id", to_string(tracking_id))
+    |> Map.put("user_id", user.id)
     |> Order.create()
     |> case do
       {:ok, order} ->
-
         %{tracking_id: tracking_id} = order
 
         success_url = "http://localhost:3000/order/success/#{tracking_id}/"

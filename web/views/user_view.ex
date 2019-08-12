@@ -1,6 +1,6 @@
 defmodule LolHero.UserView do
   use LolHero.Web, :view
-  alias LolHero.UserView
+  alias LolHero.{UserView, OrderView}
 
   def render("index.json", %{users: users}) do
     %{
@@ -10,6 +10,15 @@ defmodule LolHero.UserView do
   end
 
   def render("create.json", %{user: user}) do
+    %{
+      ok: true,
+      result: %{
+        user: render_one(user, UserView, "user.json")
+      }
+    }
+  end
+
+  def render("show.json", %{user: user}) do
     %{
       ok: true,
       result: %{
@@ -42,7 +51,8 @@ defmodule LolHero.UserView do
       firstName: user.first_name,
       lastName: user.last_name,
       username: user.username,
-      email: user.email
+      email: user.email,
+      orders: render_many(user.orders, OrderView, "order.json", as: :order)
     }
   end
 end

@@ -35,6 +35,25 @@ defmodule LolHero.Category do
     |> Repo.preload(collections: [variants: [:product]])
   end
 
+  # def format_prices(categories) do
+  #   Enum.reduce(categories, %{}, fn category, prices ->
+  #     Map.put(
+  #       prices,
+  #       category.title,
+  #       Enum.reduce(category.collections, %{}, fn collection, prices ->
+  #         Map.put(
+  #           prices,
+  #           collection.id,
+  #           Enum.reduce(collection.variants, %{}, fn item, prices ->
+  #             prices
+  #             |> Map.put(item.title, Decimal.to_float(item.base_price))
+  #           end)
+  #         )
+  #       end)
+  #     )
+  #   end)
+  # end
+
   def format_prices(categories) do
     Enum.reduce(categories, %{}, fn category, prices ->
       Map.put(
@@ -42,8 +61,7 @@ defmodule LolHero.Category do
         category.title,
         Enum.reduce(category.collections, %{}, fn collection, prices ->
           cond do
-            collection.id == 10 or collection.id == 9 or collection.id == 11 or
-                collection.id == 12 or collection.id == 13 ->
+            Enum.member?(["modifiers", "lp", "servers", "queues"], collection.title) ->
               Map.put(
                 prices,
                 collection.title,

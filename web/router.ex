@@ -19,14 +19,20 @@ defmodule LolHero.Router do
     resources("/collections", CollectionController, except: [:edit, :new])
     resources("/categories", CategoryController, except: [:edit, :new])
     resources("/orders", OrderController, except: [:edit, :new])
-    get("/token", OrderController, :create_token)
-
     resources("/users", UserController, except: [:edit, :new])
 
-    resources("/session", SessionController, only: [:create, :delete], singleton: true) do
-      resources("/refresh", SessionController, only: [:index])
-    end
+    post("/session", SessionController, :create)
 
     get("/prices", CategoryController, :prices)
+  end
+
+  scope "/api/v1", LolHero do
+    pipe_through([:api, :ensure_auth])
+
+    resources("/session", SessionController, only: [:show, :delete], singleton: true)
+
+    resources("/account", AccountController, only: [], singleton: true) do
+      get("/orders", AccountController, :orders)
+    end
   end
 end

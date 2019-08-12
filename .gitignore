@@ -32,3 +32,5 @@ LolHero-*.tar
 *.secret.exs
 
 mix.lock
+
+.vscode

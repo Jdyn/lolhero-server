@@ -11,11 +11,11 @@ defmodule LolHero.SessionView do
     }
   end
 
-  def render("show.json", %{token: token}) do
+  def render("show.json", %{user: user}) do
     %{
       ok: true,
       result: %{
-        token: token
+        user: render_one(user, SessionView, "user.json", as: :user)
       }
     }
   end

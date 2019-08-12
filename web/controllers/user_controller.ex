@@ -3,12 +3,16 @@ defmodule LolHero.UserController do
 
   alias Comeonin.Bcrypt
 
-  alias LolHero.{User, ErrorView}
+  alias LolHero.{User, ErrorView, Repo}
   alias LolHero.Auth.Guardian
   alias LolHero.Services.Users
 
   def index(conn, _params) do
     render(conn, "index.json", users: User.find_all())
+  end
+
+  def show(conn, params) do
+    render(conn, "show.json", user: User.find_by(id: params["id"]) |> Repo.preload(:orders))
   end
 
   def create(conn, params) do

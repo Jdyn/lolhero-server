@@ -8,7 +8,6 @@ defmodule LolHero.Services.Users do
     |> Repo.insert()
     |> case do
       {:ok, user} ->
-        IO.inspect(user)
         user_with_token = Sessions.user_with_token(user)
         {:ok, user_with_token}
 

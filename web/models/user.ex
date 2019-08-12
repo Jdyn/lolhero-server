@@ -18,7 +18,7 @@ defmodule LolHero.User do
 
     field(:is_admin, :boolean, default: false)
 
-    has_many(:orders, Order, on_delete: :delete_all)
+    has_many(:orders, Order)
 
     timestamps()
   end

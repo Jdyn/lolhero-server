@@ -18,6 +18,7 @@ defmodule LolHero.Variant do
     %Variant{}
     |> changeset(attrs)
     |> Repo.insert()
+    |> Repo.preload(:product)
   end
 
   def update(%Variant{} = variant, attrs) do

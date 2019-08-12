@@ -5,16 +5,16 @@ defmodule LolHero.SessionController do
   alias LolHero.Services.Sessions
   alias LolHero.Auth.Guardian
 
-  def index(conn, params) do
+  def show(conn, params) do
     case Sessions.refresh(Guardian.Plug.current_token(conn)) do
-      {:ok, token} ->
+      {:ok, user} ->
         conn
         |> put_status(:ok)
-        |> render("show.json", token: token)
+        |> render("show.json", user: user)
 
       {:error, reason} ->
         conn
-        |> put_status(:unauthorized)
+        |> put_status(:ok)
         |> put_view(ErrorView)
         |> render("changeset.json", error: reason)
     end
