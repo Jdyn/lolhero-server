@@ -6,12 +6,17 @@ defmodule LolHero.AccountView do
     %{
       ok: true,
       result: %{
-        total_count: orders.total_count,
+        total: %{
+          title: "Total Orders",
+          count: orders.total_count
+        },
         active: %{
+          title: "Active Orders",
           count: orders.active.count,
           orders: render_many(orders.active.orders, OrderView, "order.json", as: :order)
         },
-        complete: %{
+        completed: %{
+          title: "Completed Orders",
           count: orders.complete.count,
           orders: render_many(orders.complete.orders, OrderView, "order.json", as: :order)
         }
