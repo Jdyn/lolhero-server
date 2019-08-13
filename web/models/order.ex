@@ -12,7 +12,7 @@ defmodule LolHero.Order do
     field(:note, :string)
     field(:is_active, :boolean, default: false)
     field(:is_complete, :boolean, default: false)
-    field(:status, :string, default: "unpaid")
+    field(:status, :string, default: "open")
     field(:paid, :boolean, default: false)
     field(:details, :map)
 
@@ -59,7 +59,7 @@ defmodule LolHero.Order do
       :user_id
     ])
     |> validate_required([:type, :details, :tracking_id, :status])
-    |> validate_inclusion(:status, ["not_started", "incomplete", "in_progress", "completed"])
+    |> validate_inclusion(:status, ["open", "incomplete", "in progress", "completed"])
     |> foreign_key_constraint(:user_id)
 
     # |> foreign_key_constraint(:collection_id)
@@ -108,7 +108,7 @@ defmodule LolHero.Order do
         if status == "authorized" do
           changeset
           |> put_change(:paid, true)
-          |> put_change(:status, "paid")
+          # |> put_change(:status, "open")
           |> put_change(:is_active, true)
         end
 

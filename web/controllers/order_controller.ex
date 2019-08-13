@@ -38,7 +38,7 @@ defmodule LolHero.OrderController do
       {:ok, order} ->
         %{tracking_id: tracking_id} = order
 
-        success_url = "http://localhost:3000/order/success/#{tracking_id}/"
+        success_url = "/order/success/#{tracking_id}/"
 
         conn
         |> put_status(:ok)

@@ -51,13 +51,10 @@ defmodule LolHero.OrderView do
 
   def render("order.json", %{order: order}) do
     %{
-      id: order.id,
       title: order.title,
       type: order.type,
       status: order.status,
-      paid: order.paid,
       price: order.price,
-      transaction_id: order.transaction_id,
       tracking_id: order.tracking_id,
       details: order.details,
       note: order.note
