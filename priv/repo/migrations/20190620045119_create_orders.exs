@@ -10,6 +10,7 @@ defmodule LolHero.Repo.Migrations.CreateOrders do
       add(:paid, :boolean)
       add(:tracking_id, :string)
       add(:details, :map)
+      add(:email, :string)
       add(:note, :text)
       add(:is_active, :boolean)
       add(:is_complete, :boolean)

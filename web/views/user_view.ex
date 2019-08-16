@@ -52,7 +52,7 @@ defmodule LolHero.UserView do
       lastName: user.last_name,
       username: user.username,
       email: user.email,
-      orders: render_many(user.orders, OrderView, "order.json", as: :order)
+      # orders: render_many(user.orders, OrderView, "order.json", as: :order)
     }
   end
 end

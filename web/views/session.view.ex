@@ -29,7 +29,6 @@ defmodule LolHero.SessionView do
 
   def render("user.json", %{user: user}) do
     %{
-      id: user.id,
       username: user.username,
       email: user.email,
       token: user.token

@@ -28,27 +28,49 @@ defmodule LolHero.OrderController do
   def create(conn, params) do
     tracking_id = Ecto.UUID.generate() |> binary_part(10, 10)
 
-    user = Guardian.Plug.current_resource(conn)
+    case user = Guardian.Plug.current_resource(conn) do
+      nil ->
+        params
+        |> Map.put("tracking_id", to_string(tracking_id))
+        |> Order.create()
+        |> case do
+          {:ok, order} ->
+            %{tracking_id: tracking_id} = order
 
-    params
-    |> Map.put("tracking_id", to_string(tracking_id))
-    |> Map.put("user_id", user.id)
-    |> Order.create()
-    |> case do
-      {:ok, order} ->
-        %{tracking_id: tracking_id} = order
+            success_url = "/order/success/#{tracking_id}/"
 
-        success_url = "/order/success/#{tracking_id}/"
+            conn
+            |> put_status(:ok)
+            |> render("created.json", %{order: order, success_url: success_url})
 
-        conn
-        |> put_status(:ok)
-        |> render("created.json", %{order: order, success_url: success_url})
+          {:error, changeset} ->
+            conn
+            |> put_status(:ok)
+            |> put_view(ErrorView)
+            |> render("changeset_error.json", changeset: changeset)
+        end
 
-      {:error, changeset} ->
-        conn
-        |> put_status(:ok)
-        |> put_view(ErrorView)
-        |> render("changeset_error.json", changeset: changeset)
+      user ->
+        params
+        |> Map.put("tracking_id", to_string(tracking_id))
+        |> Map.put("user_id", user.id)
+        |> Order.create()
+        |> case do
+          {:ok, order} ->
+            %{tracking_id: tracking_id} = order
+
+            success_url = "/order/success/#{tracking_id}/"
+
+            conn
+            |> put_status(:ok)
+            |> render("created.json", %{order: order, success_url: success_url})
+
+          {:error, changeset} ->
+            conn
+            |> put_status(:ok)
+            |> put_view(ErrorView)
+            |> render("changeset_error.json", changeset: changeset)
+        end
     end
   end
 end

@@ -7,6 +7,7 @@ defmodule LolHero.Order do
     field(:title, :string)
     field(:price, :decimal)
     field(:type, :string)
+    field(:email, :string)
     field(:transaction_id, :string)
     field(:tracking_id, :string)
     field(:note, :string)
@@ -55,10 +56,11 @@ defmodule LolHero.Order do
       :paid,
       :price,
       :note,
-      :transaction_id,
+      :email,
       :user_id
     ])
     |> validate_required([:type, :details, :tracking_id, :status])
+    |> validate_required([:email], message: "Please enter your email or log in on the details section.")
     |> validate_inclusion(:status, ["open", "incomplete", "in progress", "completed"])
     |> foreign_key_constraint(:user_id)
 
@@ -66,7 +68,7 @@ defmodule LolHero.Order do
   end
 
   def boost_changeset(changeset, attrs) do
-    keys = ~w(lp start_rank collection_id queue server is_express is_unrestricted is_incognito)
+    keys = ~w(lp startRank collectionId queue server isExpress isUnrestricted isIncognito)
 
     changeset
     |> validate_inclusion(:type, ["boost"])
@@ -103,10 +105,9 @@ defmodule LolHero.Order do
       {:ok, transaction} ->
         %{status: status, id: id} = transaction
 
-        put_change(changeset, :transaction_id, id)
-
         if status == "authorized" do
           changeset
+          |> put_change(:transaction_id, id)
           |> put_change(:paid, true)
           # |> put_change(:status, "open")
           |> put_change(:is_active, true)
@@ -121,23 +122,23 @@ defmodule LolHero.Order do
 
   def put_price(changeset) do
     details = get_field(changeset, :details)
-    %{"collection_id" => id} = details
+    %{"collectionId" => id} = details
 
     case details do
-      %{"desired_rank" => desired_rank, "desired_amount" => desired_amount} = details ->
+      %{"desiredRank" => desired_rank, "desiredAmount" => desired_amount} = details ->
         add_error(changeset, :details, "cannot contain desired_rank and desired_amount")
 
-      %{"desired_rank" => desired_rank, "start_rank" => start_rank} = details ->
+      %{"desiredRank" => desired_rank, "startRank" => start_rank} = details ->
         items = Repo.all(Variant.boost_price_query(id, start_rank, desired_rank))
-        modifiers = Variant.find_by_assoc_titles(details["boost_type"], "modifiers")
+        modifiers = Variant.find_by_assoc_titles(details["boostType"], "modifiers")
         start_rank_price = Enum.at(items, 0)
 
         base_price =
           items
           |> Enum.reduce(0, fn item, acc -> Decimal.add(acc, item) end)
-          |> is_express(modifiers, details["is_express"])
-          |> is_incognito(modifiers, details["is_incognito"])
-          |> is_unrestricted(modifiers, details["is_unrestricted"])
+          |> is_express(modifiers, details["isExpress"])
+          |> is_incognito(modifiers, details["isIncognito"])
+          |> is_unrestricted(modifiers, details["isUnrestricted"])
           |> calculateQueueType(details)
           |> calculateLP(start_rank_price, details)
           |> Decimal.round(2)
@@ -145,9 +146,9 @@ defmodule LolHero.Order do
 
         put_change(changeset, :price, base_price)
 
-      %{"start_rank" => start_rank, "desired_amount" => desired_amount} = details ->
-        modifiers = Variant.find_by_assoc_titles(details["boost_type"], "modifiers")
-        lp = Variant.find_by_assoc_titles(details["boost_type"], "lp")
+      %{"start_rank" => start_rank, "desiredAmount" => desired_amount} = details ->
+        modifiers = Variant.find_by_assoc_titles(details["boostType"], "modifiers")
+        lp = Variant.find_by_assoc_titles(details["boostType"], "lp")
 
         item =
           Repo.one(
@@ -160,9 +161,9 @@ defmodule LolHero.Order do
         base_price =
           item
           |> Decimal.mult(desired_amount)
-          |> is_express(modifiers, details["is_express"])
-          |> is_incognito(modifiers, details["is_incognito"])
-          |> is_unrestricted(modifiers, details["is_unrestricted"])
+          |> is_express(modifiers, details["isExpress"])
+          |> is_incognito(modifiers, details["isIncognito"])
+          |> is_unrestricted(modifiers, details["isUnrestricted"])
           |> Decimal.round(2)
           |> Decimal.to_float()
 
@@ -176,9 +177,9 @@ defmodule LolHero.Order do
   def put_title(changeset) do
     details = get_field(changeset, :details)
 
-    case Repo.one(Category.title_query(details["collection_id"])) do
+    case Repo.one(Category.title_query(details["collectionId"])) do
       [category, collection] ->
-        case Repo.all(Product.ranks_query(details["start_rank"], details["desired_rank"])) do
+        case Repo.all(Product.ranks_query(details["startRank"], details["desiredRank"])) do
           [start, finish] ->
             title =
               format_title(
@@ -198,14 +199,14 @@ defmodule LolHero.Order do
                 category,
                 collection,
                 start,
-                details["desired_amount"]
+                details["desiredAmount"]
               )
 
             put_change(changeset, :title, title)
         end
 
       _ ->
-        add_error(changeset, :collection_id, "invalid collection_id")
+        add_error(changeset, :collection_id, "invalid collectionId")
     end
   end
 
@@ -234,7 +235,7 @@ defmodule LolHero.Order do
   defp is_unrestricted(price, %{"unrestricted" => unrestricted_price}, true),
     do: Decimal.mult(price, unrestricted_price)
 
-  defp calculateLP(price, start_rank_price, %{"lp" => lp, "boost_type" => boost_type}) do
+  defp calculateLP(price, start_rank_price, %{"lp" => lp, "boostType" => boost_type}) do
     lp_prices = Variant.find_by_assoc_titles(boost_type, "lp")
     lp_string = Integer.to_string(lp)
 
@@ -256,7 +257,7 @@ defmodule LolHero.Order do
 
   defp calculateLP(price, start_rank_price, details), do: price
 
-  defp calculateQueueType(price, %{"queue" => queue, "boost_type" => boost_type}) do
+  defp calculateQueueType(price, %{"queue" => queue, "boostType" => boost_type}) do
     queue_prices = Variant.find_by_assoc_titles(boost_type, "queues")
 
     case Map.has_key?(queue_prices, queue) do
