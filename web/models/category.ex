@@ -61,7 +61,7 @@ defmodule LolHero.Category do
         category.title,
         Enum.reduce(category.collections, %{}, fn collection, prices ->
           cond do
-            Enum.member?(["modifiers", "lp", "servers", "queues"], collection.title) ->
+            Enum.member?(["modifiers", "lp", "servers", "queues", "promotions"], collection.title) ->
               Map.put(
                 prices,
                 collection.title,

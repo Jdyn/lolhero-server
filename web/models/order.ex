@@ -60,7 +60,9 @@ defmodule LolHero.Order do
       :user_id
     ])
     |> validate_required([:type, :details, :tracking_id, :status])
-    |> validate_required([:email], message: "Please enter your email or log in on the details section.")
+    |> validate_required([:email],
+      message: "Please enter your email or log in on the details section."
+    )
     |> validate_inclusion(:status, ["open", "incomplete", "in progress", "completed"])
     |> foreign_key_constraint(:user_id)
 
@@ -235,24 +237,28 @@ defmodule LolHero.Order do
   defp is_unrestricted(price, %{"unrestricted" => unrestricted_price}, true),
     do: Decimal.mult(price, unrestricted_price)
 
-  defp calculateLP(price, start_rank_price, %{"lp" => lp, "boostType" => boost_type}) do
+  defp calculateLP(price, start_rank_price, %{"lp" => lp, "boostType" => boost_type} = details) do
     lp_prices = Variant.find_by_assoc_titles(boost_type, "lp")
     lp_string = Integer.to_string(lp)
 
     %{^lp_string => lp_price} = lp_prices
 
-    Decimal.sub(
-      price,
-      Decimal.div(
-        Decimal.round(
-          Decimal.mult(
-            Decimal.sub(start_rank_price, Decimal.mult(start_rank_price, lp_price)),
-            100
-          )
-        ),
-        100
+    if lp == 100 do
+      calculatePromos(price, details, start_rank_price)
+    else
+      Decimal.sub(
+        price,
+        Decimal.div(
+          Decimal.round(
+            Decimal.mult(
+              Decimal.sub(start_rank_price, Decimal.mult(start_rank_price, lp_price)),
+              100
+            )
+          ),
+          100
+        )
       )
-    )
+    end
   end
 
   defp calculateLP(price, start_rank_price, details), do: price
@@ -270,6 +276,44 @@ defmodule LolHero.Order do
   end
 
   defp calculateQueueType(price, details), do: price
+
+  defp calculatePromos(
+         price,
+         %{"promos" => promos, "boostType" => boost_type} = details,
+         start_rank_price
+       ) do
+    promo_prices = Variant.find_by_assoc_titles(boost_type, "promotions")
+
+    total =
+      Enum.reduce(promos, 0, fn promo, acc ->
+        cond do
+          promo == "X" ->
+            acc + 0
+
+          promo == "W" ->
+            acc + 1
+
+          promo == "L" ->
+            acc - 1
+        end
+      end)
+
+    promo_string = Integer.to_string(total)
+    %{^promo_string => promo_price} = promo_prices
+
+    Decimal.sub(
+      price,
+      Decimal.div(
+        Decimal.round(
+          Decimal.mult(
+            Decimal.sub(start_rank_price, Decimal.mult(start_rank_price, promo_price)),
+            100
+          )
+        ),
+        100
+      )
+    )
+  end
 
   def validate_keys(changeset, field, required_keys \\ []) do
     details = get_field(changeset, field)
