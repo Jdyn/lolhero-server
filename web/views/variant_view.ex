@@ -33,7 +33,8 @@ defmodule LolHero.VariantView do
       id: variant.id,
       title: variant.title,
       base_price: variant.base_price,
-      product_id: variant.product.id
+      product_id: variant.product.id,
+      collection_id: variant.collection_id
     }
   end
 
