@@ -18,11 +18,12 @@ defmodule LolHero.Router do
     resources("/products", ProductController, except: [:edit, :new])
     resources("/collections", CollectionController, except: [:edit, :new])
     resources("/categories", CategoryController, except: [:edit, :new])
-    resources("/orders", OrderController, except: [:edit, :new])
     resources("/users", UserController, except: [:edit, :new])
+    resources("/orders", OrderController, except: [:edit, :new])
+    post("/orders/:tracking_id", OrderController, :track)
+
 
     post("/session", SessionController, :create)
-
     get("/prices", CategoryController, :prices)
   end
 
@@ -33,6 +34,7 @@ defmodule LolHero.Router do
 
     resources("/account", AccountController, only: [], singleton: true) do
       get("/orders", AccountController, :orders)
+      get("/order/:tracking_id", AccountController, :show_order)
     end
   end
 end

@@ -22,6 +22,10 @@ config :LolHero, LolHero.Auth.Guardian,
   ttl: {7, :days},
   secret_key: "0GgeeYRkTioaFSWvXwdKoyfux2T0KdI4iVjl/wqJdPYEBZMOuDWdluvo6PexcAIL"
 
+  config :nanoid,
+  size: 5,
+  alphabet: "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",

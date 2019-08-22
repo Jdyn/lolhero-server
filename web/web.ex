@@ -35,6 +35,16 @@ defmodule LolHero.Web do
     end
   end
 
+  def service do
+    quote do
+      use Ecto.Schema
+
+      import Ecto
+      import Ecto.Changeset
+      import Ecto.Query, only: [from: 1, from: 2]
+      import Ecto.Multi    end
+  end
+
   def router do
     quote do
       use Phoenix.Router

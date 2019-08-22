@@ -166,6 +166,7 @@ defmodule LolHero.Order do
           |> is_express(modifiers, details["isExpress"])
           |> is_incognito(modifiers, details["isIncognito"])
           |> is_unrestricted(modifiers, details["isUnrestricted"])
+          |> calculateQueueType(details)
           |> Decimal.round(2)
           |> Decimal.to_float()
 
@@ -188,6 +189,7 @@ defmodule LolHero.Order do
                 "ranks",
                 category,
                 collection,
+                details["queue"],
                 start,
                 finish
               )
@@ -200,6 +202,7 @@ defmodule LolHero.Order do
                 "games",
                 category,
                 collection,
+                details["queue"],
                 start,
                 details["desiredAmount"]
               )
@@ -212,10 +215,12 @@ defmodule LolHero.Order do
     end
   end
 
-  defp format_title(type, category, collection, start_rank, item) do
+  defp format_title(type, category, collection, queue, start_rank, item) do
     case type do
       "ranks" ->
-        String.upcase(category) <> " | " <> collection <> " - " <> start_rank <> " to " <> item
+        "#{String.upcase(category)} BOOST | #{String.upcase(queue)} QUEUE | #{collection} - #{
+          start_rank
+        } to #{item}"
 
       "games" ->
         category <> " | " <> Integer.to_string(item) <> " " <> collection <> " - " <> start_rank
@@ -282,37 +287,39 @@ defmodule LolHero.Order do
          %{"promos" => promos, "boostType" => boost_type} = details,
          start_rank_price
        ) do
-    promo_prices = Variant.find_by_assoc_titles(boost_type, "promotions")
+    if promos != nil do
+      promo_prices = Variant.find_by_assoc_titles(boost_type, "promotions")
 
-    total =
-      Enum.reduce(promos, 0, fn promo, acc ->
-        cond do
-          promo == "X" ->
-            acc + 0
+      total =
+        Enum.reduce(promos, 0, fn promo, acc ->
+          cond do
+            promo == "X" ->
+              acc + 0
 
-          promo == "W" ->
-            acc + 1
+            promo == "W" ->
+              acc + 1
 
-          promo == "L" ->
-            acc - 1
-        end
-      end)
+            promo == "L" ->
+              acc - 1
+          end
+        end)
 
-    promo_string = Integer.to_string(total)
-    %{^promo_string => promo_price} = promo_prices
+      promo_string = Integer.to_string(total)
+      %{^promo_string => promo_price} = promo_prices
 
-    Decimal.sub(
-      price,
-      Decimal.div(
-        Decimal.round(
-          Decimal.mult(
-            Decimal.sub(start_rank_price, Decimal.mult(start_rank_price, promo_price)),
-            100
-          )
-        ),
-        100
+      Decimal.sub(
+        price,
+        Decimal.div(
+          Decimal.round(
+            Decimal.mult(
+              Decimal.sub(start_rank_price, Decimal.mult(start_rank_price, promo_price)),
+              100
+            )
+          ),
+          100
+        )
       )
-    )
+    end
   end
 
   def validate_keys(changeset, field, required_keys \\ []) do

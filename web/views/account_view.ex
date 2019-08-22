@@ -23,4 +23,13 @@ defmodule LolHero.AccountView do
       }
     }
   end
+
+  def render("show_order.json", %{order: order}) do
+    %{
+      ok: true,
+      result: %{
+        order: render_one(order, OrderView, "full_order.json", as: :order)
+      }
+    }
+  end
 end

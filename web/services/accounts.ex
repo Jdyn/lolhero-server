@@ -32,4 +32,20 @@ defmodule LolHero.Services.Accounts do
         {:ok, orders}
     end
   end
+
+  def show_order(user_id, tracking_id) do
+    query =
+      from(order in Order,
+        where: order.user_id == ^user_id and order.tracking_id == ^tracking_id,
+        select: order
+      )
+
+    case Repo.one(query) do
+      nil ->
+        {:error, "Order does not exist."}
+
+      order ->
+        {:ok, order}
+    end
+  end
 end
