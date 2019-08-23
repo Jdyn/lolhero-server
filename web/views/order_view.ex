@@ -23,7 +23,7 @@ defmodule LolHero.OrderView do
     %{
       ok: true,
       result: %{
-        order: render_one(order, __MODULE__, "order.json")
+        order: render_one(order, __MODULE__, "full_order.json")
       }
     }
   end
