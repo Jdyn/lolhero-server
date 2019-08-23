@@ -248,21 +248,23 @@ defmodule LolHero.Order do
 
     %{^lp_string => lp_price} = lp_prices
 
-    if lp == 100 do
-      calculatePromos(price, details, start_rank_price)
-    else
-      Decimal.sub(
-        price,
-        Decimal.div(
-          Decimal.round(
-            Decimal.mult(
-              Decimal.sub(start_rank_price, Decimal.mult(start_rank_price, lp_price)),
-              100
-            )
-          ),
-          100
+    case lp do
+      100 ->
+        calculatePromos(price, details, start_rank_price)
+
+      _ ->
+        Decimal.sub(
+          price,
+          Decimal.div(
+            Decimal.round(
+              Decimal.mult(
+                Decimal.sub(start_rank_price, Decimal.mult(start_rank_price, lp_price)),
+                100
+              )
+            ),
+            100
+          )
         )
-      )
     end
   end
 

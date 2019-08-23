@@ -78,6 +78,7 @@ defmodule LolHero.Variant do
       where:
         v.collection_id == ^id and v.product_id >= ^start_rank and
           v.product_id < ^desired_rank,
+        order_by: [asc: v.id],
       select: v.base_price
     )
   end

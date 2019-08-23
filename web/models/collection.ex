@@ -55,8 +55,8 @@ defmodule LolHero.Collection do
     |> Repo.preload(variants: [:product])
   end
 
-  def changeset(post, attrs) do
-    post
+  def changeset(collection, attrs) do
+    collection
     |> cast(attrs, [:title, :description, :category_id])
     |> validate_required([:title, :description, :category_id])
     |> foreign_key_constraint(:category_id)

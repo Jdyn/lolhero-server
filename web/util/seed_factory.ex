@@ -4,11 +4,11 @@ defmodule LolHero.SeedFactory do
   def categories() do
     categories = [
       %{
-        title: "solo",
+        title: "Solo",
         description: "Our Booster will log into your account to complete the boost."
       },
       %{
-        title: "duo",
+        title: "Duo",
         description: "You will play along side our booster while you are on your account."
       }
     ]
