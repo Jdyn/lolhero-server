@@ -29,7 +29,7 @@ defmodule LolHero.SessionController do
 
       {:error, reason} ->
         conn
-        |> put_status(:ok)
+        |> put_status(:unauthorized)
         |> put_view(ErrorView)
         |> render("error.json", %{error: reason})
     end

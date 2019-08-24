@@ -11,11 +11,13 @@ defmodule LolHero.Order do
     field(:transaction_id, :string)
     field(:tracking_id, :string)
     field(:note, :string)
+    field(:is_editable, :boolean, default: false)
     field(:is_active, :boolean, default: false)
     field(:is_complete, :boolean, default: false)
     field(:status, :string, default: "open")
     field(:paid, :boolean, default: false)
     field(:details, :map)
+    field(:account_details, :map)
 
     belongs_to(:user, User)
 
@@ -69,15 +71,27 @@ defmodule LolHero.Order do
     # |> foreign_key_constraint(:collection_id)
   end
 
-  def boost_changeset(changeset, attrs) do
+  def boost_changeset(order, attrs) do
     keys = ~w(lp startRank collectionId queue server isExpress isUnrestricted isIncognito)
 
-    changeset
+    order
     |> validate_inclusion(:type, ["boost"])
     |> validate_keys(:details, keys)
     |> put_price()
     |> put_title()
     |> create_transaction(attrs)
+  end
+
+  def initiation_changeset(order, attrs) do
+    detail_keys = ~w(primaryRole secondaryRole summonerName)
+    account_keys = ~w(username password)
+
+    order
+    |> cast(attrs, [:note, :details, :account_details])
+    |> validate_required([:note, :details, :account_details])
+    |> validate_keys(:details, detail_keys)
+    |> put_change(:is_editable, false)
+    |> validate_keys(:account_details, account_keys)
   end
 
   def create_transaction(changeset, attrs) do
@@ -111,7 +125,7 @@ defmodule LolHero.Order do
           changeset
           |> put_change(:transaction_id, id)
           |> put_change(:paid, true)
-          # |> put_change(:status, "open")
+          |> put_change(:is_editable, true)
           |> put_change(:is_active, true)
         end
 
@@ -148,9 +162,8 @@ defmodule LolHero.Order do
 
         put_change(changeset, :price, base_price)
 
-      %{"start_rank" => start_rank, "desiredAmount" => desired_amount} = details ->
+      %{"startRank" => start_rank, "desiredAmount" => desired_amount} = details ->
         modifiers = Variant.find_by_assoc_titles(details["boostType"], "modifiers")
-        lp = Variant.find_by_assoc_titles(details["boostType"], "lp")
 
         item =
           Repo.one(
@@ -218,12 +231,15 @@ defmodule LolHero.Order do
   defp format_title(type, category, collection, queue, start_rank, item) do
     case type do
       "ranks" ->
-        "#{String.upcase(category)} BOOST | #{String.upcase(queue)} QUEUE | #{collection} - #{
-          start_rank
-        } to #{item}"
+        "#{collection} - #{start_rank} to #{item}"
+
+      # "#{String.upcase(category)} BOOST | #{String.upcase(queue)} QUEUE | #{collection} - #{
+      #   start_rank
+      # } to #{item}"
 
       "games" ->
-        category <> " | " <> Integer.to_string(item) <> " " <> collection <> " - " <> start_rank
+        "#{item} #{collection} - #{start_rank}"
+        # category <> " | " <> Integer.to_string(item) <> " " <> collection <> " - " <> start_rank
     end
   end
 

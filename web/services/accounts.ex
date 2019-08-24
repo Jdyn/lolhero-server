@@ -33,6 +33,37 @@ defmodule LolHero.Services.Accounts do
     end
   end
 
+  def initiate(%{"tracking_id" => tracking_id} = params, user) do
+    query =
+      from(o in Order,
+        where: o.tracking_id == ^tracking_id and o.user_id == ^user.id,
+        select: o
+      )
+
+    case Repo.one(query) do
+      nil ->
+        {:unauthorized, "Order does not exist."}
+
+      order ->
+        payload = %{
+          account_details: params["accountDetails"],
+          details: Map.merge(order.details, params["details"]),
+          note: params["note"]
+        }
+
+        order
+        |> Order.initiation_changeset(payload)
+        |> Repo.update()
+        |> case do
+          {:error, changeset} ->
+            {:error, changeset}
+
+          {:ok, order} ->
+            {:ok, order}
+        end
+    end
+  end
+
   def show_order(user_id, tracking_id) do
     query =
       from(order in Order,

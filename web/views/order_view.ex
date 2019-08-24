@@ -63,8 +63,10 @@ defmodule LolHero.OrderView do
     %{
       title: order.title,
       status: order.status,
+      note: order.note,
       trackingId: order.tracking_id,
       createdAt: order.inserted_at,
+      isEditable: order.is_editable,
       price: order.price,
       details: order.details
     }

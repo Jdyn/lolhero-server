@@ -12,10 +12,13 @@ defmodule LolHero.Repo.Migrations.CreateOrders do
       add(:details, :map)
       add(:email, :string)
       add(:note, :text)
+      add(:is_editable, :boolean)
       add(:is_active, :boolean)
       add(:is_complete, :boolean)
       add(:transaction_id, :string)
       add(:user_id, references(:users))
+
+      add(:account_details, :map)
 
       timestamps()
     end

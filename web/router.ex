@@ -21,7 +21,9 @@ defmodule LolHero.Router do
     resources("/users", UserController, except: [:edit, :new])
     resources("/orders", OrderController, except: [:edit, :new])
 
-    post("/track/:tracking_id", OrderController, :track)
+    post("/order/:tracking_id", OrderController, :track)
+    patch("/order/:tracking_id", OrderController, :initiate)
+
     post("/session", SessionController, :create)
     get("/prices", CategoryController, :prices)
   end
@@ -34,6 +36,7 @@ defmodule LolHero.Router do
     resources("/account", AccountController, only: [], singleton: true) do
       get("/orders", AccountController, :orders)
       get("/order/:tracking_id", AccountController, :show_order)
+      patch("/order/:tracking_id", AccountController, :initiate)
     end
   end
 end

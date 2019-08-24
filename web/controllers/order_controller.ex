@@ -20,6 +20,25 @@ defmodule LolHero.OrderController do
     end
   end
 
+  def initiate(conn, params) do
+    case Orders.initiate(params) do
+      {:ok, order} ->
+        render(conn, "show.json", order: order)
+
+      {:unauthorized, reason} ->
+        conn
+        |> put_status(:not_found)
+        |> put_view(LolHero.ErrorView)
+        |> render("error.json", error: reason)
+
+      {:error, changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> put_view(ErrorView)
+        |> render("changeset_error.json", changeset: changeset)
+    end
+  end
+
   def create_token(conn, params) do
     {:ok, token} = ClientToken.generate(%{version: 3})
 
@@ -40,7 +59,6 @@ defmodule LolHero.OrderController do
             |> case do
               {:ok, order} ->
                 %{tracking_id: tracking_id} = order
-
                 success_url = "/order/success/#{tracking_id}/"
 
                 conn

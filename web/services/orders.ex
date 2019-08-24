@@ -18,4 +18,29 @@ defmodule LolHero.Services.Orders do
         {:ok, order}
     end
   end
+
+  def initiate(params) do
+    case authenticate(params["tracking_id"], params["email"]) do
+      {:error, reason} ->
+        {:unauthorized, reason}
+
+      {:ok, order} ->
+        payload = %{
+          account_details: params["accountDetails"],
+          details: Map.merge(order.details, params["details"]),
+          note: params["note"]
+        }
+
+        order
+        |> Order.initiation_changeset(payload)
+        |> Repo.update()
+        |> case do
+          {:error, changeset} ->
+            {:error, changeset}
+
+          {:ok, order} ->
+            {:ok, order}
+        end
+    end
+  end
 end
