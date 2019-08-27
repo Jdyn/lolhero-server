@@ -17,6 +17,7 @@ defmodule LolHero.Repo.Migrations.CreateOrders do
       add(:is_complete, :boolean)
       add(:transaction_id, :string)
       add(:user_id, references(:users))
+      add(:booster_id, references(:users))
 
       add(:account_details, :map)
 

@@ -19,6 +19,7 @@ defmodule LolHero.Order do
     field(:details, :map)
     field(:account_details, :map)
 
+    belongs_to(:booster, User)
     belongs_to(:user, User)
 
     timestamps()
