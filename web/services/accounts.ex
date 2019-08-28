@@ -6,6 +6,7 @@ defmodule LolHero.Services.Accounts do
     query =
       from(order in Order,
         where: order.user_id == ^id,
+        order_by: [desc: order.inserted_at],
         select: order
       )
 
