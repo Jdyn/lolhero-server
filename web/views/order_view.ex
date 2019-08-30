@@ -1,11 +1,13 @@
 defmodule LolHero.OrderView do
   use LolHero.Web, :view
 
+  alias LolHero.{UserView, OrderView}
+
   def render("index.json", %{orders: orders}) do
     %{
       ok: true,
       result: %{
-        orders: render_many(orders, __MODULE__, "order.json")
+        orders: render_many(orders, OrderView, "order.json")
       }
     }
   end
@@ -23,7 +25,7 @@ defmodule LolHero.OrderView do
     %{
       ok: true,
       result: %{
-        order: render_one(order, __MODULE__, "full_order.json")
+        order: render_one(order, OrderView, "full_order.json")
       }
     }
   end
@@ -44,7 +46,7 @@ defmodule LolHero.OrderView do
       ok: true,
       result: %{
         success_url: success_url,
-        order: render_one(order, __MODULE__, "order.json")
+        order: render_one(order, OrderView, "order.json")
       }
     }
   end
@@ -68,6 +70,7 @@ defmodule LolHero.OrderView do
       createdAt: order.inserted_at,
       isEditable: order.is_editable,
       price: order.price,
+      user: render_one(order.user, UserView, "order_user.json", as: :user),
       details: order.details
     }
   end

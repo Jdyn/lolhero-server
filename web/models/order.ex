@@ -1,7 +1,7 @@
 defmodule LolHero.Order do
   use LolHero.Web, :model
 
-  alias LolHero.{Repo, Order, Collection, Category, Product, Variant}
+  alias LolHero.{Repo, Order, User, Collection, Category, Product, Variant}
 
   schema "orders" do
     field(:title, :string)
@@ -60,7 +60,8 @@ defmodule LolHero.Order do
       :price,
       :note,
       :email,
-      :user_id
+      :user_id,
+      :booster_id
     ])
     |> validate_required([:type, :details, :tracking_id, :status])
     |> validate_required([:email],

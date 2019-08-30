@@ -1,12 +1,13 @@
 defmodule LolHero.Services.Orders do
   use LolHero.Web, :service
 
-  alias LolHero.{Order, Repo}
+  alias LolHero.{Order, Repo, User}
 
   def authenticate(tracking_id, email) do
     query =
       from(o in Order,
         where: o.tracking_id == ^tracking_id and o.email == ^email,
+        preload: [:user],
         select: o
       )
 

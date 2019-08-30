@@ -9,6 +9,11 @@ config :LolHero, LolHero.Repo,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 
+  config :LolHero, LolHero.Auth.Guardian,
+  issuer: "LolHero",
+  ttl: {7, :days},
+  secret_key: "0GgeeYRkTioaFSWvXwdKoyfux2T0KdI4iVjl/wqJdPYEBZMOuDWdluvo6PexcAIL"
+
 # For development, we disable any cache and enable
 # debugging and code reloading.
 #

@@ -2,7 +2,7 @@ defmodule LolHero.OrderController do
   use LolHero.Web, :controller
   import Nanoid
   alias LolHero.Services.Orders
-  alias LolHero.{Order, ErrorView}
+  alias LolHero.{Order, ErrorView, User}
   alias Braintree.ClientToken
 
   def index(conn, params), do: render(conn, "index.json", orders: Order.find_all())
@@ -51,10 +51,11 @@ defmodule LolHero.OrderController do
 
     case Order.find_by(tracking_id: tracking_id) do
       nil ->
-        case user = Guardian.Plug.current_resource(conn) do
+        case Guardian.Plug.current_resource(conn) do
           nil ->
             params
             |> Map.put("tracking_id", to_string(tracking_id))
+            # |> Map.put("user_id", nil)
             |> Order.create()
             |> case do
               {:ok, order} ->

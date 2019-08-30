@@ -17,11 +17,6 @@ config :LolHero, LolHero.Endpoint,
   render_errors: [view: LolHero.ErrorView, accepts: ~w(json)],
   pubsub: [name: LolHero.PubSub, adapter: Phoenix.PubSub.PG2]
 
-config :LolHero, LolHero.Auth.Guardian,
-  issuer: "LolHero",
-  ttl: {7, :days},
-  secret_key: "0GgeeYRkTioaFSWvXwdKoyfux2T0KdI4iVjl/wqJdPYEBZMOuDWdluvo6PexcAIL"
-
   config :nanoid,
   size: 5,
   alphabet: "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"

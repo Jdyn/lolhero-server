@@ -45,6 +45,14 @@ defmodule LolHero.UserView do
     }
   end
 
+  def render("order_user.json", %{user: user}) do
+    %{
+      username: user.username,
+      role: user.role,
+      isAdmin: user.is_admin
+    }
+  end
+
   def render("user.json", %{user: user}) do
     %{
       id: user.id,
@@ -52,6 +60,7 @@ defmodule LolHero.UserView do
       lastName: user.last_name,
       username: user.username,
       email: user.email,
+      role: user.role
       # orders: render_many(user.orders, OrderView, "order.json", as: :order)
     }
   end

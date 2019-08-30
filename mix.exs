@@ -5,7 +5,7 @@ defmodule LolHero.MixProject do
     [
       app: :LolHero,
       version: "0.1.0",
-      elixir: "~> 1.7",
+      elixir: "~> 1.9",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
@@ -17,7 +17,7 @@ defmodule LolHero.MixProject do
   def application do
     [
       mod: {LolHero, []},
-      extra_applications: [:logger, :runtime_tools, :braintree, :bamboo]
+      extra_applications: [:logger, :runtime_tools, :braintree, :bamboo, :edeliver]
     ]
   end
 
@@ -39,11 +39,12 @@ defmodule LolHero.MixProject do
       {:guardian, "~> 1.2.1"},
       {:braintree, "~> 0.10.0"},
       {:bamboo, "~> 1.3"},
-      {:nanoid, "~> 2.0.2"}
+      {:nanoid, "~> 2.0.2"},
+      {:edeliver, ">= 1.7.0"},
+      {:distillery, "~> 2.1", warn_missing: false}
     ]
   end
 
-  # Aliases are shortcuts or tasks specific to the current project.
   defp aliases do
     [
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],

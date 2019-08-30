@@ -34,3 +34,5 @@ LolHero-*.tar
 mix.lock
 
 .vscode
+
+.deliver/releases/

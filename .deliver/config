@@ -1,0 +1,32 @@
+#!/bin/bash
+
+APP="LolHero"
+
+BUILD_HOST="lolhero.gg"
+BUILD_USER="deploy"
+BUILD_AT="/home/deploy/app_build"
+
+PRODUCTION_HOSTS="ec2-54-227-31-237.compute-1.amazonaws.com"
+PRODUCTION_USER="deploy"
+DELIVER_TO="/home/deploy/apps"
+
+START_DEPLOY=true
+CLEAN_DEPLOY=true
+
+# prevent re-installing node modules; this defaults to "."
+GIT_CLEAN_PATHS="_build rel priv/static"
+
+# For Phoenix projects, symlink prod.secret.exs to our tmp source
+
+pre_erlang_get_and_update_deps() {
+  local _prod_secret_path="/home/deploy/configs/prod.secret.exs"
+  if [ "$TARGET_MIX_ENV" = "prod" ]; then
+    status "Linking '$_prod_secret_path'"
+    __sync_remote "
+      ln -sfn '$_prod_secret_path' '$BUILD_AT/config/prod.secret.exs'
+    "
+  fi
+}
+
+#      [ -f ~/.profile ] && source ~/.profile
+#      mkdir '$BUILD_AT'
