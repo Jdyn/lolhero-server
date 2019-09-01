@@ -1,5 +1,6 @@
 defmodule LolHero.Router do
   use LolHero.Web, :router
+  import Bamboo
 
   pipeline :api do
     plug(:accepts, ["json"])
@@ -9,6 +10,10 @@ defmodule LolHero.Router do
   pipeline :ensure_auth do
     plug(Guardian.Plug.LoadResource, allow_blank: false)
     plug(Guardian.Plug.EnsureAuthenticated)
+  end
+
+  if Mix.env() == :dev do
+    forward("/sent_emails", Bamboo.SentEmailViewerPlug)
   end
 
   scope "/api/v1", LolHero do

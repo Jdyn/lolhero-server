@@ -2,7 +2,7 @@ defmodule LolHero.OrderController do
   use LolHero.Web, :controller
   import Nanoid
   alias LolHero.Services.Orders
-  alias LolHero.{Order, ErrorView, User}
+  alias LolHero.{Order, ErrorView, User, Email, Mailer}
   alias Braintree.ClientToken
 
   def index(conn, params), do: render(conn, "index.json", orders: Order.find_all())
@@ -59,8 +59,11 @@ defmodule LolHero.OrderController do
             |> Order.create()
             |> case do
               {:ok, order} ->
-                %{tracking_id: tracking_id} = order
+                %{tracking_id: tracking_id, email: email} = order
                 success_url = "/order/success/#{tracking_id}/"
+
+                Email.order_success_email(email, tracking_id)
+                |> Mailer.deliver_now()
 
                 conn
                 |> put_status(:ok)

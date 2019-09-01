@@ -1,5 +1,5 @@
 defmodule LolHero.Services.Users do
-  alias LolHero.{Repo, User}
+  alias LolHero.{Repo, User, Email, Mailer}
   alias LolHero.Services.Sessions
 
   def create(params) do
@@ -9,6 +9,10 @@ defmodule LolHero.Services.Users do
     |> case do
       {:ok, user} ->
         user_with_token = Sessions.user_with_token(user)
+
+        Email.welcome_email(user.email)
+        |> Mailer.deliver_now()
+
         {:ok, user_with_token}
 
       {:error, changeset} ->
