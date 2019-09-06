@@ -31,7 +31,8 @@ defmodule LolHero.SessionView do
     %{
       username: user.username,
       email: user.email,
-      token: user.token
+      token: user.token,
+      id: user.id 
     }
   end
 end

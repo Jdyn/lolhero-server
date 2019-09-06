@@ -69,6 +69,7 @@ defmodule LolHero.Services.Accounts do
     query =
       from(order in Order,
         where: order.user_id == ^user_id and order.tracking_id == ^tracking_id,
+        preload: [:user],
         select: order
       )
 
