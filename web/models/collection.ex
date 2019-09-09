@@ -49,6 +49,12 @@ defmodule LolHero.Collection do
     |> Repo.preload(variants: [:product])
   end
 
+  def find_by(params) do
+    Collection
+    |> Repo.get_by(params)
+    |> Repo.preload(variants: [:product])
+  end
+
   def find_all() do
     Collection
     |> Repo.all()

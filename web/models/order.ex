@@ -50,27 +50,14 @@ defmodule LolHero.Order do
   end
 
   def changeset(order, attrs) do
+    keys = ~w(type details tracking_id status paid price note email user_id booster_id)
+
     order
-    |> cast(attrs, [
-      :type,
-      :details,
-      :tracking_id,
-      :status,
-      :paid,
-      :price,
-      :note,
-      :email,
-      :user_id,
-      :booster_id
-    ])
+    |> cast(attrs, keys)
     |> validate_required([:type, :details, :tracking_id, :status])
-    |> validate_required([:email],
-      message: "Please enter your email or log in on the details section."
-    )
+    |> validate_required([:email], message: "Please enter your email to complete the order.")
     |> validate_inclusion(:status, ["open", "incomplete", "in progress", "completed"])
     |> foreign_key_constraint(:user_id)
-
-    # |> foreign_key_constraint(:collection_id)
   end
 
   def boost_changeset(order, attrs) do
@@ -191,7 +178,7 @@ defmodule LolHero.Order do
         add_error(changeset, :details, "rank params cannot be null")
     end
   end
-
+  
   def put_title(changeset) do
     details = get_field(changeset, :details)
 

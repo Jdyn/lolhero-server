@@ -31,6 +31,8 @@ defmodule LolHero.Router do
 
     post("/session", SessionController, :create)
     get("/prices", CategoryController, :prices)
+
+    get("/test", OrderController, :test)
   end
 
   scope "/api/v1", LolHero do
