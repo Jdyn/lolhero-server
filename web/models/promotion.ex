@@ -1,7 +1,7 @@
 defmodule LolHero.Promotion do
   use LolHero.Web, :model
 
-  alias LolHero.{Repo}
+  alias LolHero.{}
 
   schema "promotions" do
     field(:title, :string)

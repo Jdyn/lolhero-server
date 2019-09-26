@@ -4,7 +4,7 @@ defmodule LolHero.AccountController do
   alias LolHero.Services.Accounts
   alias LolHero.ErrorView
 
-  def orders(conn, params) do
+  def orders(conn, _params) do
     user = Guardian.Plug.current_resource(conn)
 
     case Accounts.all_orders(user.id) do

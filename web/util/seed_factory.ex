@@ -2,7 +2,7 @@ defmodule LolHero.SeedFactory do
   import Ecto.Query
 
   def categories() do
-    categories = [
+    [
       %{
         title: "Solo",
         description: "Our Booster will log into your account to complete the boost."

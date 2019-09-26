@@ -27,16 +27,16 @@ defmodule LolHero.MixProject do
 
   defp deps do
     [
-      {:phoenix, "~> 1.4.9"},
-      {:phoenix_pubsub, "~> 1.1"},
+      {:phoenix, "~> 1.4.10"},
+      {:phoenix_pubsub, "~> 1.1.2"},
       {:phoenix_ecto, "~> 4.0"},
       {:ecto_sql, "~> 3.1.6"},
       {:postgrex, "~> 0.15.0"},
       {:jason, "~> 1.1.2"},
-      {:plug_cowboy, "~> 2.0"},
+      {:plug_cowboy, "~> 2.1"},
       {:cors_plug, "~> 2.0"},
       {:bcrypt_elixir, "~> 2.0.3"},
-      {:guardian, "~> 1.2.1"},
+      {:guardian, "~> 2.0.0"},
       {:braintree, "~> 0.10.0"},
       {:bamboo, "~> 1.3"},
       {:nanoid, "~> 2.0.2"},

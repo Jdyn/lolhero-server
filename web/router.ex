@@ -1,6 +1,5 @@
 defmodule LolHero.Router do
   use LolHero.Web, :router
-  import Bamboo
 
   pipeline :api do
     plug(:accepts, ["json"])

@@ -1,7 +1,7 @@
 defmodule LolHero.Order do
   use LolHero.Web, :model
 
-  alias LolHero.{Repo, Order, User, Collection, Category, Product, Variant}
+  alias LolHero.{Repo, Order, User, Category, Product, Variant}
 
   schema "orders" do
     field(:title, :string)
@@ -113,8 +113,7 @@ defmodule LolHero.Order do
           total_amount: price,
           quantity: 1,
           name: "League Of Legends Boost",
-          kind: "debit",
-          description: title
+          kind: "debit"
         }
       ]
     }
@@ -143,7 +142,7 @@ defmodule LolHero.Order do
     %{"collectionId" => id} = details
 
     case details do
-      %{"desiredRank" => desired_rank, "desiredAmount" => desired_amount} = details ->
+      %{"desiredRank" => _desired_rank, "desiredAmount" => _desired_amount} ->
         add_error(changeset, :details, "cannot contain desired_rank and desired_amount")
 
       %{"desiredRank" => desired_rank, "startRank" => start_rank} = details ->
@@ -230,7 +229,7 @@ defmodule LolHero.Order do
     end
   end
 
-  defp format_title(type, category, collection, queue, start_rank, item) do
+  defp format_title(type, _category, collection, _queue, start_rank, item) do
     case type do
       "ranks" ->
         "#{collection} - #{start_rank} to #{item}"
@@ -245,17 +244,17 @@ defmodule LolHero.Order do
     end
   end
 
-  defp is_express(price, %{"express" => express_price}, false), do: price
+  defp is_express(price, %{"express" => _express_price}, false), do: price
 
   defp is_express(price, %{"express" => express_price}, true),
     do: Decimal.mult(price, express_price)
 
-  defp is_incognito(price, %{"incognito" => incognito_price}, false), do: price
+  defp is_incognito(price, %{"incognito" => _incognito_price}, false), do: price
 
   defp is_incognito(price, %{"incognito" => incognito_price}, true),
     do: Decimal.mult(price, incognito_price)
 
-  defp is_unrestricted(price, %{"unrestricted" => unrestricted_price}, false), do: price
+  defp is_unrestricted(price, %{"unrestricted" => _unrestricted_price}, false), do: price
 
   defp is_unrestricted(price, %{"unrestricted" => unrestricted_price}, true),
     do: Decimal.mult(price, unrestricted_price)
@@ -286,7 +285,7 @@ defmodule LolHero.Order do
     end
   end
 
-  defp calculateLP(price, start_rank_price, details), do: price
+  defp calculateLP(price, _start_rank_price, _details), do: price
 
   defp calculateQueueType(price, %{"queue" => queue, "boostType" => boost_type}) do
     queue_prices = Variant.find_by_assoc_titles(boost_type, "queues")
@@ -304,7 +303,7 @@ defmodule LolHero.Order do
 
   defp calculatePromos(
          price,
-         %{"promos" => promos, "boostType" => boost_type} = details,
+         %{"promos" => promos, "boostType" => boost_type},
          start_rank_price
        ) do
     if promos != nil do

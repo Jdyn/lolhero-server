@@ -1,6 +1,6 @@
 defmodule LolHero.UserView do
   use LolHero.Web, :view
-  alias LolHero.{UserView, OrderView}
+  alias LolHero.{UserView}
 
   def render("index.json", %{users: users}) do
     %{

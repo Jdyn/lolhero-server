@@ -1,7 +1,7 @@
 defmodule LolHero.CollectionController do
   use LolHero.Web, :controller
 
-  alias LolHero.{Collection, Variant, Product}
+  alias LolHero.{Collection}
 
   def index(conn, _params) do
     render(conn, "index.json", collections: Collection.find_all())

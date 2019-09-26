@@ -1,6 +1,6 @@
 defmodule LolHero.AccountView do
   use LolHero.Web, :view
-  alias LolHero.{OrderView, User}
+  alias LolHero.{OrderView}
 
   def render("order_list.json", %{orders: orders}) do
     %{

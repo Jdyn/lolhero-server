@@ -40,7 +40,7 @@ defmodule LolHero.Services.Sessions do
     end
   end
 
-  def authenticate(params), do: {:error, "Username and password fields required."}
+  def authenticate(_params), do: {:error, "Username and password fields required."}
 
   def user_with_token(user) do
     {:ok, token, _claims} = Guardian.encode_and_sign(user)

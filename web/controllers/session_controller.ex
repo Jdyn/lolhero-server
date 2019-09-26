@@ -5,7 +5,7 @@ defmodule LolHero.SessionController do
   alias LolHero.Services.Sessions
   alias LolHero.Auth.Guardian
 
-  def show(conn, params) do
+  def show(conn, _params) do
     case Sessions.refresh(Guardian.Plug.current_token(conn)) do
       {:ok, user} ->
         conn
@@ -35,7 +35,7 @@ defmodule LolHero.SessionController do
     end
   end
 
-  def delete(conn, params) do
+  def delete(conn, _params) do
     Guardian.revoke(Guardian.Plug.current_token(conn))
 
     conn

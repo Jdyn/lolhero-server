@@ -1,11 +1,11 @@
 defmodule LolHero.OrderController do
   use LolHero.Web, :controller
-  import Nanoid
+
   alias LolHero.Services.Orders
-  alias LolHero.{Order, ErrorView, User, Email, Mailer}
+  alias LolHero.{Order, ErrorView, Email, Mailer}
   alias Braintree.ClientToken
 
-  def index(conn, params), do: render(conn, "index.json", orders: Order.find_all())
+  def index(conn, _params), do: render(conn, "index.json", orders: Order.find_all())
 
   def track(conn, %{"tracking_id" => tracking_id, "email" => email}) do
     case Orders.authenticate(tracking_id, email) do
@@ -39,7 +39,7 @@ defmodule LolHero.OrderController do
     end
   end
 
-  def create_token(conn, params) do
+  def create_token(conn, _params) do
     {:ok, token} = ClientToken.generate(%{version: 3})
 
     render(conn, "token.json", token: token)
@@ -99,7 +99,7 @@ defmodule LolHero.OrderController do
             end
         end
 
-      order ->
+      _order ->
         create(conn, params)
     end
   end

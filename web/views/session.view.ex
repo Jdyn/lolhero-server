@@ -1,6 +1,6 @@
 defmodule LolHero.SessionView do
   use LolHero.Web, :view
-  alias LolHero.{SessionView, User}
+  alias LolHero.{SessionView}
 
   def render("create.json", %{user: user}) do
     %{

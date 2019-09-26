@@ -1,10 +1,7 @@
 defmodule LolHero.UserController do
   use LolHero.Web, :controller
 
-  alias Comeonin.Bcrypt
-
   alias LolHero.{User, ErrorView, Repo}
-  alias LolHero.Auth.Guardian
   alias LolHero.Services.Users
 
   def index(conn, _params) do

@@ -1,7 +1,7 @@
 defmodule LolHero.CategoryController do
   use LolHero.Web, :controller
 
-  alias LolHero.{Category, Collection, ErrorView}
+  alias LolHero.{Category, ErrorView}
   alias LolHero.Services.Categories
 
   def index(conn, _params) do
@@ -48,7 +48,7 @@ defmodule LolHero.CategoryController do
 
   def delete(conn, %{"id" => id}) do
     case Categories.delete(id) do
-      {:ok, category} ->
+      {:ok, _category} ->
         conn
         |> put_status(:ok)
         |> render("delete.json")

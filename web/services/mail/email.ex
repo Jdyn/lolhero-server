@@ -14,7 +14,7 @@ defmodule LolHero.Email do
   end
 
   def order_success_email(email, tracking_id) do
-    base_email
+    base_email()
     |> to(email)
     |> subject("Thank you for your order.")
     |> html_body(
