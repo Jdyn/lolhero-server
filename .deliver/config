@@ -2,11 +2,11 @@
 
 APP="LolHero"
 
-BUILD_HOST="54.84.200.205"
+BUILD_HOST="52.39.197.41"
 BUILD_USER="deploy"
 BUILD_AT="/home/deploy/app_build/$APP"
 
-PRODUCTION_HOSTS="54.84.200.205"
+PRODUCTION_HOSTS="52.39.197.41"
 PRODUCTION_USER="deploy"
 DELIVER_TO="/home/deploy/apps"
 
