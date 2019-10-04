@@ -17,7 +17,7 @@ defmodule LolHero.Services.Boosts do
     end
   end
 
-  defp division_boost_price() do
+  defp division_boost_price(id, details) do
     
   end
 end

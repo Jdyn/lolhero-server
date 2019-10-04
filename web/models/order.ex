@@ -50,7 +50,7 @@ defmodule LolHero.Order do
   end
 
   def changeset(order, attrs) do
-    keys = ~w(type details tracking_id status paid price note email user_id booster_id)
+    keys = ~w(type details tracking_id status paid price note email user_id booster_id)a
 
     order
     |> cast(attrs, keys)
@@ -232,17 +232,17 @@ defmodule LolHero.Order do
     end
   end
 
-  defp is_express(price, %{"express" => express_price}, false), do: price
+  defp is_express(price, details, false), do: price
 
   defp is_express(price, %{"express" => express_price}, true),
     do: Decimal.mult(price, express_price)
 
-  defp is_incognito(price, %{"incognito" => incognito_price}, false), do: price
+  defp is_incognito(price, details, false), do: price
 
   defp is_incognito(price, %{"incognito" => incognito_price}, true),
     do: Decimal.mult(price, incognito_price)
 
-  defp is_unrestricted(price, %{"unrestricted" => unrestricted_price}, false), do: price
+  defp is_unrestricted(price, details, false), do: price
 
   defp is_unrestricted(price, %{"unrestricted" => unrestricted_price}, true),
     do: Decimal.mult(price, unrestricted_price)
