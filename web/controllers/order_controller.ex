@@ -7,6 +7,12 @@ defmodule LolHero.OrderController do
 
   def index(conn, _params), do: render(conn, "index.json", orders: Order.find_all())
 
+  def test(conn, params) do
+    Boosts.set_price(params)
+
+    conn
+  end
+
   def track(conn, %{"tracking_id" => tracking_id, "email" => email}) do
     case Orders.authenticate(tracking_id, email) do
       {:ok, order} ->
