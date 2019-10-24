@@ -11,6 +11,10 @@ defmodule LolHero.Router do
     plug(Guardian.Plug.EnsureAuthenticated)
   end
 
+  pipeline :ensure_admin do
+    plug(LolHero.Auth.EnsureAdmin)
+  end
+
   if Mix.env() == :dev do
     forward("/sent_emails", Bamboo.SentEmailViewerPlug)
   end
@@ -41,6 +45,16 @@ defmodule LolHero.Router do
 
     resources("/account", AccountController, only: [], singleton: true) do
       get("/orders", AccountController, :orders)
+      get("/order/:tracking_id", AccountController, :show_order)
+      patch("/order/:tracking_id", AccountController, :initiate)
+    end
+  end
+
+  scope "/api/v1", LolHero do
+    pipe_through([:api, :ensure_auth, :ensure_admin])
+
+    resources("/account", Admin.AccountController, only: [], singleton: true) do
+      get("/orders", Admin.AccountController, :orders)
       get("/order/:tracking_id", AccountController, :show_order)
       patch("/order/:tracking_id", AccountController, :initiate)
     end

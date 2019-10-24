@@ -2,12 +2,12 @@ defmodule LolHero.AccountController do
   use LolHero.Web, :controller
 
   alias LolHero.Services.Accounts
-  alias LolHero.ErrorView
+  alias LolHero.{ErrorView}
 
   def orders(conn, _params) do
     user = Guardian.Plug.current_resource(conn)
 
-    case Accounts.all_orders(user.id) do
+    case Accounts.all_user_orders(user.id, user.is_admin) do
       {:ok, orders} ->
         conn
         |> put_status(:ok)

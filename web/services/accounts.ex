@@ -2,13 +2,20 @@ defmodule LolHero.Services.Accounts do
   alias LolHero.{Repo, Order}
   import Ecto.Query
 
-  def all_orders(id) do
+  def all_user_orders(id, is_admin) do
     query =
-      from(order in Order,
-        where: order.user_id == ^id,
-        order_by: [desc: order.inserted_at],
-        select: order
-      )
+      if is_admin do
+        from(order in Order,
+          order_by: [desc: order.inserted_at],
+          select: order
+        )
+      else
+        from(order in Order,
+          where: order.user_id == ^id,
+          order_by: [desc: order.inserted_at],
+          select: order
+        )
+      end
 
     case Repo.all(query) do
       nil ->
