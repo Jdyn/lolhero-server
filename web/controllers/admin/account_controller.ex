@@ -7,7 +7,7 @@ defmodule LolHero.Admin.AccountController do
   def orders(conn, _params) do
     user = Guardian.Plug.current_resource(conn)
 
-    case Accounts.all_user_orders(user.id, user.is_admin) do
+    case Accounts.all_user_orders(user.id, false) do
       {:ok, orders} ->
         conn
         |> put_status(:ok)

@@ -53,10 +53,10 @@ defmodule LolHero.Router do
   scope "/api/v1", LolHero do
     pipe_through([:api, :ensure_auth, :ensure_admin])
 
-    resources("/account", Admin.AccountController, only: [], singleton: true) do
-      get("/orders", Admin.AccountController, :orders)
-      get("/order/:tracking_id", AccountController, :show_order)
-      patch("/order/:tracking_id", AccountController, :initiate)
-    end
+    # resources("/account", Admin.AccountController, only: [], singleton: true) do
+    #   get("/orders", Admin.AccountController, :orders)
+    #   get("/order/:tracking_id", AccountController, :show_order)
+    #   patch("/order/:tracking_id", AccountController, :initiate)
+    # end
   end
 end
