@@ -3,7 +3,7 @@ defmodule LolHero.Email do
 
   def base_email() do
     new_email()
-    |> from("noreply@lolhero.gg")
+    |> from("jaden.smith5389@gmail.com")
   end
 
   def welcome_email(email) do
@@ -18,9 +18,12 @@ defmodule LolHero.Email do
     |> to(email)
     |> subject("Thank you for your order.")
     |> html_body(
-      "<body>We have recieved your order. Your Tracking ID is <b>#{tracking_id}</b>. You can oversee your order within your account or from <a href=\"http://lolhero.gg/track/#{
+      "<body>
+      We have recieved your order. Your Tracking ID is <b>#{tracking_id}</b>.
+      You can oversee your order within your account or from <a href=\"http://lolhero.gg/track/#{
         tracking_id
-      }\">here</a> or our home page.</body>"
+      }\">here</a>
+      </body>"
     )
   end
 end

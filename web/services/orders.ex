@@ -13,7 +13,7 @@ defmodule LolHero.Services.Orders do
 
     case Repo.one(query) do
       nil ->
-        {:error, "That combination does not exist. Try a different one."}
+        {:error, "That combination does not exist. Please try again."}
 
       order ->
         {:ok, order}

@@ -1,7 +1,7 @@
 defmodule LolHero.UserController do
   use LolHero.Web, :controller
 
-  alias LolHero.{User, ErrorView, Repo}
+  alias LolHero.{User, ErrorView, Repo, SessionView}
   alias LolHero.Services.Users
 
   def index(conn, _params) do
@@ -17,7 +17,8 @@ defmodule LolHero.UserController do
       {:ok, user} ->
         conn
         |> put_status(:created)
-        |> render("create.json", user: user)
+        |> put_view(SessionView)
+        |> render("show.json", user: user)
 
       {:error, changeset} ->
         conn

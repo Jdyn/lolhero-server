@@ -28,7 +28,7 @@ defmodule LolHero.AccountController do
       {:ok, order} ->
         conn
         |> put_status(:ok)
-        |> render("show_order.json", order: order)
+        |> render("show_order.json", order: Repo.preload(order, :user))
 
       {:unauthorized, reason} ->
         conn
