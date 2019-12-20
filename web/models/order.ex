@@ -1,7 +1,8 @@
 defmodule LolHero.Order do
   use LolHero.Web, :model
 
-  alias LolHero.{Repo, Order, User, Category, Product, Variant}
+  alias LolHero.{Repo, Order, User, Category, Product, Variant, Collection}
+  alias LolHero.Services.Boosts
 
   schema "orders" do
     field(:title, :string)
@@ -126,178 +127,133 @@ defmodule LolHero.Order do
 
   def put_price(changeset) do
     details = get_field(changeset, :details)
-    %{"collectionId" => id} = details
 
-    case details do
-      %{"desiredRank" => _desired_rank, "desiredAmount" => _desired_amount} ->
-        add_error(changeset, :details, "cannot contain desired_rank and desired_amount")
+    %{
+      "collectionName" => collection_title,
+      "collectionId" => collection_id,
+      "startRank" => start_rank,
+      "isExpress" => is_express,
+      "isIncognito" => is_incognito,
+      "isUnrestricted" => is_unrestricted,
+      "boostType" => boost_type
+    } = details
 
-      %{"desiredRank" => desired_rank, "startRank" => start_rank} = details ->
-        items = Repo.all(Variant.boost_price_query(id, start_rank, desired_rank))
-        modifiers = Variant.find_by_assoc_titles(details["boostType"], "modifiers")
-        start_rank_price = Enum.at(items, 0)
+    %{
+      "express" => express_price,
+      "incognito" => incognito_price,
+      "unrestricted" => unrestricted_price
+    } = Boosts.get_prices(boost_type, "modifiers")
 
-        base_price =
-          items
-          |> Enum.reduce(0, fn item, acc -> Decimal.add(acc, item) end)
-          |> is_express(modifiers, details["isExpress"])
-          |> is_incognito(modifiers, details["isIncognito"])
-          |> is_unrestricted(modifiers, details["isUnrestricted"])
-          |> calculateQueueType(details)
-          |> calculateLP(start_rank_price, details)
+    case collection_title do
+      "Division Boost" ->
+        %{"desiredRank" => desired_rank} = details
+
+        {base_price, start_rank_price} =
+          Boosts.get_base_prices(start_rank, desired_rank, collection_id)
+
+        price =
+          base_price
+          |> is_express(express_price, is_express)
+          |> is_incognito(incognito_price, is_incognito)
+          |> is_unrestricted(unrestricted_price, is_unrestricted)
+          |> calculate_queue(details)
+          |> calculate_lp(start_rank_price, details)
           |> Decimal.round(2)
           |> Decimal.to_float()
 
-        put_change(changeset, :price, base_price)
+        put_change(changeset, :price, price)
 
-      %{"startRank" => start_rank, "desiredAmount" => desired_amount} = details ->
-        modifiers = Variant.find_by_assoc_titles(details["boostType"], "modifiers")
+      _ ->
+        %{"desiredAmount" => desired_amount} = details
 
-        item =
+        base_price =
           Repo.one(
             from(v in Variant,
-              where: v.collection_id == ^id and v.product_id == ^start_rank,
+              where: v.collection_id == ^collection_id and v.product_id == ^start_rank,
               select: v.base_price
             )
           )
 
-        base_price =
-          item
+        price =
+          base_price
           |> Decimal.mult(desired_amount)
-          |> is_express(modifiers, details["isExpress"])
-          |> is_incognito(modifiers, details["isIncognito"])
-          |> is_unrestricted(modifiers, details["isUnrestricted"])
-          |> calculateQueueType(details)
+          |> is_express(express_price, is_express)
+          |> is_incognito(incognito_price, is_incognito)
+          |> is_unrestricted(unrestricted_price, is_unrestricted)
+          |> calculate_queue(details)
           |> Decimal.round(2)
           |> Decimal.to_float()
 
-        put_change(changeset, :price, base_price)
-
-      true ->
-        add_error(changeset, :details, "rank params cannot be null")
+        put_change(changeset, :price, price)
     end
   end
-  
+
   def put_title(changeset) do
     details = get_field(changeset, :details)
 
-    case Repo.one(Category.title_query(details["collectionId"])) do
-      [category, collection] ->
-        case Repo.all(Product.ranks_query(details["startRank"], details["desiredRank"])) do
-          [start, finish] ->
-            title =
-              format_title(
-                "ranks",
-                category,
-                collection,
-                details["queue"],
-                start,
-                finish
-              )
+    case Boosts.get_title(details) do
+      {:ok, title} ->
+        put_change(changeset, :title, title)
 
-            put_change(changeset, :title, title)
-
-          [start] ->
-            title =
-              format_title(
-                "games",
-                category,
-                collection,
-                details["queue"],
-                start,
-                details["desiredAmount"]
-              )
-
-            put_change(changeset, :title, title)
-        end
-
-      _ ->
-        add_error(changeset, :collection_id, "invalid collectionId")
+      {:error, reason} ->
+        add_error(changeset, :collection_id, reason)
     end
   end
 
-  defp format_title(type, _category, collection, _queue, start_rank, item) do
-    case type do
-      "ranks" ->
-        "#{collection} - #{start_rank} to #{item}"
+  defp is_express(total, price, false), do: total
+  defp is_express(total, price, true), do: Decimal.mult(total, price)
 
-      # "#{String.upcase(category)} BOOST | #{String.upcase(queue)} QUEUE | #{collection} - #{
-      #   start_rank
-      # } to #{item}"
+  defp is_incognito(total, price, false), do: total
+  defp is_incognito(total, price, true), do: Decimal.mult(total, price)
 
-      "games" ->
-        "#{item} #{collection} - #{start_rank}"
-        # category <> " | " <> Integer.to_string(item) <> " " <> collection <> " - " <> start_rank
-    end
-  end
+  defp is_unrestricted(total, price, false), do: total
+  defp is_unrestricted(total, price, true), do: Decimal.mult(total, price)
 
-  defp is_express(price, details, false), do: price
+  defp calculate_lp(total, start_rank_price, details) do
+    %{"lp" => lp, "boostType" => boost_type} = details
 
-  defp is_express(price, %{"express" => express_price}, true),
-    do: Decimal.mult(price, express_price)
-
-  defp is_incognito(price, details, false), do: price
-
-  defp is_incognito(price, %{"incognito" => incognito_price}, true),
-    do: Decimal.mult(price, incognito_price)
-
-  defp is_unrestricted(price, details, false), do: price
-
-  defp is_unrestricted(price, %{"unrestricted" => unrestricted_price}, true),
-    do: Decimal.mult(price, unrestricted_price)
-
-  defp calculateLP(price, start_rank_price, %{"lp" => lp, "boostType" => boost_type} = details) do
-    lp_prices = Variant.find_by_assoc_titles(boost_type, "lp")
     lp_string = Integer.to_string(lp)
-
+    lp_prices = Boosts.get_prices(boost_type, "lp")
     %{^lp_string => lp_price} = lp_prices
 
     case lp do
       100 ->
-        calculatePromos(price, details, start_rank_price)
+        calculate_promos(total, start_rank_price, details)
 
       _ ->
-        Decimal.sub(
-          price,
-          Decimal.div(
-            Decimal.round(
-              Decimal.mult(
-                Decimal.sub(start_rank_price, Decimal.mult(start_rank_price, lp_price)),
-                100
-              )
-            ),
-            100
-          )
-        )
+        diff =
+          start_rank_price
+          |> Decimal.sub(Decimal.mult(start_rank_price, lp_price))
+          |> Decimal.mult(100)
+          |> Decimal.round()
+          |> Decimal.div(100)
+
+        Decimal.sub(total, diff)
     end
   end
 
-  defp calculateLP(price, _start_rank_price, _details), do: price
+  defp calculate_lp(total, _start_rank_price, _details), do: total
 
-  defp calculateQueueType(price, %{"queue" => queue, "boostType" => boost_type}) do
-    queue_prices = Variant.find_by_assoc_titles(boost_type, "queues")
+  defp calculate_queue(total, details) do
+    %{"boostType" => boost_type, "queue" => queue} = details
+    queue_prices = Boosts.get_prices(boost_type, "queues")
 
     case Map.has_key?(queue_prices, queue) do
       true ->
-        Decimal.mult(price, queue_prices[queue])
+        Decimal.mult(total, queue_prices[queue])
 
       false ->
-        price
+        total
     end
   end
 
-  defp calculateQueueType(price, details), do: price
+  defp calculate_promos(total, start_rank_price, details) do
+    %{"promos" => promos, "boostType" => boost_type} = details
 
-  defp calculatePromos(
-         price,
-         %{"promos" => promos, "boostType" => boost_type},
-         start_rank_price
-       ) do
-        
     if promos != nil do
-      promo_prices = Variant.find_by_assoc_titles(boost_type, "promotions")
+      promo_prices = Boosts.get_prices(boost_type, "promotions")
 
-      total =
+      sum =
         Enum.reduce(promos, 0, fn promo, acc ->
           cond do
             promo == "X" ->
@@ -311,21 +267,17 @@ defmodule LolHero.Order do
           end
         end)
 
-      promo_string = Integer.to_string(total)
+      promo_string = Integer.to_string(sum)
       %{^promo_string => promo_price} = promo_prices
 
-      Decimal.sub(
-        price,
-        Decimal.div(
-          Decimal.round(
-            Decimal.mult(
-              Decimal.sub(start_rank_price, Decimal.mult(start_rank_price, promo_price)),
-              100
-            )
-          ),
-          100
-        )
-      )
+      diff =
+        start_rank_price
+        |> Decimal.sub(Decimal.mult(start_rank_price, promo_price))
+        |> Decimal.mult(100)
+        |> Decimal.round()
+        |> Decimal.div(100)
+
+      Decimal.sub(total, diff)
     end
   end
 

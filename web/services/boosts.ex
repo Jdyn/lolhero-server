@@ -1,23 +1,57 @@
 defmodule LolHero.Services.Boosts do
-  alias LolHero.{Collection}
+  use LolHero.Web, :service
 
-  def set_price(changeset, details) do
-    case Collection.find_by(%{id: 1}) do
-      collection ->
-        case collection.title do
-          "Division Boost" ->
-            price = division_boost_price(collection.id, details)
+  alias LolHero.{Category, Collection, Product, Variant, Repo}
 
-          _ ->
-            IO.inspect("ELSE")
-        end
+  def get_base_prices(start_rank, desired_rank, collection_id) do
+    query =
+      from(v in Variant,
+        where:
+          v.collection_id == ^collection_id and
+            v.product_id >= ^start_rank and
+            v.product_id < ^desired_rank,
+        order_by: [asc: v.id],
+        select: v.base_price
+      )
 
-      nil ->
-        nil
-    end
+    rank_price_list = Repo.all(query)
+
+    base_price = Enum.reduce(rank_price_list, 0, fn item, acc -> Decimal.add(acc, item) end)
+    start_rank_price = Enum.at(rank_price_list, 0)
+
+    {base_price, start_rank_price}
   end
 
-  defp division_boost_price(id, details) do
-    
+  def get_prices(boost_type, collection_title) do
+    query =
+      from(
+        collection in Collection,
+        left_join: category in assoc(collection, :category),
+        where: category.title == ^boost_type and collection.title == ^collection_title,
+        preload: [:variants],
+        select: collection
+      )
+
+    target = Repo.one(query)
+
+    Enum.reduce(target.variants, %{}, fn item, prices ->
+      Map.put(prices, item.title, item.base_price)
+    end)
+  end
+
+  def get_title(details) do
+    case Repo.one(Category.title_query(details["collectionId"])) do
+      [category, collection] ->
+        case Repo.all(Product.ranks_query(details["startRank"], details["desiredRank"])) do
+          [start, finish] ->
+            {:ok, "#{collection} - #{start} to #{finish}"}
+
+          [start] ->
+            {:ok, "#{details["desiredAmount"]} #{collection} - #{start}"}
+        end
+
+      _ ->
+        {:error, "invalid collectionId"}
+    end
   end
 end
