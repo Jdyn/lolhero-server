@@ -32,6 +32,16 @@ defmodule LolHero.ProductView do
     %{
       id: product.id,
       title: product.title,
+      variants: render_many(product.variants, __MODULE__, "variant.json", as: :variant)
+    }
+  end
+
+  def render("variant.json", %{variant: variant}) do
+    %{
+      id: variant.id,
+      title: variant.title,
+      base_price: variant.base_price,
+      collection_id: variant.collection_id
     }
   end
 

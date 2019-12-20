@@ -293,6 +293,7 @@ defmodule LolHero.Order do
          %{"promos" => promos, "boostType" => boost_type},
          start_rank_price
        ) do
+        
     if promos != nil do
       promo_prices = Variant.find_by_assoc_titles(boost_type, "promotions")
 

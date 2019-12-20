@@ -11,13 +11,6 @@ config :LolHero, LolHero.Repo,
 
 config :LolHero, LolHero.Mailer, adapter: Bamboo.LocalAdapter
 
-config :braintree,
-  environment: :sandbox,
-  master_merchant_id: "",
-  merchant_id: "cfcsbff65qmxzrgf",
-  public_key: "q24ty9f2rj3b7r6m",
-  private_key: "1d09f9423d6d58842a31eb24840e6120"
-
 config :LolHero, LolHero.Auth.Guardian,
   issuer: "LolHero",
   ttl: {7, :days},
@@ -70,4 +63,4 @@ config :phoenix, :stacktrace_depth, 20
 # Initialize plugs at runtime for faster development compilation
 config :phoenix, :plug_init_mode, :runtime
 
-# import_config "dev.secret.exs"
+import_config "dev.secret.exs"
