@@ -27,11 +27,13 @@ defmodule LolHero.Product do
   def find(id) do
     Product
     |> Repo.get(id)
+    |> Repo.preload(:variants)
   end
 
   def find_all() do
     Product
     |> Repo.all()
+    |> Repo.preload(:variants)
   end
 
   def delete(%Product{} = product) do

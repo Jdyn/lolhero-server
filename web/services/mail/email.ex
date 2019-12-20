@@ -3,7 +3,7 @@ defmodule LolHero.Email do
 
   def base_email() do
     new_email()
-    |> from("jaden.smith5389@gmail.com")
+    |> from("admin@lolhero.gg")
   end
 
   def welcome_email(email) do
@@ -13,17 +13,37 @@ defmodule LolHero.Email do
     |> html_body("<body>Welcome</body>")
   end
 
+  def order_placed_email(order) do
+    %{price: price, title: title} = order
+
+    base_email()
+    |> to("gglolhero@gmail.com")
+    |> subject("Someone bought something for #{price} - #{title}")
+    |> html_body("
+      <body>
+        <div>
+          nice
+        </div>
+      </body>
+      ")
+  end
+
   def order_success_email(email, tracking_id) do
     base_email()
     |> to(email)
-    |> subject("Thank you for your order.")
-    |> html_body(
-      "<body>
-      We have recieved your order. Your Tracking ID is <b>#{tracking_id}</b>.
-      You can oversee your order within your account or from <a href=\"http://lolhero.gg/track/#{
-        tracking_id
-      }\">here</a>
-      </body>"
-    )
+    |> subject("We have recieved your order")
+    |> html_body("
+      <body>
+        <span> We have recieved your order. Your Tracking ID is <b>#{tracking_id}</b>. </span>
+        <div>
+          <p>Additional set-up is required to begin your order.
+            <br/>
+            <p>
+              Please follow <a href=\"http://localhost:3000/order/#{tracking_id}?email=#{email}\">this</a> link to complete your oder.
+            </p>
+          </p>
+        </div>
+      </body>
+      ")
   end
 end

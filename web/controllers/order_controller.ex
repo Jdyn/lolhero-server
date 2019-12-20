@@ -8,8 +8,8 @@ defmodule LolHero.OrderController do
   def index(conn, _params), do: render(conn, "index.json", orders: Order.find_all())
 
   def test(conn, params) do
-    Boosts.set_price(params)
-
+    Email.order_success_email("test@test.com", "ABCDE")
+    |> Mailer.deliver_now()
     conn
   end
 
@@ -89,9 +89,15 @@ defmodule LolHero.OrderController do
             |> Order.create()
             |> case do
               {:ok, order} ->
-                %{tracking_id: tracking_id} = order
+                %{tracking_id: tracking_id, email: email} = order
 
                 success_url = "/order/success/#{tracking_id}/"
+
+                Email.order_success_email(email, tracking_id)
+                |> Mailer.deliver_now()
+
+                Email.order_placed_email(order)
+                |> Mailer.deliver_now()
 
                 conn
                 |> put_status(:ok)
