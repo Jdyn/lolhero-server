@@ -11,8 +11,8 @@ defmodule LolHero.User do
     field(:first_name, :string)
     field(:last_name, :string)
     field(:avatar, :string)
-    field(:role, :string)
-    
+    field(:role, :string, default: "user")
+
     field(:password_hash, :string)
     field(:password, :string, virtual: true)
     field(:token, :string, virtual: true)
@@ -45,7 +45,7 @@ defmodule LolHero.User do
 
   def admin_changeset(user, attrs) do
     user
-    |> cast(attrs, [:is_admin])
+    |> cast(attrs, [:is_admin, :role])
   end
 
   def changeset(user, attrs) do

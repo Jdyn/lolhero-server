@@ -48,8 +48,7 @@ defmodule LolHero.UserView do
   def render("order_user.json", %{user: user}) do
     %{
       username: user.username,
-      role: user.role,
-      isAdmin: user.is_admin
+      role: user.role
     }
   end
 

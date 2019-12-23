@@ -32,7 +32,7 @@ defmodule LolHero.ProductView do
     %{
       id: product.id,
       title: product.title,
-      variants: render_many(product.variants, __MODULE__, "variant.json", as: :variant)
+      # variants: render_many(product.variants, __MODULE__, "variant.json", as: :variant)
     }
   end
 

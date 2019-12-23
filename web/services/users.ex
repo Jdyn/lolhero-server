@@ -19,4 +19,12 @@ defmodule LolHero.Services.Users do
         {:error, changeset}
     end
   end
+
+  def is_booster(user) do
+    if user.role == "booster" do
+      true
+    else
+      true
+    end
+  end
 end

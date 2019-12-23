@@ -1,17 +1,25 @@
 defmodule LolHero.AccountController do
   use LolHero.Web, :controller
 
-  alias LolHero.Services.Accounts
+  alias LolHero.Services.{Accounts, User}
   alias LolHero.{ErrorView}
 
   def orders(conn, _params) do
     user = Guardian.Plug.current_resource(conn)
 
-    case Accounts.all_user_orders(user.id, false) do
+    case Accounts.all_user_orders(user.id, user.role) do
       {:ok, orders} ->
-        conn
-        |> put_status(:ok)
-        |> render("order_list.json", orders: orders)
+        case user.role do
+          match when match in ["booster", "admin"] ->
+            conn
+            |> put_status(:ok)
+            |> render("booster_order_list.json", orders: orders)
+
+          "user" ->
+            conn
+            |> put_status(:ok)
+            |> render("order_list.json", orders: orders)
+        end
 
       {:error, reason} ->
         conn
@@ -28,7 +36,7 @@ defmodule LolHero.AccountController do
       {:ok, order} ->
         conn
         |> put_status(:ok)
-        |> render("show_order.json", order: Repo.preload(order, :user))
+        |> render("show_order.json", order: order)
 
       {:unauthorized, reason} ->
         conn
@@ -47,7 +55,7 @@ defmodule LolHero.AccountController do
   def show_order(conn, params) do
     user = Guardian.Plug.current_resource(conn)
 
-    case(Accounts.show_order(user.id, params["tracking_id"])) do
+    case(Accounts.show_order(user.id, user.role, params["tracking_id"])) do
       {:ok, order} ->
         conn
         |> put_status(:ok)

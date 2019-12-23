@@ -33,7 +33,8 @@ defmodule LolHero.SessionView do
       email: user.email,
       token: user.token,
       isAdmin: user.is_admin,
-      id: user.id 
+      role: user.role,
+      id: user.id
     }
   end
 end

@@ -50,6 +50,11 @@ defmodule LolHero.Order do
     Repo.get_by(Order, param)
   end
 
+  def delete_all() do
+    Order
+    |> Repo.delete_all()
+  end
+
   def changeset(order, attrs) do
     keys = ~w(type details tracking_id status paid price note email user_id booster_id)a
 
@@ -77,10 +82,11 @@ defmodule LolHero.Order do
     account_keys = ~w(username password)
 
     order
-    |> cast(attrs, [:note, :details, :account_details])
+    |> cast(attrs, [:note, :details, :account_details, :booster_id])
     |> validate_required([:note, :details, :account_details])
     |> validate_keys(:details, detail_keys)
     |> put_change(:is_editable, false)
+    |> put_change(:status, "initialized")
     |> validate_keys(:account_details, account_keys)
   end
 

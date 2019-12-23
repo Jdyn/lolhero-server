@@ -71,6 +71,7 @@ defmodule LolHero.OrderView do
       isEditable: order.is_editable,
       price: order.price,
       user: render_one(order.user, UserView, "order_user.json", as: :user),
+      booster: render_one(order.booster, UserView, "order_user.json", as: :user),
       details: order.details
     }
   end

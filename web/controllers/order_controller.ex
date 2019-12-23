@@ -10,6 +10,7 @@ defmodule LolHero.OrderController do
   def test(conn, params) do
     Email.order_success_email("test@test.com", "ABCDE")
     |> Mailer.deliver_now()
+
     conn
   end
 
@@ -27,7 +28,10 @@ defmodule LolHero.OrderController do
   end
 
   def initiate(conn, params) do
-    case Orders.initiate(params) do
+    params
+    |> Map.put("booster_id", 1)
+    |> Orders.initiate()
+    |> case do
       {:ok, order} ->
         render(conn, "show.json", order: order)
 

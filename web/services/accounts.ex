@@ -2,22 +2,13 @@ defmodule LolHero.Services.Accounts do
   alias LolHero.{Repo, Order}
   import Ecto.Query
 
-  def all_user_orders(id, is_admin) do
-    query =
-      if is_admin do
-        from(order in Order,
-          order_by: [desc: order.inserted_at],
-          select: order
-        )
-      else
-        from(order in Order,
-          where: order.user_id == ^id,
-          order_by: [desc: order.inserted_at],
-          select: order
-        )
-      end
+  def all_user_orders(id, role) do
+    query = order_list_query(id, role)
 
-    case Repo.all(query) do
+    query
+    |> Repo.all()
+    |> Repo.preload([:user, :booster])
+    |> case do
       nil ->
         {:error, "No Orders Found."}
 
@@ -56,7 +47,8 @@ defmodule LolHero.Services.Accounts do
         payload = %{
           account_details: params["accountDetails"],
           details: Map.merge(order.details, params["details"]),
-          note: params["note"]
+          note: params["note"],
+          booster_id: 1
         }
 
         order
@@ -67,25 +59,60 @@ defmodule LolHero.Services.Accounts do
             {:error, changeset}
 
           {:ok, order} ->
-            {:ok, order}
+
+            {:ok, Repo.preload(order, [:user, :booster])}
         end
     end
   end
 
-  def show_order(user_id, tracking_id) do
-    query =
-      from(order in Order,
-        where: order.user_id == ^user_id and order.tracking_id == ^tracking_id,
-        preload: [:user],
-        select: order
-      )
+  def show_order(id, role, tracking_id) do
+    query = show_order_query(id, role, tracking_id)
 
-    case Repo.one(query) do
+    query
+    |> Repo.one()
+    |> Repo.preload(:user)
+    |> Repo.preload(:booster)
+    |> case do
       nil ->
         {:error, "Order does not exist."}
 
       order ->
         {:ok, order}
+    end
+  end
+
+  def show_order_query(id, role, tracking_id) do
+    case role do
+      match when match in ["booster", "admin"] ->
+        from(order in Order,
+          where: order.tracking_id == ^tracking_id,
+          preload: [:user],
+          select: order
+        )
+
+      "user" ->
+        from(order in Order,
+          where: order.user_id == ^id and order.tracking_id == ^tracking_id,
+          preload: [:user],
+          select: order
+        )
+    end
+  end
+
+  def order_list_query(id, role) do
+    case role do
+      match when match in ["booster", "admin"] ->
+        from(order in Order,
+          order_by: [desc: order.inserted_at],
+          select: order
+        )
+
+      "user" ->
+        from(order in Order,
+          where: order.user_id == ^id,
+          order_by: [desc: order.inserted_at],
+          select: order
+        )
     end
   end
 end

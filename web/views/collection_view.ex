@@ -33,7 +33,7 @@ defmodule LolHero.CollectionView do
       id: collection.id,
       title: collection.title,
       description: collection.description,
-      items: render_many(collection.variants, LolHero.VariantView, "variant.json")
+      # items: render_many(collection.variants, LolHero.VariantView, "variant.json")
     }
   end
 

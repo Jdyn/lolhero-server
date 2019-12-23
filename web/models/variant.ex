@@ -60,19 +60,6 @@ defmodule LolHero.Variant do
     end)
   end
 
-  # def get_base_price(%{"collection_id" => id} = params) do
-  #   query =
-  #     from(v in Variant,
-  #       where:
-  #         v.collection_id == ^id and v.product_id >= ^params["start_rank"] and
-  #           v.product_id < ^params["desired_rank"],
-  #       select: v.base_price
-  #     )
-
-  #   items = Repo.all(Variant.boost_price_query)
-  #   Enum.reduce(items, 0, fn item, acc -> Decimal.add(acc, item) end)
-  # end
-
   def boost_price_query(id, start_rank, desired_rank) do
     from(v in Variant,
       where:

@@ -38,26 +38,6 @@ defmodule LolHero.SeedFactory do
         description: "Low cost, guaranteeing high performance without a guaranteed win rate."
       },
       %{
-        category_id: 1,
-        title: "servers",
-        description: "Solo - Servers"
-      },
-      %{
-        category_id: 1,
-        title: "queues",
-        description: "Solo - Queue Types"
-      },
-      %{
-        category_id: 1,
-        title: "lp",
-        description: "Solo - League Points"
-      },
-      %{
-        category_id: 1,
-        title: "modifiers",
-        description: "Solo - Modifiers"
-      },
-      %{
         category_id: 2,
         title: "Division Boost",
         description: "We play the required amount of games to reach the division you select."
@@ -79,6 +59,31 @@ defmodule LolHero.SeedFactory do
         description: "Low cost, guaranteeing high performance without a guaranteed win rate."
       },
       %{
+        category_id: 1,
+        title: "servers",
+        description: "Solo - Servers"
+      },
+      %{
+        category_id: 1,
+        title: "queues",
+        description: "Solo - Queue Types"
+      },
+      %{
+        category_id: 1,
+        title: "lp",
+        description: "Solo - League Points"
+      },
+      %{
+        category_id: 1,
+        title: "promotions",
+        description: "Solo Promotional Series"
+      },
+      %{
+        category_id: 1,
+        title: "modifiers",
+        description: "Solo - Modifiers"
+      },
+      %{
         category_id: 2,
         title: "servers",
         description: "Duo - Servers"
@@ -92,6 +97,11 @@ defmodule LolHero.SeedFactory do
         category_id: 2,
         title: "lp",
         description: "Duo - League Points"
+      },
+      %{
+        category_id: 2,
+        title: "promotions",
+        description: "Duo Promotional Series"
       },
       %{
         category_id: 2,
@@ -158,16 +168,20 @@ defmodule LolHero.SeedFactory do
         description: "Challenger Tier - Division I"
       },
       %{
+        title: "LP",
+        description: "League Points"
+      },
+      %{
+        title: "Promotions",
+        description: "Promotional Series"
+      },
+      %{
         title: "Servers",
         description: "Servers"
       },
       %{
         title: "Queues",
         description: "Queue Types"
-      },
-      %{
-        title: "LP",
-        description: "League Points"
       },
       %{
         title: "Modifiers",
@@ -183,8 +197,8 @@ defmodule LolHero.SeedFactory do
       LolHero.Repo.all(
         from(p in LolHero.Product,
           where:
-          p.title != ^"Servers" and p.title != ^"Queues" and p.title != ^"Modifiers" and
-          p.title != ^"LP"
+            p.title != ^"Servers" and p.title != ^"Queues" and p.title != ^"Modifiers" and
+              p.title != ^"LP"
         )
       )
 
@@ -221,8 +235,8 @@ defmodule LolHero.SeedFactory do
     #   LolHero.Repo.all(
     #     from(c in LolHero.Collection,
     #       where:
-    #         c.title == ^"servers" and c.title == ^"queues" and c.title == ^"modifiers" and
-    #           c.title == ^"lp"
+    #         c.title == "servers" or c.title == "queues" or c.title == "modifiers" or
+    #           c.title == "lp" or c.title == "promotions"
     #     )
     #   )
 
@@ -230,26 +244,31 @@ defmodule LolHero.SeedFactory do
     #   LolHero.Repo.all(
     #     from(p in LolHero.Product,
     #       where:
-    #         p.title == ^"Servers" and p.title == ^"Queues" and p.title == ^"Modifiers" and
-    #           p.title == ^"LP"
+    #         p.title == "Servers" or p.title == "Queues" or p.title == "Modifiers" or
+    #           p.title == "LP" or p.title == "Promotions"
     #     )
     #   )
 
     # other_variants = []
 
-    # for collection <- others_collections do
-    #   for product <- other_products do
-    #     new_list =
-    #       List.insert_at(other_variants, 0, %{
-    #         product_id: product.id,
-    #         collection_id: collection.id,
-    #         title: product.title,
-    #         description: product.description,
-    #         base_price: 10
-    #       })
+    # others =
+    #   for collection <- other_collections do
+    #     for product <- other_products do
+    #       new_list =
+    #         List.insert_at(other_variants, 0, %{
+    #           product_id: product.id,
+    #           collection_id: collection.id,
+    #           title: product.title,
+    #           description: product.description,
+    #           base_price: 10
+    #         })
 
-    #     other_variants = new_list
+    #       other_variants = new_list
+    #     end
     #   end
-    # end
+
+    # others = List.flatten(others)
+
+    # ranks ++ others
   end
 end

@@ -11,7 +11,10 @@ defmodule LolHero.Services.Orders do
         select: o
       )
 
-    case Repo.one(query) do
+    query
+    |> Repo.one()
+    |> Repo.preload([:user, :booster])
+    |> case do
       nil ->
         {:error, "That combination does not exist. Please try again."}
 
@@ -29,7 +32,8 @@ defmodule LolHero.Services.Orders do
         payload = %{
           account_details: params["accountDetails"],
           details: Map.merge(order.details, params["details"]),
-          note: params["note"]
+          note: params["note"],
+          booster_id: params["booster_id"]
         }
 
         order
