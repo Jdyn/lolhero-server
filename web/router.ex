@@ -22,20 +22,16 @@ defmodule LolHero.Router do
   scope "/api/v1", LolHero do
     pipe_through(:api)
 
-    resources("/variants", VariantController, except: [:edit, :new])
-    resources("/products", ProductController, except: [:edit, :new])
-    resources("/collections", CollectionController, except: [:edit, :new])
-    resources("/categories", CategoryController, except: [:edit, :new])
-    resources("/users", UserController, except: [:edit, :new])
-    resources("/orders", OrderController, except: [:edit, :new])
-
     post("/order/:tracking_id", OrderController, :track)
     patch("/order/:tracking_id", OrderController, :initiate)
+
+    resources("/users", UserController, except: [:edit, :new])
+    resources("/orders", OrderController, except: [:edit, :new])
 
     post("/session", SessionController, :create)
     get("/prices", CategoryController, :prices)
 
-    get("/test", OrderController, :test)
+    # get("/test", OrderController, :test)
   end
 
   scope "/api/v1", LolHero do
@@ -49,9 +45,14 @@ defmodule LolHero.Router do
       patch("/order/:tracking_id", AccountController, :initiate)
     end
   end
-
+ 
   scope "/api/v1", LolHero do
     pipe_through([:api, :ensure_auth, :ensure_admin])
+
+    resources("/variants", VariantController, except: [:edit, :new])
+    resources("/products", ProductController, except: [:edit, :new])
+    resources("/collections", CollectionController, except: [:edit, :new])
+    resources("/categories", CategoryController, except: [:edit, :new])
 
     # resources("/account", Admin.AccountController, only: [], singleton: true) do
     #   get("/orders", Admin.AccountController, :orders)

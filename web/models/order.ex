@@ -83,7 +83,7 @@ defmodule LolHero.Order do
 
     order
     |> cast(attrs, [:note, :details, :account_details, :booster_id])
-    |> validate_required([:note, :details, :account_details])
+    |> validate_required([:details, :account_details])
     |> validate_keys(:details, detail_keys)
     |> put_change(:is_editable, false)
     |> put_change(:status, "initialized")
@@ -292,9 +292,13 @@ defmodule LolHero.Order do
 
     Enum.reduce(required_keys, changeset, fn key, changeset ->
       if Map.has_key?(details, key) do
-        changeset
+        if details[key] !== nil and details[key] !== "" do
+          changeset
+        else
+          add_error(changeset, field, "\"#{key}\" must not be empty.")
+        end
       else
-        add_error(changeset, field, "Key: \"#{key}\" must exist.")
+        add_error(changeset, field, "\"#{key}\" must exist.")
       end
     end)
   end
