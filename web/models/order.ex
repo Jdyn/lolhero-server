@@ -292,7 +292,7 @@ defmodule LolHero.Order do
 
     Enum.reduce(required_keys, changeset, fn key, changeset ->
       if Map.has_key?(details, key) do
-        if details[key] !== nil and details[key] !== "" do
+        if details[key] !== "" do
           changeset
         else
           add_error(changeset, field, "\"#{key}\" must not be empty.")

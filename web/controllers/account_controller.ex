@@ -57,9 +57,17 @@ defmodule LolHero.AccountController do
 
     case(Accounts.show_order(user.id, user.role, params["tracking_id"])) do
       {:ok, order} ->
-        conn
-        |> put_status(:ok)
-        |> render("show_order.json", order: order)
+        case user.role do
+          match when match in ["booster", "admin"] ->
+            conn
+            |> put_status(:ok)
+            |> render("show_booster_order.json", order: order)
+
+          "user" ->
+            conn
+            |> put_status(:ok)
+            |> render("show_order.json", order: order)
+        end
 
       {:error, reason} ->
         conn

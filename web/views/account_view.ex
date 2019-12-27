@@ -41,6 +41,15 @@ defmodule LolHero.AccountView do
     }
   end
 
+  def render("show_booster_order.json", %{order: order}) do
+    %{
+      ok: true,
+      result: %{
+        order: render_one(order, OrderView, "full_booster_order.json", as: :order)
+      }
+    }
+  end
+
   def render("mini_order.json", %{order: order}) do
     %{
       title: order.title,
