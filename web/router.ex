@@ -22,8 +22,13 @@ defmodule LolHero.Router do
   scope "/api/v1", LolHero do
     pipe_through(:api)
 
-    post("/order/:tracking_id", OrderController, :track)
-    patch("/order/:tracking_id", OrderController, :initiate)
+    # post("/order/:tracking_id/status", )
+
+    resources("/order", OrderController, only: [], singleton: true) do
+      post("/:tracking_id", OrderController, :track)
+      patch("/:tracking_id", OrderController, :initiate)
+      post("/:tracking_id/status", OrderController, :change_status)
+    end
 
     resources("/users", UserController, except: [:edit, :new])
     resources("/orders", OrderController, except: [:edit, :new])
@@ -42,6 +47,7 @@ defmodule LolHero.Router do
     resources("/account", AccountController, only: [], singleton: true) do
       get("/orders", AccountController, :orders)
       get("/order/:tracking_id", AccountController, :show_order)
+      post("/order/:tracking_id/status", AccountController, :change_status)
       patch("/order/:tracking_id", AccountController, :initiate)
     end
   end

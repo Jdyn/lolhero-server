@@ -59,7 +59,6 @@ defmodule LolHero.Services.Accounts do
             {:error, changeset}
 
           {:ok, order} ->
-
             {:ok, Repo.preload(order, [:user, :booster])}
         end
     end
@@ -78,6 +77,34 @@ defmodule LolHero.Services.Accounts do
 
       order ->
         {:ok, order}
+    end
+  end
+
+  def change_status(user_id, tracking_id, new_status) do
+    query =
+      from(o in Order,
+        where: o.tracking_id == ^tracking_id and o.user_id == ^user_id
+      )
+
+    case Repo.one(query) do
+      nil ->
+        {:unauthorized, "Order does not exist."}
+
+      order ->
+        payload = %{
+          status: new_status
+        }
+
+        order
+        |> Order.status_changeset(payload)
+        |> Repo.update()
+        |> case do
+          {:error, changeset} ->
+            {:error, changeset}
+
+          {:ok, order} ->
+            {:ok, Repo.preload(order, [:user, :booster])}
+        end
     end
   end
 

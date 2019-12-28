@@ -23,6 +23,29 @@ defmodule LolHero.Services.Orders do
     end
   end
 
+  def change_status(params) do
+    case authenticate(params["tracking_id"], params["email"]) do
+      {:error, reason} ->
+        {:unauthorized, reason}
+
+      {:ok, order} ->
+        payload = %{
+          status: params["status"]
+        }
+
+        order
+        |> Order.status_changeset(payload)
+        |> Repo.update()
+        |> case do
+          {:error, changeset} ->
+            {:error, changeset}
+
+          {:ok, order} ->
+            {:ok, Repo.preload(order, [:user, :booster])}
+        end
+    end
+  end
+
   def initiate(params) do
     case authenticate(params["tracking_id"], params["email"]) do
       {:error, reason} ->

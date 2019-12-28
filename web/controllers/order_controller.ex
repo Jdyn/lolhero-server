@@ -49,6 +49,23 @@ defmodule LolHero.OrderController do
     end
   end
 
+  def change_status(conn, params) do
+    user = Guardian.Plug.current_resource(conn)
+
+    case Orders.change_status(params) do
+      {:ok, order} ->
+        conn
+        |> put_status(:ok)
+        |> render("show.json", order: order)
+
+      {:error, changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> put_view(LolHero.ErrorView)
+        |> render("changeset_error.json", changeset: changeset)
+    end
+  end
+
   def create_token(conn, _params) do
     {:ok, token} = ClientToken.generate(%{version: 3})
 

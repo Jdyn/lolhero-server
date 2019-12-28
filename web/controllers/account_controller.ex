@@ -76,4 +76,21 @@ defmodule LolHero.AccountController do
         |> render("error.json", error: reason)
     end
   end
+
+  def change_status(conn, params) do
+    user = Guardian.Plug.current_resource(conn)
+
+    case Accounts.change_status(user.id, params["tracking_id"], params["status"]) do
+      {:ok, order} ->
+        conn
+        |> put_status(:ok)
+        |> render("show_order.json", order: order)
+
+      {:error, changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> put_view(LolHero.ErrorView)
+        |> render("changeset_error.json", changeset: changeset)
+    end
+  end
 end

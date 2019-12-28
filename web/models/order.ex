@@ -77,6 +77,12 @@ defmodule LolHero.Order do
     |> create_transaction(attrs)
   end
 
+  def status_changeset(order, attrs) do
+    order
+    |> cast(attrs, [:status])
+    |> validate_inclusion(:status, ["paused", "active"])
+  end
+
   def initiation_changeset(order, attrs) do
     detail_keys = ~w(primaryRole secondaryRole summonerName)
     account_keys = ~w(username password)
