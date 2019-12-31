@@ -31,7 +31,7 @@ defmodule LolHero.UserController do
     #     conn
     #     |> put_status(:unprocessable_entity)
     #     |> put_view(ErrorView)
-    #     |> render("error.json", reason: reason)
+    #     |> render("error.json", error: reason)
     # end
   end
 
@@ -47,13 +47,13 @@ defmodule LolHero.UserController do
         conn
         |> put_status(:unauthorized)
         |> put_view(ErrorView)
-        |> render("error.json", reason: reason)
+        |> render("error.json", error: reason)
 
       {:expired, reason} ->
         conn
         |> put_status(:unprocessable_entity)
         |> put_view(ErrorView)
-        |> render("error.json", reason: reason)
+        |> render("error.json", error: reason)
 
       {:error, changeset} ->
         conn

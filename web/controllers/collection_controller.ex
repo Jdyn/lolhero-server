@@ -53,7 +53,7 @@ defmodule LolHero.CollectionController do
         conn
         |> put_status(:not_found)
         |> put_view(LolHero.ErrorView)
-        |> render("error.json", %{error: "Collection does not exist."})
+        |> render("error.json", error: "Collection does not exist.")
 
       collection ->
         Collection.delete(collection)

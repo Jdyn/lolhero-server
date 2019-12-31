@@ -9,6 +9,6 @@ defmodule LolHero.Auth.ErrorHandler do
     conn
     |> put_status(:unauthorized)
     |> put_view(ErrorView)
-    |> render("error.json", %{error: "An authentication error has occurred."})
+    |> render("error.json", error: "An authentication error has occurred.")
   end
 end
