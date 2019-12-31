@@ -73,7 +73,6 @@ defmodule LolHero.OrderController do
   end
 
   def create(conn, params) do
-    # Ecto.UUID.generate() |> binary_part(10, 10)
     tracking_id = Nanoid.generate()
 
     case Order.find_by(tracking_id: tracking_id) do
@@ -82,7 +81,6 @@ defmodule LolHero.OrderController do
           nil ->
             params
             |> Map.put("tracking_id", to_string(tracking_id))
-            # |> Map.put("user_id", nil)
             |> Order.create()
             |> case do
               {:ok, order} ->

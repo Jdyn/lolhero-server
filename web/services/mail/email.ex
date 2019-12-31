@@ -46,4 +46,21 @@ defmodule LolHero.Email do
       </body>
       ")
   end
+
+  def reset_password_email(email, reset_token) do
+    base_email()
+    |> to(email)
+    |> subject("Account Password Recovery")
+    |> html_body(
+      "
+      <body>
+        <p>
+          Here is a link to change your account password: <a href=\"localhost:3000/account/recover/#{
+        reset_token
+      }\"> recover </a>
+        </p>
+      </body>
+      "
+    )
+  end
 end

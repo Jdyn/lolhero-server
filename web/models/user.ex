@@ -17,6 +17,9 @@ defmodule LolHero.User do
     field(:password, :string, virtual: true)
     field(:token, :string, virtual: true)
 
+    field(:reset_token, :string)
+    field(:reset_token_expiry, :utc_datetime)
+
     field(:is_admin, :boolean, default: false)
 
     has_many(:orders, Order)
@@ -46,6 +49,19 @@ defmodule LolHero.User do
   def admin_changeset(user, attrs) do
     user
     |> cast(attrs, [:is_admin, :role])
+  end
+
+  def password_token_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:reset_token, :reset_token_expiry])
+  end
+
+  def password_update_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:password])
+    |> validate_required([:password])
+    |> validate_length(:password, min: 6, max: 100)
+    |> hash_password
   end
 
   def changeset(user, attrs) do

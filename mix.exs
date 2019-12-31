@@ -38,6 +38,7 @@ defmodule LolHero.MixProject do
       {:bcrypt_elixir, "~> 2.0.3"},
       {:guardian, "~> 2.0.0"},
       {:braintree, "~> 0.10.0"},
+      {:timex, "~> 3.6.1"},
       {:bamboo, "~> 1.3"},
       {:nanoid, "~> 2.0.2"},
       {:edeliver, ">= 1.7.0"},

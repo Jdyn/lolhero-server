@@ -33,6 +33,9 @@ defmodule LolHero.Router do
     resources("/users", UserController, except: [:edit, :new])
     resources("/orders", OrderController, except: [:edit, :new])
 
+    post("/account/password/reset", UserController, :reset_password)
+    patch("/account/password/update", UserController, :update_password)
+
     post("/session", SessionController, :create)
     get("/prices", CategoryController, :prices)
 

@@ -16,10 +16,10 @@ defmodule LolHero.ErrorView do
     }
   end
 
-  def render("error.json", %{error: reason}) do
+  def render("error.json", %{reason: error}) do
     %{
       ok: false,
-      error: reason,
+      error: error,
       result: %{}
     }
   end
