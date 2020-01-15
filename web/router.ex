@@ -1,6 +1,8 @@
 defmodule LolHero.Router do
   use LolHero.Web, :router
 
+  default_routes = [:index, :create, :show, :update, :delete]
+
   pipeline :api do
     plug(:accepts, ["json"])
     plug(LolHero.Auth.Pipeline)
@@ -22,51 +24,45 @@ defmodule LolHero.Router do
   scope "/api/v1", LolHero do
     pipe_through(:api)
 
-    # post("/order/:tracking_id/status", )
-
     resources("/order", OrderController, only: [], singleton: true) do
+      post("/create", OrderController, :create)
       post("/:tracking_id", OrderController, :track)
       patch("/:tracking_id", OrderController, :initiate)
       post("/:tracking_id/status", OrderController, :change_status)
     end
 
-    resources("/users", UserController, except: [:edit, :new])
-    resources("/orders", OrderController, except: [:edit, :new])
+    resources("/account", AccountController, only: [], singleton: true) do
+      post("/login", SessionController, :create)
+      post("/signup", UserController, :create)
+      post("/password/reset", UserController, :reset_password)
+      patch("/password/update", UserController, :update_password)
+    end
 
-    post("/account/password/reset", UserController, :reset_password)
-    patch("/account/password/update", UserController, :update_password)
-
-    post("/session", SessionController, :create)
     get("/prices", CategoryController, :prices)
-
-    # get("/test", OrderController, :test)
   end
 
   scope "/api/v1", LolHero do
     pipe_through([:api, :ensure_auth])
 
-    resources("/session", SessionController, only: [:show, :delete], singleton: true)
+    get("/account", SessionController, :show)
 
     resources("/account", AccountController, only: [], singleton: true) do
       get("/orders", AccountController, :orders)
       get("/order/:tracking_id", AccountController, :show_order)
       post("/order/:tracking_id/status", AccountController, :change_status)
       patch("/order/:tracking_id", AccountController, :initiate)
+      delete("/logout", SessionController, :delete)
     end
   end
- 
+
   scope "/api/v1", LolHero do
     pipe_through([:api, :ensure_auth, :ensure_admin])
 
-    resources("/variants", VariantController, except: [:edit, :new])
-    resources("/products", ProductController, except: [:edit, :new])
-    resources("/collections", CollectionController, except: [:edit, :new])
-    resources("/categories", CategoryController, except: [:edit, :new])
-
-    # resources("/account", Admin.AccountController, only: [], singleton: true) do
-    #   get("/orders", Admin.AccountController, :orders)
-    #   get("/order/:tracking_id", AccountController, :show_order)
-    #   patch("/order/:tracking_id", AccountController, :initiate)
-    # end
+    resources("/users", UserController, only: default_routes)
+    resources("/orders", OrderController, only: default_routes)
+    resources("/variants", VariantController, only: default_routes)
+    resources("/products", ProductController, only: default_routes)
+    resources("/collections", CollectionController, only: default_routes)
+    resources("/categories", CategoryController, only: default_routes)
   end
 end

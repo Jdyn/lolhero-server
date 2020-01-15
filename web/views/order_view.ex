@@ -57,6 +57,7 @@ defmodule LolHero.OrderView do
       status: order.status,
       trackingId: order.tracking_id,
       createdAt: order.inserted_at,
+      id: order.id,
       price: order.price
     }
   end

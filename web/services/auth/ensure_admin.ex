@@ -8,7 +8,7 @@ defmodule LolHero.Auth.EnsureAdmin do
     def call(conn, _opts) do
       current_user = Guardian.Plug.current_resource(conn)
   
-      if current_user && current_user.is_admin do
+      if current_user && current_user.is_admin || current_user.role == "admin" do
         conn
       else
         conn

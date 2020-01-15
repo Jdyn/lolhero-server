@@ -9,7 +9,13 @@ defmodule LolHero.UserController do
   end
 
   def show(conn, params) do
-    render(conn, "show.json", user: User.find_by(id: params["id"]) |> Repo.preload(:orders))
+    query = String.to_atom(params["query"])
+
+    user =
+      User.find_by(%{query => params["id"]})
+      |> Repo.preload(:orders)
+
+    render(conn, "full_show.json", user: user)
   end
 
   def reset_password(conn, params) do
@@ -75,6 +81,27 @@ defmodule LolHero.UserController do
         conn
         |> put_status(:unprocessable_entity)
         |> put_view(ErrorView)
+        |> render("changeset_error.json", changeset: changeset)
+    end
+  end
+
+  def update(conn, params) do
+    query = String.to_atom(params["query"])
+
+    user = User.find_by(%{query => params["id"]})
+
+    user
+    |> User.update(params)
+    |> case do
+      {:ok, user} ->
+        conn
+        |> put_status(:ok)
+        |> render("user.json", user: user)
+
+      {:error, changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> put_view(LolHero.ErrorView)
         |> render("changeset_error.json", changeset: changeset)
     end
   end

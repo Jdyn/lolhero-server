@@ -110,7 +110,14 @@ defmodule LolHero.Services.Accounts do
 
   def show_order_query(id, role, tracking_id) do
     case role do
-      match when match in ["booster", "admin"] ->
+      "booster" ->
+        from(order in Order,
+          where: order.user_id == ^id or order.booster_id == ^id and order.tracking_id == ^tracking_id,
+          preload: [:user],
+          select: order
+        )
+
+      "admin" ->
         from(order in Order,
           where: order.tracking_id == ^tracking_id,
           preload: [:user],
@@ -128,7 +135,14 @@ defmodule LolHero.Services.Accounts do
 
   def order_list_query(id, role) do
     case role do
-      match when match in ["booster", "admin"] ->
+      "booster" ->
+        from(order in Order,
+          where: order.user_id == ^id or order.booster_id == ^id,
+          order_by: [desc: order.inserted_at],
+          select: order
+        )
+
+      "admin" ->
         from(order in Order,
           order_by: [desc: order.inserted_at],
           select: order

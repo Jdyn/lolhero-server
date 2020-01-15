@@ -39,9 +39,8 @@ defmodule LolHero.User do
     Repo.get_by(User, param)
   end
 
-  def update_user(%User{} = user, attrs) do
+  def update(%User{} = user, attrs) do
     user
-    |> changeset(attrs)
     |> admin_changeset(attrs)
     |> Repo.update()
   end
@@ -49,6 +48,7 @@ defmodule LolHero.User do
   def admin_changeset(user, attrs) do
     user
     |> cast(attrs, [:is_admin, :role])
+    |> validate_inclusion(:role, ["admin", "booster", "user"])
   end
 
   def password_token_changeset(user, attrs) do

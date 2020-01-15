@@ -55,6 +55,12 @@ defmodule LolHero.Order do
     |> Repo.delete_all()
   end
 
+  def update(%Order{} = order, attrs) do
+    order
+    |> changeset(attrs)
+    |> Repo.update()
+  end
+
   def changeset(order, attrs) do
     keys = ~w(type details tracking_id status paid price note email user_id booster_id)a
 

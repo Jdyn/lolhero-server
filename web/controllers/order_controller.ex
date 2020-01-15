@@ -7,11 +7,10 @@ defmodule LolHero.OrderController do
 
   def index(conn, _params), do: render(conn, "index.json", orders: Order.find_all())
 
-  def test(conn, params) do
-    Email.order_success_email("test@test.com", "ABCDE")
-    |> Mailer.deliver_now()
+  def show(conn, params) do
+    order = Order.find_by(tracking_id: params["id"]) |> Repo.preload([:user, :booster])
 
-    conn
+    render(conn, "show.json", order: order)
   end
 
   def track(conn, %{"tracking_id" => tracking_id, "email" => email}) do
