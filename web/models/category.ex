@@ -29,6 +29,12 @@ defmodule LolHero.Category do
     |> Repo.get(id)
   end
 
+  def find_by(params) do
+    Category
+    |> Repo.get_by(params)
+    |> Repo.preload(collections: [variants: [:product]])
+  end
+
   def find_all() do
     Category
     |> Repo.all()

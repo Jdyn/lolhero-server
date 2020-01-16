@@ -8,6 +8,10 @@ defmodule LolHero.CategoryController do
     render(conn, "list.json", categories: Category.find_all())
   end
 
+  def show(conn, params) do
+    render(conn, "show.json", category: Category.find_by(id: params["id"]))
+  end
+
   def prices(conn, _params) do
     render(conn, "prices.json", categories: Category.format_prices(Category.find_all()))
   end
