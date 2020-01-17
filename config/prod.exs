@@ -12,7 +12,7 @@ use Mix.Config
 config :LolHero, LolHero.Endpoint,
   http: [port: 4000],
   load_from_system_env: true,
-  url: [host: "lolhero.gg", port: 80],
+  url: [host: "13.56.245.23", port: 80],
   server: true,
   code_reloader: false
 
