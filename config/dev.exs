@@ -16,6 +16,13 @@ config :LolHero, LolHero.Auth.Guardian,
   ttl: {7, :days},
   secret_key: "0GgeeYRkTioaFSWvXwdKoyfux2T0KdI4iVjl/wqJdPYEBZMOuDWdluvo6PexcAIL"
 
+config :braintree,
+  environment: :sandbox,
+  master_merchant_id: "",
+  merchant_id: "cfcsbff65qmxzrgf",
+  public_key: "q24ty9f2rj3b7r6m",
+  private_key: "1d09f9423d6d58842a31eb24840e6120"
+
 # For development, we disable any cache and enable
 # debugging and code reloading.
 #
