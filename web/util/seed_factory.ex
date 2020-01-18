@@ -153,6 +153,13 @@ defmodule LolHero.SeedFactory do
     List.flatten(result)
   end
 
+  def get_base_price(tier) do
+    case tier do
+      "Iron" ->
+        16
+    end
+  end
+
   def products() do
     extras = [
       %{
@@ -202,7 +209,7 @@ defmodule LolHero.SeedFactory do
         )
       )
 
-    ranks =
+    collections =
       LolHero.Repo.all(
         from(c in LolHero.Collection,
           where:
@@ -214,7 +221,7 @@ defmodule LolHero.SeedFactory do
     variants = []
 
     result =
-      for collection <- ranks do
+      for collection <- collections do
         for product <- products do
           new_list =
             List.insert_at(variants, 0, %{
@@ -230,45 +237,5 @@ defmodule LolHero.SeedFactory do
       end
 
     ranks = List.flatten(result)
-
-    # other_collections =
-    #   LolHero.Repo.all(
-    #     from(c in LolHero.Collection,
-    #       where:
-    #         c.title == "servers" or c.title == "queues" or c.title == "modifiers" or
-    #           c.title == "lp" or c.title == "promotions"
-    #     )
-    #   )
-
-    # other_products =
-    #   LolHero.Repo.all(
-    #     from(p in LolHero.Product,
-    #       where:
-    #         p.title == "Servers" or p.title == "Queues" or p.title == "Modifiers" or
-    #           p.title == "LP" or p.title == "Promotions"
-    #     )
-    #   )
-
-    # other_variants = []
-
-    # others =
-    #   for collection <- other_collections do
-    #     for product <- other_products do
-    #       new_list =
-    #         List.insert_at(other_variants, 0, %{
-    #           product_id: product.id,
-    #           collection_id: collection.id,
-    #           title: product.title,
-    #           description: product.description,
-    #           base_price: 10
-    #         })
-
-    #       other_variants = new_list
-    #     end
-    #   end
-
-    # others = List.flatten(others)
-
-    # ranks ++ others
   end
 end
