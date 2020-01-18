@@ -175,6 +175,10 @@ defmodule LolHero.SeedFactory do
         description: "Challenger Tier - Division I"
       },
       %{
+        title: "Unranked",
+        description: "Unranked"
+      },
+      %{
         title: "LP",
         description: "League Points"
       },

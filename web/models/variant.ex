@@ -35,7 +35,7 @@ defmodule LolHero.Variant do
   def find_all() do
     Variant
     |> Repo.all()
-    |> Repo.preload(:product)
+    |> Repo.preload([:product, :collection])
   end
 
   def delete(%Variant{} = variant) do

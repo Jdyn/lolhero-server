@@ -63,6 +63,15 @@ end
 
 extras = [
   #
+  # Unranked Tier
+  #
+  %Variant{
+    base_price: 10,
+    product_id: 28,
+    collection_id: 2,
+    title: "Unranked"
+  }
+  #
   # Solo LP
   #
   %Variant{
