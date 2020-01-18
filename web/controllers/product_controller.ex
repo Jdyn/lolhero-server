@@ -1,14 +1,14 @@
 defmodule LolHero.ProductController do
   use LolHero.Web, :controller
 
-  alias LolHero.Product
+  alias LolHero.{Product, Repo}
 
   def index(conn, _params) do
     render(conn, "index.json", products: Product.find_all())
   end
 
   def show(conn, params) do
-    render(conn, "show.json", product: Product.find(params["id"]))
+    render(conn, "show.json", product: Product.find(params["id"]) |> Repo.preload(:variants))
   end
 
   def create(conn, params) do
