@@ -30,6 +30,15 @@ defmodule LolHero.OrderView do
     }
   end
 
+  def render("booster_show.json", %{order: order}) do
+    %{
+      ok: true,
+      result: %{
+        order: render_one(order, OrderView, "full_booster_order.json")
+      }
+    }
+  end
+
   def render("session.json", %{session: session}) do
     %{
       ok: true,
@@ -70,7 +79,7 @@ defmodule LolHero.OrderView do
       trackingId: order.tracking_id,
       createdAt: order.inserted_at,
       isEditable: order.is_editable,
-      price: order.price,
+      # price: order.price,
       user: render_one(order.user, UserView, "order_user.json", as: :user),
       booster: render_one(order.booster, UserView, "order_user.json", as: :user),
       details: order.details
@@ -85,7 +94,9 @@ defmodule LolHero.OrderView do
       trackingId: order.tracking_id,
       createdAt: order.inserted_at,
       isEditable: order.is_editable,
-      price: order.price,
+      # price: order.price,
+      isComplete: order.is_complete,
+      isActive: order.is_active,
       user: render_one(order.user, UserView, "order_user.json", as: :user),
       booster: render_one(order.booster, UserView, "order_user.json", as: :user),
       details: order.details,

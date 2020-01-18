@@ -9,7 +9,6 @@ defmodule LolHero.OrderController do
 
   def show(conn, params) do
     order = Order.find_by(tracking_id: params["id"]) |> Repo.preload([:user, :booster])
-
     render(conn, "show.json", order: order)
   end
 
@@ -26,9 +25,30 @@ defmodule LolHero.OrderController do
     end
   end
 
+  def update(conn, params) do
+    query = String.to_atom(params["query"])
+
+    order = Order.find_by(%{query => params["id"]}) |> Repo.preload([:user, :booster])
+
+    order
+    |> Order.update(params)
+    |> case do
+      {:ok, order} ->
+        conn
+        |> put_status(:ok)
+        |> render("booster_show.json", order: order)
+
+      {:error, changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> put_view(LolHero.ErrorView)
+        |> render("changeset_error.json", changeset: changeset)
+    end
+  end
+
   def initiate(conn, params) do
     params
-    |> Map.put("booster_id", 1)
+    # |> Map.put("booster_id", 1)
     |> Orders.initiate()
     |> case do
       {:ok, order} ->
@@ -89,6 +109,9 @@ defmodule LolHero.OrderController do
                 Email.order_success_email(email, tracking_id)
                 |> Mailer.deliver_now()
 
+                Email.order_placed_email(order)
+                |> Mailer.deliver_now()
+
                 conn
                 |> put_status(:ok)
                 |> render("created.json", %{order: order, success_url: success_url})
@@ -111,7 +134,7 @@ defmodule LolHero.OrderController do
 
                 success_url = "/order/success/#{tracking_id}/"
 
-                Email.order_success_email(email, tracking_id)
+                Email.account_order_success_email(email, tracking_id)
                 |> Mailer.deliver_now()
 
                 Email.order_placed_email(order)

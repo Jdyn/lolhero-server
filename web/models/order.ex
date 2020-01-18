@@ -57,7 +57,7 @@ defmodule LolHero.Order do
 
   def update(%Order{} = order, attrs) do
     order
-    |> changeset(attrs)
+    |> update_changeset(attrs)
     |> Repo.update()
   end
 
@@ -68,8 +68,16 @@ defmodule LolHero.Order do
     |> cast(attrs, keys)
     |> validate_required([:type, :details, :tracking_id, :status])
     |> validate_required([:email], message: "Please enter your email to complete the order.")
-    |> validate_inclusion(:status, ["open", "incomplete", "in progress", "completed"])
+    |> validate_inclusion(:status, ["open", "in progress", "completed", "paused", "active"])
     |> foreign_key_constraint(:user_id)
+  end
+
+  def update_changeset(order, attrs) do
+    order
+    |> cast(attrs, [:status, :booster_id, :is_complete, :is_active])
+    |> validate_inclusion(:status, ["open", "in progress", "completed", "paused", "active"])
+    |> validate_status()
+    |> foreign_key_constraint(:booster_id)
   end
 
   def boost_changeset(order, attrs) do
@@ -313,5 +321,19 @@ defmodule LolHero.Order do
         add_error(changeset, field, "\"#{key}\" must exist.")
       end
     end)
+  end
+
+  def validate_status(changeset) do
+    status = get_field(changeset, :status)
+
+    if status == "completed" do
+      changeset
+      |> put_change(:is_complete, true)
+      |> put_change(:is_active, false)
+    else
+      changeset
+      |> put_change(:is_complete, false)
+      |> put_change(:is_active, true)
+    end
   end
 end

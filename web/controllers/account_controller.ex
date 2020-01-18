@@ -8,17 +8,17 @@ defmodule LolHero.AccountController do
     user = Guardian.Plug.current_resource(conn)
 
     case Accounts.all_user_orders(user.id, user.role) do
-      {:ok, orders} ->
+      {:ok, payload} ->
         case user.role do
           match when match in ["booster", "admin"] ->
             conn
             |> put_status(:ok)
-            |> render("booster_order_list.json", orders: orders)
+            |> render("booster_order_list.json", payload: payload)
 
           "user" ->
             conn
             |> put_status(:ok)
-            |> render("order_list.json", orders: orders)
+            |> render("order_list.json", payload: payload)
         end
 
       {:error, reason} ->
@@ -80,7 +80,7 @@ defmodule LolHero.AccountController do
   def change_status(conn, params) do
     user = Guardian.Plug.current_resource(conn)
 
-    case Accounts.change_status(user.id, params["tracking_id"], params["status"]) do
+    case Accounts.change_status(params["tracking_id"], params["status"], user) do
       {:ok, order} ->
         conn
         |> put_status(:ok)

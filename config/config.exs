@@ -15,7 +15,8 @@ config :LolHero, LolHero.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "efji1xS0LJo2ZlgiwoSjjUI+11SiZpO+F+i+3OE0Znl3mMOGj19Xx9yEO3LuIteG",
   render_errors: [view: LolHero.ErrorView, accepts: ~w(json)],
-  pubsub: [name: LolHero.PubSub, adapter: Phoenix.PubSub.PG2]
+  pubsub: [name: LolHero.PubSub, adapter: Phoenix.PubSub.PG2],
+  mail_url: if (Mix.env() == :dev), do: "http://localhost:3000", else: "https://lolhero.gg"
 
   config :nanoid,
   size: 5,

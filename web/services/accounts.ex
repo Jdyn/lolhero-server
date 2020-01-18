@@ -1,5 +1,5 @@
 defmodule LolHero.Services.Accounts do
-  alias LolHero.{Repo, Order}
+  alias LolHero.{Repo, Order, User}
   import Ecto.Query
 
   def all_user_orders(id, role) do
@@ -16,28 +16,40 @@ defmodule LolHero.Services.Accounts do
         active = Enum.filter(orders, fn order -> order.is_active == true end)
         completed = Enum.filter(orders, fn order -> order.is_complete == true end)
 
-        orders = %{
-          total_count: length(active) + length(completed),
-          active: %{
-            count: length(active),
-            orders: active
-          },
-          complete: %{
-            count: length(completed),
-            orders: completed
+        payload = %{
+          boosters: [],
+          orders: %{
+            total_count: length(active) + length(completed),
+            active: %{
+              count: length(active),
+              orders: active
+            },
+            complete: %{
+              count: length(completed),
+              orders: completed
+            }
           }
         }
 
-        {:ok, orders}
+        if role == "admin" do
+          boosters =
+            Repo.all(
+              from(user in User,
+                where: user.role == "admin" or user.role == "booster",
+                select: user
+              )
+            )
+
+          payload = Map.put(payload, :boosters, boosters)
+          {:ok, payload}
+        else
+          {:ok, payload}
+        end
     end
   end
 
   def initiate(%{"tracking_id" => tracking_id} = params, user) do
-    query =
-      from(o in Order,
-        where: o.tracking_id == ^tracking_id and o.user_id == ^user.id,
-        select: o
-      )
+    query = show_order_query(user.id, user.role, tracking_id)
 
     case Repo.one(query) do
       nil ->
@@ -80,11 +92,8 @@ defmodule LolHero.Services.Accounts do
     end
   end
 
-  def change_status(user_id, tracking_id, new_status) do
-    query =
-      from(o in Order,
-        where: o.tracking_id == ^tracking_id and o.user_id == ^user_id
-      )
+  def change_status(tracking_id, new_status, user) do
+    query = show_order_query(user.id, user.role, tracking_id)
 
     case Repo.one(query) do
       nil ->
@@ -112,7 +121,9 @@ defmodule LolHero.Services.Accounts do
     case role do
       "booster" ->
         from(order in Order,
-          where: order.user_id == ^id or order.booster_id == ^id and order.tracking_id == ^tracking_id,
+          where:
+            order.user_id == ^id or
+              (order.booster_id == ^id and order.tracking_id == ^tracking_id),
           preload: [:user],
           select: order
         )

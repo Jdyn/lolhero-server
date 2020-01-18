@@ -82,6 +82,13 @@ defmodule LolHero.UserView do
     }
   end
 
+  def render("list_user.json", %{user: user}) do
+    %{
+      id: user.id,
+      username: user.username
+    }
+  end
+
   def render("full_user.json", %{user: user}) do
     %{
       id: user.id,

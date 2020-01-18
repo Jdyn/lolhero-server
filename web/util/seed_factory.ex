@@ -209,7 +209,7 @@ defmodule LolHero.SeedFactory do
         from(p in LolHero.Product,
           where:
             p.title != ^"Servers" and p.title != ^"Queues" and p.title != ^"Modifiers" and
-              p.title != ^"LP" and p.title != "Promotions"
+              p.title != ^"LP" and p.title != "Promotions" and p.title != "Unranked"
         )
       )
 

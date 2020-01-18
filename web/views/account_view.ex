@@ -2,34 +2,37 @@ defmodule LolHero.AccountView do
   use LolHero.Web, :view
   alias LolHero.{OrderView, AccountView, UserView}
 
-  def order_list(orders, view) do
+  def order_list(payload, view) do
     %{
       ok: true,
       result: %{
-        total: %{
-          title: "Total Orders",
-          count: orders.total_count
-        },
-        active: %{
-          title: "Active Orders",
-          count: orders.active.count,
-          orders: render_many(orders.active.orders, AccountView, view, as: :order)
-        },
-        completed: %{
-          title: "Completed Orders",
-          count: orders.complete.count,
-          orders: render_many(orders.complete.orders, AccountView, view, as: :order)
+        boosters: render_many(payload.boosters, UserView, "list_user.json", as: :user),
+        orders: %{
+          total: %{
+            title: "Total Orders",
+            count: payload.orders.total_count
+          },
+          active: %{
+            title: "Active Orders",
+            count: payload.orders.active.count,
+            orders: render_many(payload.orders.active.orders, AccountView, view, as: :order)
+          },
+          completed: %{
+            title: "Completed Orders",
+            count: payload.orders.complete.count,
+            orders: render_many(payload.orders.complete.orders, AccountView, view, as: :order)
+          }
         }
       }
     }
   end
 
-  def render("order_list.json", %{orders: orders}) do
-    order_list(orders, "mini_order.json")
+  def render("order_list.json", %{payload: payload}) do
+    order_list(payload, "mini_order.json")
   end
 
-  def render("booster_order_list.json", %{orders: orders}) do
-    order_list(orders, "booster_mini_order.json")
+  def render("booster_order_list.json", %{payload: payload}) do
+    order_list(payload, "booster_mini_order.json")
   end
 
   def render("show_order.json", %{order: order}) do
