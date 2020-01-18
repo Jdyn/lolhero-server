@@ -11,6 +11,8 @@ defmodule LolHero.Repo.Migrations.CreateUsers do
       add(:role, :string, default: "user")
       add(:password_hash, :string)
       add(:is_admin, :boolean, default: false, null: false)
+      add(:reset_token, :string)
+      add(:reset_token_expiry, :utc_datetime)
       
       timestamps()
     end

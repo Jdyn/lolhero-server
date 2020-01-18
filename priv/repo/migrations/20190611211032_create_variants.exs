@@ -5,7 +5,7 @@ defmodule LolHero.Repo.Migrations.CreateVariants do
     create table(:variants) do
       add(:title, :string)
       add(:description, :text)
-      add(:base_price, :integer)
+      add(:base_price, :decimal)
 
       add(:product_id, references(:products))
       add(:collection_id, references(:collections))
