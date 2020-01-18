@@ -60,3 +60,9 @@ for item <- variants do
     base_price: 10
   })
 end
+
+# Repo.insert_all!(LolHero.Variant, [
+#   %{
+#     title: "is_unrestricted"
+#   }
+# ])
