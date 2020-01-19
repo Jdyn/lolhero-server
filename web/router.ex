@@ -24,13 +24,6 @@ defmodule LolHero.Router do
   scope "/api/v1", LolHero do
     pipe_through(:api)
 
-    resources("/users", UserController, only: default_routes)
-    resources("/orders", OrderController, only: default_routes)
-    resources("/variants", VariantController, only: default_routes)
-    resources("/products", ProductController, only: default_routes)
-    resources("/collections", CollectionController, only: default_routes)
-    resources("/categories", CategoryController, only: default_routes)
-
     resources("/order", OrderController, only: [], singleton: true) do
       post("/create", OrderController, :create)
       post("/:tracking_id", OrderController, :track)
@@ -67,11 +60,11 @@ defmodule LolHero.Router do
 
     get("/boosters", UserController, :show_boosters)
 
-    # resources("/users", UserController, only: default_routes)
-    # resources("/orders", OrderController, only: default_routes)
-    # resources("/variants", VariantController, only: default_routes)
-    # resources("/products", ProductController, only: default_routes)
-    # resources("/collections", CollectionController, only: default_routes)
-    # resources("/categories", CategoryController, only: default_routes)
+    resources("/users", UserController, only: default_routes)
+    resources("/orders", OrderController, only: default_routes)
+    resources("/variants", VariantController, only: default_routes)
+    resources("/products", ProductController, only: default_routes)
+    resources("/collections", CollectionController, only: default_routes)
+    resources("/categories", CategoryController, only: default_routes)
   end
 end
