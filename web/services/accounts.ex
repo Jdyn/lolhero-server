@@ -17,7 +17,6 @@ defmodule LolHero.Services.Accounts do
         completed = Enum.filter(orders, fn order -> order.is_complete == true end)
 
         payload = %{
-          boosters: [],
           orders: %{
             total_count: length(active) + length(completed),
             active: %{
@@ -31,20 +30,7 @@ defmodule LolHero.Services.Accounts do
           }
         }
 
-        if role == "admin" do
-          boosters =
-            Repo.all(
-              from(user in User,
-                where: user.role == "admin" or user.role == "booster",
-                select: user
-              )
-            )
-
-          payload = Map.put(payload, :boosters, boosters)
-          {:ok, payload}
-        else
-          {:ok, payload}
-        end
+        {:ok, payload}
     end
   end
 
@@ -59,8 +45,7 @@ defmodule LolHero.Services.Accounts do
         payload = %{
           account_details: params["accountDetails"],
           details: Map.merge(order.details, params["details"]),
-          note: params["note"],
-          booster_id: 1
+          note: params["note"]
         }
 
         order
@@ -81,8 +66,6 @@ defmodule LolHero.Services.Accounts do
 
     query
     |> Repo.one()
-    |> Repo.preload(:user)
-    |> Repo.preload(:booster)
     |> case do
       nil ->
         {:error, "Order does not exist."}
@@ -93,7 +76,11 @@ defmodule LolHero.Services.Accounts do
   end
 
   def change_status(tracking_id, new_status, user) do
-    query = show_order_query(user.id, user.role, tracking_id)
+    query =
+      from(o in Order,
+        where: o.tracking_id == ^tracking_id and o.user_id == ^user.id,
+        select: o
+      )
 
     case Repo.one(query) do
       nil ->
@@ -122,24 +109,22 @@ defmodule LolHero.Services.Accounts do
       "booster" ->
         from(order in Order,
           where:
-            order.user_id == ^id or
-              (order.booster_id == ^id and order.tracking_id == ^tracking_id),
-          preload: [:user],
-          select: order
+            (order.tracking_id == ^tracking_id and order.user_id == ^id) or
+              (order.tracking_id == ^tracking_id and
+                 order.booster_id == ^id),
+          preload: [:user, :booster]
         )
 
       "admin" ->
         from(order in Order,
           where: order.tracking_id == ^tracking_id,
-          preload: [:user],
-          select: order
+          preload: [:user, :booster]
         )
 
       "user" ->
         from(order in Order,
           where: order.user_id == ^id and order.tracking_id == ^tracking_id,
-          preload: [:user],
-          select: order
+          preload: [:user, :booster]
         )
     end
   end

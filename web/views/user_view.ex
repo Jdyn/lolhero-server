@@ -27,6 +27,13 @@ defmodule LolHero.UserView do
     }
   end
 
+  def render("show_boosters.json", %{boosters: boosters}) do
+    %{
+      ok: true,
+      result: %{boosters: render_many(boosters, UserView, "list_user.json")}
+    }
+  end
+
   def render("full_show.json", %{user: user}) do
     %{
       ok: true,

@@ -69,6 +69,21 @@ defmodule LolHero.UserController do
     end
   end
 
+  def show_boosters(conn, params) do
+    boosters =
+    Repo.all(
+      from(user in User,
+        where: user.role == "admin" or user.role == "booster",
+        select: user
+      )
+    )
+
+    conn
+    |> put_status(:created)
+    |> put_view(UserView)
+    |> render("show_boosters.json", boosters: boosters)
+  end
+
   def create(conn, params) do
     case Users.create(params) do
       {:ok, user} ->

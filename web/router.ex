@@ -65,6 +65,8 @@ defmodule LolHero.Router do
   scope "/api/v1", LolHero do
     pipe_through([:api, :ensure_auth, :ensure_admin])
 
+    get("/boosters", UserController, :show_boosters)
+
     # resources("/users", UserController, only: default_routes)
     # resources("/orders", OrderController, only: default_routes)
     # resources("/variants", VariantController, only: default_routes)

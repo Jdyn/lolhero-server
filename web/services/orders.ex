@@ -56,7 +56,6 @@ defmodule LolHero.Services.Orders do
           account_details: params["accountDetails"],
           details: Map.merge(order.details, params["details"]),
           note: params["note"],
-          booster_id: params["booster_id"]
         }
 
         order

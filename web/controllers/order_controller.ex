@@ -26,11 +26,12 @@ defmodule LolHero.OrderController do
   end
 
   def update(conn, params) do
-    query = String.to_atom(params["query"])
+    # query = String.to_atom(params["query"])
 
-    order = Order.find_by(%{query => params["id"]}) |> Repo.preload([:user, :booster])
+    order = Order.find_by(tracking_id: params["id"]) |> Repo.preload([:user, :booster])
 
     order
+    |> Map.put(:is_editable, params["isEditable"])
     |> Order.update(params)
     |> case do
       {:ok, order} ->
@@ -48,7 +49,6 @@ defmodule LolHero.OrderController do
 
   def initiate(conn, params) do
     params
-    # |> Map.put("booster_id", 1)
     |> Orders.initiate()
     |> case do
       {:ok, order} ->
