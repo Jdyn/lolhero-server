@@ -10,7 +10,7 @@ use Mix.Config
 # which you should run after static files are built and
 # before starting your production server.
 config :LolHero, LolHero.Endpoint,
-  http: [port: 80],
+  http: [port: 4000],
   load_from_system_env: true,
   url: [host: "13.56.245.23", port: 80],
   server: true,
