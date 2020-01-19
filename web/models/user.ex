@@ -71,7 +71,7 @@ defmodule LolHero.User do
     |> validate_format(:username, Regexp.username())
     |> validate_format(:email, Regexp.email())
     |> update_change(:email, &String.downcase(&1))
-    |> validate_length(:username, min: 3, max: 16)
+    |> validate_length(:username, min: 3, max: 20)
     |> validate_length(:password, min: 6, max: 100)
     |> unique_constraint(:email)
     |> unique_constraint(:username)
