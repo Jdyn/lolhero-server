@@ -11,7 +11,7 @@ use Mix.Config
 # before starting your production server.
 config :LolHero, LolHero.Endpoint,
   http: [port: 4000],
-  force_ssl: [hsts: true]
+  force_ssl: [hsts: true],
   load_from_system_env: true,
   url: [host: "api.lolhero.gg", port: 443],
   server: true,
