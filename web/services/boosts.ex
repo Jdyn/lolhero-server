@@ -42,12 +42,18 @@ defmodule LolHero.Services.Boosts do
   def get_title(details) do
     case Repo.one(Category.title_query(details["collectionId"])) do
       [category, collection] ->
-        case Repo.all(Product.ranks_query(details["startRank"], details["desiredRank"])) do
-          [start, finish] ->
-            {:ok, "#{category} Boost | #{collection} - #{start} to #{finish}"}
+        case collection do
+          "Division Boost" ->
+            case Repo.all(Product.ranks_query(details["startRank"], details["desiredRank"])) do
+              [start, finish] ->
+                {:ok, "#{category} Boost | #{collection} - #{start} to #{finish}"}
+            end
 
-          [start] ->
-            {:ok, "#{category} | #{details["desiredAmount"]} #{collection} - #{start}"}
+          _ ->
+            case Repo.all(Product.ranks_query(details["startRank"], details["desiredRank"])) do
+              [start, _] ->
+                {:ok, "#{category} Boost | #{details["desiredAmount"]} #{collection} - #{start}"}
+            end
         end
 
       _ ->
