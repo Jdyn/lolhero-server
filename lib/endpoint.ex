@@ -46,7 +46,7 @@ defmodule LolHero.Endpoint do
   )
 
   plug(CORSPlug,
-    origin: ["https://lolhero.gg/", "https://lolhero.gg", "http://localhost:3000/", "http://localhost:3000"]
+    origin: ["*"]
   )
 
   plug(LolHero.Router)
