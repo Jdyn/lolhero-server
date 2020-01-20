@@ -13,7 +13,7 @@ config :LolHero, LolHero.Endpoint,
   http: [port: 80],
   force_ssl: [hsts: true],
   load_from_system_env: true,
-  url: [host: "lolhero.gg", port: 443],
+  url: [host: "api.lolhero.gg", port: 443],
   server: true,
   code_reloader: false,
   https: [
