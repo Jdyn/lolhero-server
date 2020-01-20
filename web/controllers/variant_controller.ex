@@ -18,7 +18,7 @@ defmodule LolHero.VariantController do
       {:ok, variant} ->
         conn
         |> put_status(:created)
-        |> render("show.json", variant: Repo.preload(variant, :product))
+        |> render("show.json", variant: variant |> Repo.preload([:product, :collection]))
 
       {:error, changeset} ->
         conn
