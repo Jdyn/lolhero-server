@@ -44,7 +44,7 @@ defmodule LolHero.Services.Boosts do
       [category, collection] ->
         case Repo.all(Product.ranks_query(details["startRank"], details["desiredRank"])) do
           [start, finish] ->
-            {:ok, "#{category} | #{collection} - #{start} to #{finish}"}
+            {:ok, "#{category} Boost | #{collection} - #{start} to #{finish}"}
 
           [start] ->
             {:ok, "#{category} | #{details["desiredAmount"]} #{collection} - #{start}"}

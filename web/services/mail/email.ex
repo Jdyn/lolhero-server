@@ -23,7 +23,7 @@ defmodule LolHero.Email do
 
     base_email()
     |> to("gglolhero@gmail.com")
-    |> subject("NEW ORDER - $#{price} - #{details["boostType"]} Boost | #{title}")
+    |> subject("NEW ORDER - $#{price} - #{title}")
     |> html_body("
       <body>
         <div>

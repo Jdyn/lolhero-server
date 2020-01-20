@@ -74,7 +74,7 @@ defmodule LolHero.Order do
 
   def update_changeset(order, attrs) do
     order
-    |> cast(attrs, [:status, :booster_id, :is_complete, :is_active, :is_editable])
+    |> cast(attrs, [:status, :booster_id, :is_complete, :is_active])
     |> validate_inclusion(:status, ["open", "in progress", "completed", "paused", "active"])
     |> validate_status()
     |> foreign_key_constraint(:booster_id)

@@ -31,7 +31,6 @@ defmodule LolHero.OrderController do
     order = Order.find_by(tracking_id: params["id"]) |> Repo.preload([:user, :booster])
 
     order
-    |> Map.put(:is_editable, params["isEditable"])
     |> Order.update(params)
     |> case do
       {:ok, order} ->
