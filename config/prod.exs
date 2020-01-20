@@ -11,10 +11,18 @@ use Mix.Config
 # before starting your production server.
 config :LolHero, LolHero.Endpoint,
   http: [port: 4000],
+  force_ssl: [hsts: true]
   load_from_system_env: true,
-  url: [host: "13.56.245.23", port: 80],
+  url: [host: "api.lolhero.gg", port: 443],
   server: true,
-  code_reloader: false
+  code_reloader: false,
+  https: [
+    :inet6,
+    port: 443,
+    cipher_suite: :strong,
+    keyfile: System.get_env("/etc/letsencrypt/live/lolhero.gg/privkey.pem"),
+    certfile: System.get_env("/etc/letsencrypt/live/lolhero.gg/cert.pem")
+  ]
 
 # Do not print debug messages in production
 config :logger, level: :info
@@ -24,16 +32,16 @@ config :logger, level: :info
 # To get SSL working, you will need to add the `https` key
 # to the previous section and set your `:url` port to 443:
 #
-#     config :LolHero, LolHero.Endpoint,
-#       ...
-#       url: [host: "example.com", port: 443],
-#       https: [
-#         :inet6,
-#         port: 443,
-#         cipher_suite: :strong,
-#         keyfile: System.get_env("SOME_APP_SSL_KEY_PATH"),
-#         certfile: System.get_env("SOME_APP_SSL_CERT_PATH")
-#       ]
+# config :LolHero, LolHero.Endpoint,
+#   ...
+#   url: [host: "example.com", port: 443],
+# https: [
+#   :inet6,
+#   port: 443,
+#   cipher_suite: :strong,
+#   keyfile: System.get_env("SOME_APP_SSL_KEY_PATH"),
+#   certfile: System.get_env("SOME_APP_SSL_CERT_PATH")
+# ]
 #
 # The `cipher_suite` is set to `:strong` to support only the
 # latest and more secure SSL ciphers. This means old browsers
