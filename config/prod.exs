@@ -19,8 +19,8 @@ config :LolHero, LolHero.Endpoint,
   https: [
     port: 443,
     cipher_suite: :strong,
-    keyfile: System.get_env("/etc/letsencrypt/live/lolhero.gg/privkey.pem"),
-    certfile: System.get_env("/etc/letsencrypt/live/lolhero.gg/cert.pem")
+    keyfile: "/etc/letsencrypt/live/lolhero.gg/privkey.pem",
+    certfile: "/etc/letsencrypt/live/lolhero.gg/cert.pem"
   ]
 
 # Do not print debug messages in production
