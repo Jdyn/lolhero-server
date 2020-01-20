@@ -6,7 +6,7 @@ BUILD_HOST="13.56.245.23"
 BUILD_USER="deploy"
 BUILD_AT="/home/deploy/app_build/$APP"
 
-PRODUCTION_HOSTS="13.56.245.23"
+PRODUCTION_HOSTS="13.56.245.23 lolhero.gg api.lolhero.gg"
 PRODUCTION_USER="deploy"
 DELIVER_TO="/home/deploy/apps"
 
