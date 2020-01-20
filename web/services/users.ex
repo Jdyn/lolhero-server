@@ -12,8 +12,8 @@ defmodule LolHero.Services.Users do
       {:ok, user} ->
         user_with_token = Sessions.user_with_token(user)
 
-        Email.welcome_email(user.email)
-        |> Mailer.deliver_now()
+        # Email.welcome_email(user.email)
+        # |> Mailer.deliver_now()
 
         {:ok, user_with_token}
 

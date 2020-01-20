@@ -3,11 +3,11 @@
 APP="LolHero"
 
 BUILD_HOST="13.56.245.23"
-BUILD_USER="deploy"
+BUILD_USER="root"
 BUILD_AT="/home/deploy/app_build/$APP"
 
 PRODUCTION_HOSTS="13.56.245.23"
-PRODUCTION_USER="deploy"
+PRODUCTION_USER="root"
 DELIVER_TO="/home/deploy/apps"
 
 START_DEPLOY=true

@@ -9,8 +9,13 @@ defmodule LolHero.Email do
   def welcome_email(email) do
     base_email()
     |> to(email)
-    |> subject("Welcome test")
-    |> html_body("<body>Welcome</body>")
+    |> subject("Welcome to LoL Hero!")
+    |> html_body("
+    <body>
+    <p>Once you place an order you will be able to access
+    
+    </body>
+    ")
   end
 
   def order_placed_email(order) do
