@@ -8,7 +8,7 @@ defmodule LolHero.ProductController do
   end
 
   def show(conn, params) do
-    render(conn, "show.json", product: Product.find(params["id"]) |> Repo.preload(:variants))
+    render(conn, "show.json", product: Product.find(params["id"]) |> Repo.preload(variants: [:collection]))
   end
 
   def create(conn, params) do

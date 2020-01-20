@@ -44,23 +44,6 @@ defmodule LolHero.Variant do
     |> Repo.delete()
   end
 
-  def find_by_assoc_titles(category_title, collection_title) do
-    query =
-      from(
-        cc in Collection,
-        left_join: c in assoc(cc, :category),
-        where: c.title == ^category_title and cc.title == ^collection_title,
-        preload: [:variants],
-        select: cc
-      )
-
-    collection = Repo.one(query)
-
-    Enum.reduce(collection.variants, %{}, fn item, prices ->
-      Map.put(prices, item.title, item.base_price)
-    end)
-  end
-
   def boost_price_query(id, start_rank, desired_rank) do
     from(v in Variant,
       where:

@@ -5,7 +5,7 @@ defmodule LolHero.ProductView do
     %{
       ok: true,
       result: %{
-        products: render_many(products, __MODULE__, "product.json")
+        products: render_many(products, __MODULE__, "mini_product.json")
       }
     }
   end
@@ -36,13 +36,21 @@ defmodule LolHero.ProductView do
     }
   end
 
+  def render("mini_product.json", %{product: product}) do
+    %{
+      id: product.id,
+      title: product.title
+    }
+  end
+
   def render("variant.json", %{variant: variant}) do
     %{
       id: variant.id,
       title: variant.title,
       base_price: variant.base_price,
       product_id: variant.product_id,
-      collection_id: variant.collection_id
+      collection_id: variant.collection_id,
+      collection_name: variant.collection.title
     }
   end
 
