@@ -22,6 +22,7 @@ defmodule LolHero.Variant do
 
   def update(%Variant{} = variant, attrs) do
     variant
+    |> Repo.preload(:collection)
     |> changeset(attrs)
     |> Repo.update()
   end
