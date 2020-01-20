@@ -17,7 +17,6 @@ config :LolHero, LolHero.Endpoint,
   server: true,
   code_reloader: false,
   https: [
-    :inet6,
     port: 443,
     cipher_suite: :strong,
     keyfile: System.get_env("/etc/letsencrypt/live/lolhero.gg/privkey.pem"),
