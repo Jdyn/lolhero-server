@@ -47,7 +47,7 @@ defmodule LolHero.User do
 
   def admin_changeset(user, attrs) do
     user
-    |> cast(attrs, [:is_admin, :role])
+    |> cast(attrs, [:is_admin, :role, :username])
     |> validate_inclusion(:role, ["admin", "booster", "user"])
   end
 

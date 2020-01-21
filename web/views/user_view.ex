@@ -81,7 +81,6 @@ defmodule LolHero.UserView do
       # firstName: user.first_name,
       # lastName: user.last_name,
       username: user.username,
-      is_admin: user.is_admin,
       email: user.email,
       role: user.role
     }
@@ -98,7 +97,6 @@ defmodule LolHero.UserView do
     %{
       id: user.id,
       username: user.username,
-      is_admin: user.is_admin,
       email: user.email,
       role: user.role,
       orders: render_many(user.orders, OrderView, "order.json", as: :order)
