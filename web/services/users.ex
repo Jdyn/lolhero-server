@@ -41,7 +41,7 @@ defmodule LolHero.Services.Users do
       user ->
         user_with_token = create_reset_token(user)
 
-        Email.reset_password_email("email", user_with_token.reset_token)
+        Email.reset_password_email(user_with_token.email, user_with_token.reset_token)
         |> Mailer.deliver_now()
 
         {:ok, user_with_token}
