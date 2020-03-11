@@ -69,7 +69,7 @@ defmodule LolHero.UserController do
     end
   end
 
-  def show_boosters(conn, params) do
+  def show_boosters(conn, _params) do
     boosters =
     Repo.all(
       from(user in User,

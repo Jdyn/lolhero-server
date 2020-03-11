@@ -240,6 +240,6 @@ defmodule LolHero.SeedFactory do
         end
       end
 
-    ranks = List.flatten(result)
+    List.flatten(result)
   end
 end

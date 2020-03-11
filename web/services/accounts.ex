@@ -1,5 +1,5 @@
 defmodule LolHero.Services.Accounts do
-  alias LolHero.{Repo, Order, User}
+  alias LolHero.{Repo, Order}
   import Ecto.Query
 
   def all_user_orders(id, role) do

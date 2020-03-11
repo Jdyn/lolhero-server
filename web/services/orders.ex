@@ -1,7 +1,7 @@
 defmodule LolHero.Services.Orders do
   use LolHero.Web, :service
 
-  alias LolHero.{Order, Repo, User}
+  alias LolHero.{Order, Repo}
 
   def authenticate(tracking_id, email) do
     query =

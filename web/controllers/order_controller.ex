@@ -68,8 +68,6 @@ defmodule LolHero.OrderController do
   end
 
   def change_status(conn, params) do
-    user = Guardian.Plug.current_resource(conn)
-
     case Orders.change_status(params) do
       {:ok, order} ->
         conn

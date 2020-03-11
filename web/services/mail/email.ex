@@ -13,13 +13,13 @@ defmodule LolHero.Email do
     |> html_body("
     <body>
     <p>Once you place an order you will be able to access
-    
+
     </body>
     ")
   end
 
   def order_placed_email(order) do
-    %{price: price, title: title, details: details} = order
+    %{price: price, title: title} = order
 
     base_email()
     |> to("gglolhero@gmail.com")

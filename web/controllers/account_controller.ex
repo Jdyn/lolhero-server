@@ -1,7 +1,7 @@
 defmodule LolHero.AccountController do
   use LolHero.Web, :controller
 
-  alias LolHero.Services.{Accounts, User}
+  alias LolHero.Services.{Accounts}
   alias LolHero.{ErrorView}
 
   def orders(conn, _params) do

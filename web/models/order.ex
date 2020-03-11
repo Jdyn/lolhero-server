@@ -1,7 +1,7 @@
 defmodule LolHero.Order do
   use LolHero.Web, :model
 
-  alias LolHero.{Repo, Order, User, Category, Product, Variant, Collection}
+  alias LolHero.{Repo, Order, User, Variant}
   alias LolHero.Services.Boosts
 
   schema "orders" do
@@ -233,13 +233,13 @@ defmodule LolHero.Order do
     end
   end
 
-  defp is_express(total, price, false), do: total
+  defp is_express(total, _price, false), do: total
   defp is_express(total, price, true), do: Decimal.mult(total, price)
 
-  defp is_incognito(total, price, false), do: total
+  defp is_incognito(total, _price, false), do: total
   defp is_incognito(total, price, true), do: Decimal.mult(total, price)
 
-  defp is_unrestricted(total, price, false), do: total
+  defp is_unrestricted(total, _price, false), do: total
   defp is_unrestricted(total, price, true), do: Decimal.mult(total, price)
 
   defp calculate_lp(total, start_rank_price, details) do
@@ -264,8 +264,6 @@ defmodule LolHero.Order do
         Decimal.sub(total, diff)
     end
   end
-
-  defp calculate_lp(total, _start_rank_price, _details), do: total
 
   defp calculate_queue(total, details) do
     %{"boostType" => boost_type, "queue" => queue} = details

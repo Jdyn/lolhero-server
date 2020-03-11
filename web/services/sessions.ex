@@ -8,13 +8,13 @@ defmodule LolHero.Services.Sessions do
     case Guardian.refresh(token) do
       {:ok, _old_stuff, {new_token, new_claims}} ->
         case Guardian.resource_from_claims(new_claims) do
+          {:error, reason} ->
+            {:error, reason}
+
           {:ok, user} ->
             user_with_token = Map.put(user, :token, new_token)
 
             {:ok, user_with_token}
-
-          {:error, reason} ->
-            {:error, reason}
         end
 
       {:error, reason} ->
