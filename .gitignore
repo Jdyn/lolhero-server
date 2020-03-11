@@ -36,3 +36,5 @@ mix.lock
 .vscode
 
 .deliver/releases/
+
+.elixir_ls
