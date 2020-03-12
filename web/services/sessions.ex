@@ -1,5 +1,5 @@
 defmodule LolHero.Services.Sessions do
-  import Bcrypt, only: [check_pass: 2]
+  import Pbkdf2, only: [check_pass: 2]
 
   alias LolHero.User
   alias LolHero.Auth.Guardian

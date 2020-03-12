@@ -5,7 +5,7 @@ defmodule LolHero.MixProject do
     [
       app: :LolHero,
       version: "0.1.0",
-      elixir: "~> 1.9",
+      elixir: "~> 1.10.2",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
@@ -35,7 +35,7 @@ defmodule LolHero.MixProject do
       {:jason, "~> 1.1.2"},
       {:plug_cowboy, "~> 2.1"},
       {:cors_plug, "~> 2.0"},
-      {:bcrypt_elixir, "~> 2.0.3"},
+      {:pbkdf2_elixir, "~> 1.2"},
       {:guardian, "~> 2.0.0"},
       {:braintree, "~> 0.10.0"},
       {:timex, "~> 3.6.1"},

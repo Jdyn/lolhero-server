@@ -1,7 +1,7 @@
 defmodule LolHero.User do
   use LolHero.Web, :model
 
-  import Bcrypt, only: [add_hash: 1]
+  import Pbkdf2, only: [add_hash: 1]
 
   alias LolHero.{User, Regexp, Repo, Order}
 
@@ -72,7 +72,7 @@ defmodule LolHero.User do
     |> validate_format(:email, Regexp.email())
     |> update_change(:email, &String.downcase(&1))
     |> validate_length(:username, min: 3, max: 20)
-    |> validate_length(:password, min: 6, max: 100)
+    |> validate_length(:password, min: 6, max: 50)
     |> unique_constraint(:email)
     |> unique_constraint(:username)
     |> hash_password

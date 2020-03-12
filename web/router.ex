@@ -1,8 +1,6 @@
 defmodule LolHero.Router do
   use LolHero.Web, :router
 
-  default_routes = [:index, :create, :show, :update, :delete]
-
   pipeline :api do
     plug(:accepts, ["json"])
     plug(LolHero.Auth.Pipeline)
@@ -59,6 +57,8 @@ defmodule LolHero.Router do
     pipe_through([:api, :ensure_auth, :ensure_admin])
 
     get("/boosters", UserController, :show_boosters)
+
+    default_routes = [:index, :create, :show, :update, :delete]
 
     resources("/users", UserController, only: default_routes)
     resources("/orders", OrderController, only: default_routes)
