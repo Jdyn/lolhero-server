@@ -28,15 +28,15 @@ defmodule LolHero.OrderController do
   def update(conn, params) do
     # query = String.to_atom(params["query"])
 
-    order = Order.find_by(tracking_id: params["id"]) |> Repo.preload([:user, :booster])
+    order = Order.find_by(tracking_id: params["id"])
 
     order
     |> Order.update(params)
     |> case do
-      {:ok, order} ->
+      {:ok, new_order} ->
         conn
         |> put_status(:ok)
-        |> render("booster_show.json", order: order)
+        |> render("booster_show.json", order: new_order |> Repo.preload([:user, :booster]))
 
       {:error, changeset} ->
         conn

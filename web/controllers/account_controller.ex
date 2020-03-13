@@ -59,9 +59,11 @@ defmodule LolHero.AccountController do
       {:ok, order} ->
         case user.role do
           match when match in ["booster", "admin"] ->
+            boosters = Accounts.show_boosters()
+
             conn
             |> put_status(:ok)
-            |> render("show_booster_order.json", order: order)
+            |> render("show_booster_order.json", order: order, boosters: boosters)
 
           "user" ->
             conn

@@ -1,5 +1,5 @@
 defmodule LolHero.Services.Accounts do
-  alias LolHero.{Repo, Order}
+  alias LolHero.{Repo, Order, User}
   import Ecto.Query
 
   def all_user_orders(id, role) do
@@ -73,6 +73,12 @@ defmodule LolHero.Services.Accounts do
       order ->
         {:ok, order}
     end
+  end
+
+  def show_boosters() do
+    query = from(u in User, where: u.role == "booster" or u.role == "admin", select: u)
+
+    Repo.all(query)
   end
 
   def change_status(tracking_id, new_status, user) do

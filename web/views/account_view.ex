@@ -44,10 +44,11 @@ defmodule LolHero.AccountView do
     }
   end
 
-  def render("show_booster_order.json", %{order: order}) do
+  def render("show_booster_order.json", %{order: order, boosters: boosters}) do
     %{
       ok: true,
       result: %{
+        boosters: render_many(boosters, UserView, "user.json", as: :user),
         order: render_one(order, OrderView, "full_booster_order.json", as: :order)
       }
     }
@@ -61,6 +62,7 @@ defmodule LolHero.AccountView do
       summonerName: order.details["summonerName"] || "-",
       booster: render_one(order.booster, UserView, "order_user.json", as: :user),
       createdAt: order.inserted_at,
+      champions: order.details["champions"] || [],
       price: order.price
     }
   end
@@ -74,6 +76,7 @@ defmodule LolHero.AccountView do
       user: render_one(order.user, UserView, "order_user.json", as: :user),
       booster: render_one(order.booster, UserView, "order_user.json", as: :user),
       createdAt: order.inserted_at,
+      champions: order.details["champions"] || [],
       price: order.price
     }
   end

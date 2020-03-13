@@ -21,6 +21,7 @@ defmodule LolHero.User do
     field(:reset_token_expiry, :utc_datetime)
 
     field(:is_admin, :boolean, default: false)
+    field(:is_available, :boolean, default: false)
 
     has_many(:orders, Order)
 
