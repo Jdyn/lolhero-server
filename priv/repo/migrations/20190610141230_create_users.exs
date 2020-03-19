@@ -13,6 +13,7 @@ defmodule LolHero.Repo.Migrations.CreateUsers do
       add(:is_admin, :boolean, default: false, null: false)
       add(:reset_token, :string)
       add(:reset_token_expiry, :utc_datetime)
+      add(:is_available, :boolean)
       
       timestamps()
     end

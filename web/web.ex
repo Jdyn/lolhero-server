@@ -42,7 +42,8 @@ defmodule LolHero.Web do
       import Ecto
       import Ecto.Changeset
       import Ecto.Query, only: [from: 1, from: 2]
-      import Ecto.Multi    end
+      import Ecto.Multi
+    end
   end
 
   def router do
@@ -54,6 +55,10 @@ defmodule LolHero.Web do
   def channel do
     quote do
       use Phoenix.Channel
+
+      alias LolHero.Repo
+      import Ecto
+      import Ecto.Query
     end
   end
 

@@ -1,7 +1,7 @@
 defmodule LolHero.Order do
   use LolHero.Web, :model
 
-  alias LolHero.{Repo, Order, User, Variant}
+  alias LolHero.{Repo, Order, User, Variant, Message}
   alias LolHero.Services.Boosts
 
   schema "orders" do
@@ -22,6 +22,7 @@ defmodule LolHero.Order do
 
     belongs_to(:booster, User)
     belongs_to(:user, User)
+    has_many(:messages, Message)
 
     timestamps()
   end

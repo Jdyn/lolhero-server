@@ -3,7 +3,7 @@ defmodule LolHero.User do
 
   import Pbkdf2, only: [add_hash: 1]
 
-  alias LolHero.{User, Regexp, Repo, Order}
+  alias LolHero.{User, Regexp, Repo, Order, Message}
 
   schema "users" do
     field(:email, :string)
@@ -24,6 +24,7 @@ defmodule LolHero.User do
     field(:is_available, :boolean, default: false)
 
     has_many(:orders, Order)
+    has_many(:messages, Message)
 
     timestamps()
   end

@@ -1,6 +1,4 @@
 defmodule LolHero.Services.Users do
-  use Timex
-
   alias LolHero.{Repo, User, Email, Mailer}
   alias LolHero.Services.Sessions
 
@@ -115,8 +113,8 @@ defmodule LolHero.Services.Users do
     |> binary_part(0, length)
   end
 
-  defp expired?(datetime) do
-    Timex.after?(Timex.now(), Timex.shift(datetime, days: 1))
+  def expired?(datetime) do
+    Date.diff(Date.utc_today(), NaiveDateTime.from_iso8601!(datetime, Calendar.ISO)) > 1
   end
 
   def is_booster(user) do

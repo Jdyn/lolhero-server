@@ -140,13 +140,10 @@ defmodule LolHero.SeedFactory do
     result =
       for tier <- tiers do
         for index <- 0..3 do
-          new_list =
-            List.insert_at(products, 0, %{
-              title: "#{tier} #{Enum.at(roman_divisions, index)}",
-              description: "#{tier} Tier - Division #{Enum.at(numerical_divisions, index)}"
-            })
-
-          products = new_list
+          List.insert_at(products, 0, %{
+            title: "#{tier} #{Enum.at(roman_divisions, index)}",
+            description: "#{tier} Tier - Division #{Enum.at(numerical_divisions, index)}"
+          })
         end
       end
 
@@ -227,16 +224,13 @@ defmodule LolHero.SeedFactory do
     result =
       for collection <- collections do
         for product <- products do
-          new_list =
-            List.insert_at(variants, 0, %{
-              product_id: product.id,
-              collection_id: collection.id,
-              title: product.title,
-              description: product.description,
-              base_price: 10
-            })
-
-          variants = new_list
+          List.insert_at(variants, 0, %{
+            product_id: product.id,
+            collection_id: collection.id,
+            title: product.title,
+            description: product.description,
+            base_price: 10
+          })
         end
       end
 

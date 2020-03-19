@@ -21,6 +21,24 @@ defmodule LolHero.OrderView do
     }
   end
 
+  def render("message.json", %{message: message}) do
+    %{
+      id: message.id,
+      message: message.message,
+      createdAt: message.inserted_at,
+      user: render_one(message.user, UserView, "user.json", as: :user)
+    }
+  end
+
+  def render("chat_history.json", %{messages: messages}) do
+    %{
+      ok: true,
+      result: %{
+        messages: render_many(messages, OrderView, "message.json", as: :message)
+      }
+    }
+  end
+
   def render("show.json", %{order: order}) do
     %{
       ok: true,
@@ -73,6 +91,7 @@ defmodule LolHero.OrderView do
 
   def render("full_order.json", %{order: order}) do
     %{
+      id: order.id,
       title: order.title,
       status: order.status,
       note: order.note,
@@ -88,6 +107,7 @@ defmodule LolHero.OrderView do
 
   def render("full_booster_order.json", %{order: order}) do
     %{
+      id: order.id,
       title: order.title,
       status: order.status,
       note: order.note,

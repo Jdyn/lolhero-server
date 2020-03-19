@@ -1,8 +1,9 @@
-defmodule LolHero.UserSocket do
+defmodule LolHero.Socket do
   use Phoenix.Socket
+  alias LolHero.Auth.Guardian
 
   ## Channels
-  # channel "room:*", LolHero.RoomChannel
+  channel("order:*", LolHero.OrderChannel)
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After
@@ -15,8 +16,26 @@ defmodule LolHero.UserSocket do
   #
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
-  def connect(_params, socket, _connect_info) do
-    {:ok, socket}
+
+  def connect(%{"token" => token}, socket) do
+    case Guardian.decode_and_verify(token) do
+      {:ok, claims} ->
+        case Guardian.resource_from_claims(claims) do
+          {:error, _} ->
+            :error
+
+          {:ok, user} ->
+            new_socket =
+              socket
+              |> assign(:user, user)
+              |> assign(:user_id, user.id)
+
+            {:ok, new_socket}
+        end
+
+      {:error, _} ->
+        :error
+    end
   end
 
   # Socket id's are topics that allow you to identify all sockets for a given user:
@@ -29,5 +48,5 @@ defmodule LolHero.UserSocket do
   #     LolHero.Endpoint.broadcast("user_socket:#{user.id}", "disconnect", %{})
   #
   # Returning `nil` makes this socket anonymous.
-  def id(_socket), do: nil
+  def id(socket), do: "socket:#{socket.assigns.user_id}"
 end
