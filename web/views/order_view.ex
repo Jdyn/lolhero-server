@@ -99,6 +99,7 @@ defmodule LolHero.OrderView do
       createdAt: order.inserted_at,
       isEditable: order.is_editable,
       # price: order.price,
+      messages: render_many(order.messages, OrderView, "message.json", as: :message),
       user: render_one(order.user, UserView, "order_user.json", as: :user),
       booster: render_one(order.booster, UserView, "order_user.json", as: :user),
       details: order.details
@@ -120,6 +121,7 @@ defmodule LolHero.OrderView do
       user: render_one(order.user, UserView, "order_user.json", as: :user),
       booster: render_one(order.booster, UserView, "order_user.json", as: :user),
       details: order.details,
+      messages: render_many(order.messages, OrderView, "message.json", as: :message),
       accountDetails: order.account_details
     }
   end

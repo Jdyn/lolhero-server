@@ -3,13 +3,9 @@ defmodule LolHero.OrderChannel do
   alias LolHero.{Order, OrderView, Message}
 
   def join("order:" <> order_id, _params, socket) do
-    %{id: id} = socket.assigns.user
+    %{id: id, role: role} = socket.assigns.user
 
-    query =
-      from(order in Order,
-        where: order.user_id == ^id and order.tracking_id == ^order_id,
-        select: order.id
-      )
+    query = join_query(id, order_id, role)
 
     case Repo.one(query) do
       nil ->
@@ -30,21 +26,56 @@ defmodule LolHero.OrderChannel do
     {:reply, {:ok, response}, socket}
   end
 
-  def handle_in("send:message", params, socket) do
+  def handle_in(
+        "send:message",
+        %{"message" => message},
+        socket
+      ) do
+    "order:" <> tracking_id = socket.topic
+    %{id: id} = socket.assigns.user
+
+    order_id =
+      Repo.one(from(order in Order, where: order.tracking_id == ^tracking_id, select: order.id))
+
     payload = %{
-      message: params.message,
-      order_id: params.orderId,
-      user_id: params.userId
+      message: message,
+      order_id: order_id,
+      user_id: id
     }
 
     {:ok, message} = Message.create(payload)
 
     broadcast(
       socket,
-      "send:message",
+      "recieve:message",
       OrderView.render("message.json", %{message: message |> Repo.preload(:user)})
     )
 
     {:noreply, socket}
+  end
+
+  def join_query(id, order_id, role) do
+    case role do
+      "booster" ->
+        from(order in Order,
+          where:
+            (order.tracking_id == ^order_id and order.user_id == ^id) or
+              (order.tracking_id == ^order_id and
+                 order.booster_id == ^id),
+          select: order.id
+        )
+
+      "admin" ->
+        from(order in Order,
+          where: order.tracking_id == ^order_id,
+          select: order.id
+        )
+
+      "user" ->
+        from(order in Order,
+          where: order.user_id == ^id and order.tracking_id == ^order_id,
+          select: order.id
+        )
+    end
   end
 end

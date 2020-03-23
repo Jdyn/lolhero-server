@@ -118,19 +118,19 @@ defmodule LolHero.Services.Accounts do
             (order.tracking_id == ^tracking_id and order.user_id == ^id) or
               (order.tracking_id == ^tracking_id and
                  order.booster_id == ^id),
-          preload: [:user, :booster]
+          preload: [:user, :booster, messages: [:user]]
         )
 
       "admin" ->
         from(order in Order,
           where: order.tracking_id == ^tracking_id,
-          preload: [:user, :booster]
+          preload: [:user, :booster, messages: [:user]]
         )
 
       "user" ->
         from(order in Order,
           where: order.user_id == ^id and order.tracking_id == ^tracking_id,
-          preload: [:user, :booster]
+          preload: [:user, :booster, messages: [:user]]
         )
     end
   end
