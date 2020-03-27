@@ -6,7 +6,6 @@ defmodule LolHero.AccountView do
     %{
       ok: true,
       result: %{
-        # boosters: render_many(payload.boosters, UserView, "list_user.json", as: :user),
         orders: %{
           total: %{
             title: "Total Orders",

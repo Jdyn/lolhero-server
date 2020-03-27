@@ -42,7 +42,7 @@ defmodule LolHero.Router do
     end
 
     resources("/account", AccountController, only: [], singleton: true) do
-      post("/login", SessionController, :create)
+      post("/login", UserController, :log_in)
       post("/signup", UserController, :create)
       post("/password/reset", UserController, :reset_password)
       patch("/password/update", UserController, :update_password)
@@ -54,20 +54,19 @@ defmodule LolHero.Router do
   scope "/api/v1", LolHero do
     pipe_through([:api, :ensure_auth])
 
-    get("/account", SessionController, :show)
+    get("/account", UserController, :refresh_session)
 
     resources("/account", AccountController, only: [], singleton: true) do
       get("/orders", AccountController, :orders)
       get("/order/:tracking_id", AccountController, :show_order)
       post("/order/:tracking_id/status", AccountController, :change_status)
       patch("/order/:tracking_id", AccountController, :initiate)
-      delete("/logout", SessionController, :delete)
+      delete("/logout", UserController, :log_out)
     end
   end
 
   scope "/api/v1", LolHero do
     pipe_through([:api, :ensure_auth, :ensure_admin])
 
-    get("/boosters", UserController, :show_boosters)
   end
 end

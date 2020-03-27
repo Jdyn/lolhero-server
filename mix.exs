@@ -31,7 +31,7 @@ defmodule LolHero.MixProject do
       {:phoenix_pubsub, "~> 1.1.2"},
       {:phoenix_ecto, "~> 4.1"},
       {:ecto_sql, "~> 3.3.4"},
-      {:postgrex, "~> 0.15.3"},
+      {:postgrex, "~> 0.15.0"},
       {:jason, "~> 1.1.2"},
       {:plug_cowboy, "~> 2.1"},
       {:cors_plug, "~> 2.0"},

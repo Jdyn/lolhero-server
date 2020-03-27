@@ -1,7 +1,7 @@
 defmodule LolHero.UserController do
   use LolHero.Web, :controller
 
-  alias LolHero.{User, ErrorView, Repo, SessionView, UserView}
+  alias LolHero.{User, ErrorView, Repo, UserView}
   alias LolHero.Services.Users
 
   def index(conn, _params) do
@@ -15,7 +15,7 @@ defmodule LolHero.UserController do
       User.find_by(%{query => params["id"]})
       |> Repo.preload(:orders)
 
-    render(conn, "full_show.json", user: user)
+    render(conn, "show.json", full_user: user)
   end
 
   def reset_password(conn, params) do
@@ -25,20 +25,6 @@ defmodule LolHero.UserController do
     |> put_status(:created)
     |> put_view(UserView)
     |> render("success.json", %{})
-
-    # case Users.reset_password(params) do
-    #   {:ok, user} ->
-    #     conn
-    #     |> put_status(:created)
-    #     |> put_view(UserView)
-    #     |> render("show.json", user: user)
-
-    #   {:error, reason} ->
-    #     conn
-    #     |> put_status(:unprocessable_entity)
-    #     |> put_view(ErrorView)
-    #     |> render("error.json", error: reason)
-    # end
   end
 
   def update_password(conn, params) do
@@ -47,7 +33,7 @@ defmodule LolHero.UserController do
         conn
         |> put_status(:created)
         |> put_view(UserView)
-        |> render("delete.json", user: user)
+        |> render("success.json")
 
       {:unauthorized, reason} ->
         conn
@@ -69,27 +55,11 @@ defmodule LolHero.UserController do
     end
   end
 
-  def show_boosters(conn, _params) do
-    boosters =
-    Repo.all(
-      from(user in User,
-        where: user.role == "admin" or user.role == "booster",
-        select: user
-      )
-    )
-
-    conn
-    |> put_status(:created)
-    |> put_view(UserView)
-    |> render("show_boosters.json", boosters: boosters)
-  end
-
   def create(conn, params) do
     case Users.create(params) do
       {:ok, user} ->
         conn
         |> put_status(:created)
-        |> put_view(SessionView)
         |> render("show.json", user: user)
 
       {:error, changeset} ->
@@ -118,6 +88,44 @@ defmodule LolHero.UserController do
         |> put_status(:unprocessable_entity)
         |> put_view(LolHero.ErrorView)
         |> render("changeset_error.json", changeset: changeset)
+    end
+  end
+
+  def log_in(conn, _params) do
+    case Sessions.refresh(Guardian.Plug.current_token(conn)) do
+      {:ok, user} ->
+        conn
+        |> put_status(:ok)
+        |> render("show.json", user: user)
+
+      {:error, reason} ->
+        conn
+        |> put_status(:ok)
+        |> put_view(ErrorView)
+        |> render("changeset.json", error: reason)
+    end
+  end
+
+  def log_out(conn, _params) do
+    Guardian.revoke(Guardian.Plug.current_token(conn))
+
+    conn
+    |> put_status(:ok)
+    |> render("success.json")
+  end
+
+  def refresh_session(conn, _params) do
+    case Sessions.refresh(Guardian.Plug.current_token(conn)) do
+      {:ok, user} ->
+        conn
+        |> put_status(:ok)
+        |> render("session_user.json", session_user: user)
+
+      {:error, reason} ->
+        conn
+        |> put_status(:ok)
+        |> put_view(ErrorView)
+        |> render("changeset.json", error: reason)
     end
   end
 end

@@ -26,11 +26,7 @@ defmodule LolHero.OrderController do
   end
 
   def update(conn, params) do
-    # query = String.to_atom(params["query"])
-
-    order = Order.find_by(tracking_id: params["id"])
-
-    order
+    Order.find_by(tracking_id: params["id"])
     |> Order.update(params)
     |> case do
       {:ok, new_order} ->
@@ -80,12 +76,6 @@ defmodule LolHero.OrderController do
         |> put_view(LolHero.ErrorView)
         |> render("changeset_error.json", changeset: changeset)
     end
-  end
-
-  def create_token(conn, _params) do
-    {:ok, token} = ClientToken.generate(%{version: 3})
-
-    render(conn, "token.json", token: token)
   end
 
   def create(conn, params) do

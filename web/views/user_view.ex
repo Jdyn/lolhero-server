@@ -5,15 +5,8 @@ defmodule LolHero.UserView do
   def render("index.json", %{users: users}) do
     %{
       ok: true,
-      result: %{users: render_many(users, UserView, "user.json")}
-    }
-  end
-
-  def render("create.json", %{user: user}) do
-    %{
-      ok: true,
       result: %{
-        user: render_one(user, UserView, "user.json")
+        users: render_many(users, UserView, "user.json")
       }
     }
   end
@@ -27,37 +20,21 @@ defmodule LolHero.UserView do
     }
   end
 
-  def render("show_boosters.json", %{boosters: boosters}) do
-    %{
-      ok: true,
-      result: %{boosters: render_many(boosters, UserView, "list_user.json")}
-    }
-  end
-
-  def render("full_show.json", %{user: user}) do
+  def render("show.json", %{full_user: full_user}) do
     %{
       ok: true,
       result: %{
-        user: render_one(user, UserView, "full_user.json")
+        user: render_one(full_user, UserView, "full_user.json")
       }
     }
   end
 
-  def render("jwt.json", %{jwt: token}) do
+  def render("show.json", %{session_user: session_user}) do
     %{
       ok: true,
       result: %{
-        user: %{
-          token: token
-        }
+        user: render_one(session_user, UserView, "session_user.json")
       }
-    }
-  end
-
-  def render("delete.json", _) do
-    %{
-      ok: true,
-      result: %{}
     }
   end
 
@@ -78,27 +55,30 @@ defmodule LolHero.UserView do
   def render("user.json", %{user: user}) do
     %{
       id: user.id,
-      # firstName: user.first_name,
-      # lastName: user.last_name,
       username: user.username,
       email: user.email,
       role: user.role
     }
   end
 
-  def render("list_user.json", %{user: user}) do
+  def render("session_user.json", %{user: user}) do
     %{
-      id: user.id,
-      username: user.username
+      username: user.username,
+      email: user.email,
+      token: user.token,
+      isAdmin: user.is_admin,
+      role: user.role,
+      id: user.id
     }
   end
 
   def render("full_user.json", %{user: user}) do
     %{
-      id: user.id,
       username: user.username,
       email: user.email,
+      isAdmin: user.is_admin,
       role: user.role,
+      id: user.id,
       orders: render_many(user.orders, OrderView, "order.json", as: :order)
     }
   end
