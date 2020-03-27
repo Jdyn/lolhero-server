@@ -37,7 +37,7 @@ defmodule LolHero.CollectionView do
     }
   end
 
-  def render("created.json", %{}) do
+  def render("sucess.json", %{}) do
     %{
       ok: true,
       result: %{}

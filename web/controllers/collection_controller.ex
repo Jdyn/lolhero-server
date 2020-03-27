@@ -1,7 +1,8 @@
 defmodule LolHero.CollectionController do
   use LolHero.Web, :controller
 
-  alias LolHero.{Collection}
+  alias LolHero.{Collection, ErrorView}
+  alias LolHero.Services.Collections
 
   def index(conn, _params) do
     render(conn, "index.json", collections: Collection.find_all())
@@ -18,12 +19,12 @@ defmodule LolHero.CollectionController do
       {:ok, _collection} ->
         conn
         |> put_status(:created)
-        |> render("created.json")
+        |> render("sucess.json")
 
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> put_view(LolHero.ErrorView)
+        |> put_view(ErrorView)
         |> render("changeset_error.json", changeset: changeset)
     end
   end
@@ -41,34 +42,29 @@ defmodule LolHero.CollectionController do
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> put_view(LolHero.ErrorView)
+        |> put_view(ErrorView)
         |> render("changeset_error.json", changeset: changeset)
     end
   end
 
-  
-  def delete(conn, params) do
-    case Collection.find(params["id"]) do
-      nil ->
+  def delete(conn, %{"id" => id}) do
+    case Collections.delete(id) do
+      {:ok, _collection} ->
+        conn
+        |> put_status(:ok)
+        |> render("success.json")
+
+      {:not_found, error} ->
         conn
         |> put_status(:not_found)
-        |> put_view(LolHero.ErrorView)
-        |> render("error.json", error: "Collection does not exist.")
+        |> put_view(ErrorView)
+        |> render("error.json", error: error)
 
-      collection ->
-        Collection.delete(collection)
-        |> case do
-          {:ok, _collection} ->
-            conn
-            |> put_status(:ok)
-            |> render("ok.json")
-
-          {:error, changeset} ->
-            conn
-            |> put_status(:unprocessable_entity)
-            |> put_view(LolHero.ErrorView)
-            |> render("changeset_error.json", changeset: changeset)
-        end
+      {:error, changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> put_view(ErrorView)
+        |> render("changeset_error.json", changeset: changeset)
     end
   end
 end

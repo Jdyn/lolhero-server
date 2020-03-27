@@ -3,7 +3,6 @@ defmodule LolHero.OrderController do
 
   alias LolHero.Services.Orders
   alias LolHero.{Order, ErrorView, Email, Mailer}
-  alias Braintree.ClientToken
 
   def index(conn, _params), do: render(conn, "index.json", orders: Order.find_all())
 
