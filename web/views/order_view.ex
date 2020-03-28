@@ -48,6 +48,15 @@ defmodule LolHero.OrderView do
     }
   end
 
+  def render("show.json", %{updated_order: order}) do
+    %{
+      ok: true,
+      result: %{
+        order: render_one(order, OrderView, "order.json")
+      }
+    }
+  end
+
   def render("booster_show.json", %{order: order}) do
     %{
       ok: true,

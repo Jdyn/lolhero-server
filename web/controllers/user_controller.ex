@@ -2,7 +2,8 @@ defmodule LolHero.UserController do
   use LolHero.Web, :controller
 
   alias LolHero.{User, ErrorView, Repo, UserView}
-  alias LolHero.Services.Users
+  alias LolHero.Services.{Users, Sessions}
+  alias LolHero.Auth.Guardian
 
   def index(conn, _params) do
     render(conn, "index.json", users: User.find_all())
@@ -29,10 +30,9 @@ defmodule LolHero.UserController do
 
   def update_password(conn, params) do
     case Users.update_password(params) do
-      {:ok, user} ->
+      {:ok, _user} ->
         conn
         |> put_status(:created)
-        |> put_view(UserView)
         |> render("success.json")
 
       {:unauthorized, reason} ->
@@ -91,18 +91,18 @@ defmodule LolHero.UserController do
     end
   end
 
-  def log_in(conn, _params) do
-    case Sessions.refresh(Guardian.Plug.current_token(conn)) do
+  def log_in(conn, params) do
+    case Sessions.authenticate(params) do
       {:ok, user} ->
         conn
         |> put_status(:ok)
-        |> render("show.json", user: user)
+        |> render("show.json", session_user: user)
 
       {:error, reason} ->
         conn
-        |> put_status(:ok)
+        |> put_status(:unauthorized)
         |> put_view(ErrorView)
-        |> render("changeset.json", error: reason)
+        |> render("error.json", error: reason)
     end
   end
 
@@ -119,7 +119,7 @@ defmodule LolHero.UserController do
       {:ok, user} ->
         conn
         |> put_status(:ok)
-        |> render("session_user.json", session_user: user)
+        |> render("show.json", session_user: user)
 
       {:error, reason} ->
         conn

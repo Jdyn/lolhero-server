@@ -7,7 +7,7 @@ defmodule LolHero.OrderController do
   def index(conn, _params), do: render(conn, "index.json", orders: Order.find_all())
 
   def show(conn, params) do
-    order = Order.find_by(tracking_id: params["id"]) |> Repo.preload([:user, :booster])
+    order = Order.find_by(tracking_id: params["id"]) |> Repo.preload([:user, :booster, messages: [:user]])
     render(conn, "show.json", order: order)
   end
 
@@ -24,19 +24,19 @@ defmodule LolHero.OrderController do
     end
   end
 
-  def update(conn, params) do
-    Order.find_by(tracking_id: params["id"])
+  def update(conn, %{"id" => id} = params) do
+    Order.find_by(tracking_id: id)
     |> Order.update(params)
     |> case do
       {:ok, new_order} ->
         conn
         |> put_status(:ok)
-        |> render("booster_show.json", order: new_order |> Repo.preload([:user, :booster]))
+        |> render("booster_show.json", order: new_order |> Repo.preload([:user, :booster, messages: [:user]]))
 
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> put_view(LolHero.ErrorView)
+        |> put_view(ErrorView)
         |> render("changeset_error.json", changeset: changeset)
     end
   end
