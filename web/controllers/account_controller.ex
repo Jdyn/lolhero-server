@@ -2,7 +2,7 @@ defmodule LolHero.AccountController do
   use LolHero.Web, :controller
 
   alias LolHero.Services.{Accounts}
-  alias LolHero.{ErrorView}
+  alias LolHero.{ErrorView, Order, Repo}
 
   def orders(conn, _params) do
     user = Guardian.Plug.current_resource(conn)
@@ -27,6 +27,14 @@ defmodule LolHero.AccountController do
         |> put_view(ErrorView)
         |> render("error.json", error: reason)
     end
+  end
+
+  def available_orders(conn, _params) do
+    query = from(order in Order, where: order.status == "open")
+
+    conn
+    |> put_status(:ok)
+    |> render("booster_order_list.json", payload: Repo.all(query))
   end
 
   def initiate(conn, params) do
